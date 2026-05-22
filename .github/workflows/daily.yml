@@ -1,12 +1,12 @@
 name: HSL Päivittäinen luotettavuusanalyysi
 
 on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  schedule:
-  workflow_dispatch:
-    - cron: '0 4 * * *'  # Joka aamu klo 06:00 Suomen aikaa (UTC+2)
-  workflow_dispatch:      # Mahdollistaa myös manuaalisen käynnistyksen
 
 jobs:
   analyysi:
@@ -24,8 +24,8 @@ jobs:
           python-version: '3.11'
 
       - name: Asenna kirjastot
-        run: pip install pandas requests zstandard matplotlib aiohttp aiofiles
-        
+        run: pip install pandas requests zstandard matplotlib
+
       - name: Aja analyysi
         timeout-minutes: 30
         run: python hsl_luotettavuus.py
