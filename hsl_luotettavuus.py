@@ -350,16 +350,21 @@ def tulosta_raportti(paiva, t):
 def tallenna_tulokset(paiva, t):
     os.makedirs(TULOSKANSIO, exist_ok=True)
     paiva_str = paiva.strftime("%Y-%m-%d")
- 
+
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
- 
+    print(f"💾 Raportti      → {csv_polku}")
+
+    erittely = laske_operaattorierittely(t["trips_df"])
+    oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
+    erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
+    print(f"💾 Operaattorit  → {oper_polku}")
+
     linjaerittely = laske_linjaerittely(t["trips_df"])
     linja_polku = os.path.join(TULOSKANSIO, f"linjat_{paiva_str}.csv")
     linjaerittely.to_csv(linja_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Linjat        → {linja_polku}")
-    print(f"💾 Operaattorit  → {oper_polku}")
- 
+
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
         "paiva"        : paiva_str,
@@ -376,9 +381,6 @@ def tallenna_tulokset(paiva, t):
         trendi = uusi
     trendi = trendi.sort_values("paiva").reset_index(drop=True)
     trendi.to_csv(trendi_polku, index=False, encoding="utf-8-sig")
- 
-    print(f"💾 Raportti      → {csv_polku}")
-    print(f"💾 Operaattorit  → {oper_polku}")
     print(f"📈 Trendidata    → {trendi_polku}  ({len(trendi)} päivää)")
     return trendi
  
