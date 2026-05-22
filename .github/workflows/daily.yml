@@ -1,0 +1,35 @@
+yamlname: HSL Päivittäinen luotettavuusanalyysi
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Joka aamu klo 06:00 Suomen aikaa (UTC+2)
+  workflow_dispatch:      # Mahdollistaa myös manuaalisen käynnistyksen
+
+jobs:
+  analyysi:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hae repositorio
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Asenna Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Asenna kirjastot
+        run: pip install pandas requests zstandard matplotlib
+
+      - name: Aja analyysi
+        run: python hsl_luotettavuus.py
+
+      - name: Tallenna tulokset GitHubiin
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add tulokset/
+          git diff --staged --quiet || git commit -m "Päivittäinen raportti $(date +'%Y-%m-%d')"
+          git push
