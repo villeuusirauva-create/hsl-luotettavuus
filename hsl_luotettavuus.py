@@ -99,7 +99,9 @@ def lataa_gtfs(paiva):
         trips          = pd.read_csv(z.open("trips.txt"),          dtype=str)
         calendar_dates = pd.read_csv(z.open("calendar_dates.txt"), dtype=str)
         routes         = pd.read_csv(z.open("routes.txt"),         dtype=str,
-                                     usecols=["route_id","route_type","route_short_name"])
+                                     usecols=["route_id","route_type","route_short_name","agency_id"])
+        agency         = pd.read_csv(z.open("agency.txt"),         dtype=str,
+                                     usecols=["agency_id","agency_name"])
         stop_times     = pd.read_csv(z.open("stop_times.txt"),     dtype=str,
                                      usecols=["trip_id","stop_sequence","departure_time"])
         cal_df = None
@@ -107,6 +109,8 @@ def lataa_gtfs(paiva):
             cal_df = pd.read_csv(z.open("calendar.txt"), dtype=str)
 
     print(f"  ✓ {len(trips):,} reittiajoa, {len(calendar_dates):,} kalenterimerkintää")
+    # Yhdistetään operaattorinimi reitteihin heti tässä
+    routes = routes.merge(agency, on="agency_id", how="left")
     return trips, calendar_dates, routes, stop_times, cal_df
 
 
@@ -154,7 +158,7 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
     )
     bussit = bussit.merge(ensim, on="trip_id", how="left")
     print(f"  ✓ Suunniteltuja bussivuoroja: {len(bussit):,}")
-    return bussit[["trip_id","route_id","route_short_name","lahtoaika"]]
+    return bussit[["trip_id","route_id","route_short_name","agency_name","lahtoaika"]]
 
 
 # ── HFP-lataus ───────────────────────────────────────────────
@@ -237,10 +241,11 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
         if len(osat) >= 3:
             hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
 
-    df["ajettu"] = df["avain"].isin(hfp_avaimet)
-    df["oper"]   = df["avain"].map(hfp_avaimet).fillna("tuntematon")
+    df["ajettu"]   = df["avain"].isin(hfp_avaimet)
+    # Operaattori tulee GTFS:stä (agency_name) – kattaa myös ajamatta jääneet
+    df["oper"]     = df["agency_name"].fillna("tuntematon")
 
-    n          = len(df)
+  n          = len(df)
     ajettu_n   = int(df["ajettu"].sum())
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
