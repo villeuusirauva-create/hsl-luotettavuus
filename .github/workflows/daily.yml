@@ -4,6 +4,7 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   schedule:
+  workflow_dispatch:
     - cron: '0 4 * * *'  # Joka aamu klo 06:00 Suomen aikaa (UTC+2)
   workflow_dispatch:      # Mahdollistaa myös manuaalisen käynnistyksen
 
