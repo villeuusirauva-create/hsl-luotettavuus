@@ -234,14 +234,12 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
 
 def laske_operaattorierittely(trips_df):
     """Laskee luotettavuuden per operaattorinumero."""
-    erittely = (
-        trips_df.groupby("oper")
-        .agg(
-            suunnitellut=("ajettu", "count"),
-            ajetut=("ajettu", "sum")
-        )
-        .reset_index()
-    )
+    grp = trips_df.groupby("oper")["ajettu"]
+    erittely = pd.DataFrame({
+        "oper":         grp.count().index,
+        "suunnitellut": grp.count().values,
+        "ajettu":       grp.sum().values,
+    })
     erittely["luotettavuus"] = (
         erittely["ajettu"] / erittely["suunnitellut"] * 100
     ).round(2)
