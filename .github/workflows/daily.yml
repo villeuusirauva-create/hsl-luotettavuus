@@ -1,4 +1,4 @@
-yamlname: HSL Päivittäinen luotettavuusanalyysi
+name: HSL Päivittäinen luotettavuusanalyysi
 
 on:
   schedule:
