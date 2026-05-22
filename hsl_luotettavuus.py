@@ -285,6 +285,20 @@ def laske_operaattorierittely(trips_df):
     ).round(2)
     erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
     return erittely
+
+def laske_linjaerittely(trips_df):
+    grp = trips_df.groupby(["route_short_name", "oper"])["ajettu"]
+    erittely = pd.DataFrame({
+        "linja":        grp.count().index.get_level_values("route_short_name"),
+        "operaattori":  grp.count().index.get_level_values("oper"),
+        "suunnitellut": grp.count().values,
+        "ajettu":       grp.sum().values,
+    })
+    erittely["luotettavuus"] = (
+        erittely["ajettu"] / erittely["suunnitellut"] * 100
+    ).round(2)
+    erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
+    return erittely
  
  
 # ── Raportti & tallennus ─────────────────────────────────────
@@ -319,6 +333,17 @@ def tulosta_raportti(paiva, t):
         for _, rivi in erittely.iterrows():
             print(f"  {rivi['oper']:<30}  {rivi['luotettavuus']:>7.2f} %"
                   f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
+    # Top 10 heikoiten suoriutuneet linjat
+    linjaerittely = laske_linjaerittely(t["trips_df"])
+    heikoimmat = linjaerittely[linjaerittely["suunnitellut"] >= 3].head(10)
+    if len(heikoimmat) > 0:
+        print("  10 HEIKOITEN SUORIUTUNUTTA LINJAA:")
+        print(f"  {'Linja':<8}  {'Operaattori':<25}  {'Luotett.':>8}  {'Ajettu/Suunn.':>15}")
+        print("  " + "─" * 62)
+        for _, rivi in heikoimmat.iterrows():
+            print(f"  {rivi['linja']:<8}  {rivi['operaattori']:<25}"
+                  f"  {rivi['luotettavuus']:>7.2f} %"
+                  f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
     print()
  
  
@@ -329,9 +354,10 @@ def tallenna_tulokset(paiva, t):
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
  
-    erittely = laske_operaattorierittely(t["trips_df"])
-    oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
-    erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
+    linjaerittely = laske_linjaerittely(t["trips_df"])
+    linja_polku = os.path.join(TULOSKANSIO, f"linjat_{paiva_str}.csv")
+    linjaerittely.to_csv(linja_polku, index=False, encoding="utf-8-sig")
+    print(f"💾 Linjat        → {linja_polku}")
  
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
