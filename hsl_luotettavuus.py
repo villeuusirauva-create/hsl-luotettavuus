@@ -279,7 +279,7 @@ def tulosta_raportti(paiva, t):
         print("  " + "─" * 44)
         for _, rivi in erittely.iterrows():
             print(f"  {rivi['oper']:>6}  {rivi['luotettavuus']:>12.2f} %"
-                  f"  {int(rivi['ajetut']):>8,}  {int(rivi['suunnitellut']):>8,}")
+                  f"  {int(rivi['ajettu']):>8,}  {int(rivi['suunnitellut']):>8,}")
     print()
 
 
