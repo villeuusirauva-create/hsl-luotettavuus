@@ -36,7 +36,7 @@ TRANSITLAND_API_KEY = "ElFbX1XVXbQZsBXwc4wdREL6ngmyIInE"
 ANALYSOITAVA_PAIVA = None
 
 # Rinnakkaiset lataukset (nopeuttaa)
-RINNAKKAISET_LATAUKSET = 8
+RINNAKKAISET_LATAUKSET = 3
 
 # Tulosten tallennuskansio
 TULOSKANSIO = "tulokset"
