@@ -358,6 +358,7 @@ def tallenna_tulokset(paiva, t):
     linja_polku = os.path.join(TULOSKANSIO, f"linjat_{paiva_str}.csv")
     linjaerittely.to_csv(linja_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Linjat        → {linja_polku}")
+    print(f"💾 Operaattorit  → {oper_polku}")
  
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
