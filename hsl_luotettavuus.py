@@ -29,13 +29,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 #  ASETUKSET
 # ============================================================
 
-TRANSITLAND_API_KEY = "ElFbX1XVXbQZsBXwc4wdREL6ngmyIInE"
-
 # Analysoitava päivä: None = eilen automaattisesti
 # Tietty päivä: "2026-05-20"
 ANALYSOITAVA_PAIVA = None
 
-# Rinnakkaiset lataukset (nopeuttaa)
+# Rinnakkaiset lataukset
 RINNAKKAISET_LATAUKSET = 3
 
 # Tulosten tallennuskansio
@@ -149,6 +147,7 @@ def generoi_urlit(paiva):
 
 
 def lataa_yksi_tiedosto(url):
+    """Lataa yhden HFP-tiedoston. Palauttaa dict {avain: oper} tai None."""
     try:
         r = requests.get(url, timeout=60)
         if r.status_code == 404:
@@ -156,26 +155,31 @@ def lataa_yksi_tiedosto(url):
         r.raise_for_status()
         data = pura_zst(r.content)
         df = pd.read_csv(io.BytesIO(data), low_memory=False,
-                         usecols=lambda c: c in ["routeId","oday","start","dir"])
+                         usecols=lambda c: c in ["routeId","oday","start","dir","oper"])
         if all(c in df.columns for c in ["routeId","oday","start","dir"]):
             df = df.dropna(subset=["routeId","oday","start","dir"])
-            avaimet = (df["routeId"].astype(str) + "|" +
-                       df["oday"].astype(str)    + "|" +
-                       df["start"].astype(str)   + "|" +
-                       df["dir"].astype(str))
-            return set(avaimet.unique())
-        return set()
+            df["avain"] = (df["routeId"].astype(str) + "|" +
+                           df["oday"].astype(str)    + "|" +
+                           df["start"].astype(str)   + "|" +
+                           df["dir"].astype(str))
+            # Palautetaan dict: avain -> operaattorinumero
+            if "oper" in df.columns:
+                return dict(zip(df["avain"], df["oper"].astype(str)))
+            else:
+                return {a: "tuntematon" for a in df["avain"].unique()}
+        return {}
     except Exception:
         return None
 
 
 def hae_ajetut_trip_id(paiva):
+    """Palauttaa dict {avain: oper} kaikista ajetuista vuoroista."""
     urlit = generoi_urlit(paiva)
     print(f"🌐 Ladataan HFP-data ({len(urlit)} tiedostoa, "
           f"{RINNAKKAISET_LATAUKSET} rinnakkain)...")
     print("   Tämä kestää n. 5–15 minuuttia datan koosta riippuen.")
 
-    ajetut   = set()
+    ajetut   = {}  # avain -> oper
     valmis   = 0
     virheita = 0
 
@@ -190,31 +194,35 @@ def hae_ajetut_trip_id(paiva):
                 ajetut.update(tulos)
             if valmis % 16 == 0 or valmis == len(urlit):
                 print(f"  ↳ {valmis:>3}/{len(urlit)} | "
-                      f"{len(ajetut):,} uniikkia trip_id:tä löydetty")
+                      f"{len(ajetut):,} uniikkia vuoroa löydetty")
 
-    print(f"  ✓ Valmis. Ajettuja trip_id:tä: {len(ajetut):,} "
+    print(f"  ✓ Valmis. Ajettuja vuoroja: {len(ajetut):,} "
           f"({virheita} tiedostoa puuttui / epäonnistui)")
     return ajetut
 
 
 # ── Laskenta ────────────────────────────────────────────────
 
-def laske_luotettavuus(suunnitellut_df, ajetut_set):
+def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df = suunnitellut_df.copy()
     df["lahtoaika_lyhyt"] = df["lahtoaika"].str[:5]
     df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
 
-    hfp_avaimet = set()
-    for a in ajetut_set:
+    # HFP-avaimet: routeId|start (ilman oday ja dir)
+    hfp_avaimet = {}
+    for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
-            hfp_avaimet.add(f"{osat[0]}|{osat[2]}")  # routeId|start
+            hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
 
-    df["ajettu"]   = df["avain"].isin(hfp_avaimet)
-    n              = len(df)
-    ajettu_n       = int(df["ajettu"].sum())
-    ajamatta_n     = n - ajettu_n
-    pct            = round((ajettu_n / n) * 100, 2) if n else 0.0
+    df["ajettu"] = df["avain"].isin(hfp_avaimet)
+    df["oper"]   = df["avain"].map(hfp_avaimet).fillna("tuntematon")
+
+    n          = len(df)
+    ajettu_n   = int(df["ajettu"].sum())
+    ajamatta_n = n - ajettu_n
+    pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
+
     return {
         "suunnitellut" : n,
         "ajetut"       : ajettu_n,
@@ -222,6 +230,23 @@ def laske_luotettavuus(suunnitellut_df, ajetut_set):
         "luotettavuus" : pct,
         "trips_df"     : df,
     }
+
+
+def laske_operaattorierittely(trips_df):
+    """Laskee luotettavuuden per operaattorinumero."""
+    erittely = (
+        trips_df.groupby("oper")
+        .agg(
+            suunnitellut=("ajettu", "count"),
+            ajetut=("ajettu", "sum")
+        )
+        .reset_index()
+    )
+    erittely["luotettavuus"] = (
+        erittely["ajettu"] / erittely["suunnitellut"] * 100
+    ).round(2)
+    erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
+    return erittely
 
 
 # ── Raportti & tallennus ─────────────────────────────────────
@@ -246,6 +271,17 @@ def tulosta_raportti(paiva, t):
     print(f"  LUOTETTAVUUS          :  {p:>7.2f} %")
     print("═" * 52)
     print(f"  {ikoni}  {arvio}")
+
+    # Operaattorierittely
+    erittely = laske_operaattorierittely(t["trips_df"])
+    if len(erittely) > 0:
+        print()
+        print("  OPERAATTOREITTAIN:")
+        print(f"  {'Oper':>6}  {'Luotettavuus':>13}  {'Ajettu':>8}  {'Suunn.':>8}")
+        print("  " + "─" * 44)
+        for _, rivi in erittely.iterrows():
+            print(f"  {rivi['oper']:>6}  {rivi['luotettavuus']:>12.2f} %"
+                  f"  {int(rivi['ajetut']):>8,}  {int(rivi['suunnitellut']):>8,}")
     print()
 
 
@@ -253,9 +289,16 @@ def tallenna_tulokset(paiva, t):
     os.makedirs(TULOSKANSIO, exist_ok=True)
     paiva_str = paiva.strftime("%Y-%m-%d")
 
+    # 1. Yksityiskohtainen päiväkohtainen CSV (sisältää nyt oper-kentän)
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
 
+    # 2. Operaattorierittely omana CSV:nä
+    erittely = laske_operaattorierittely(t["trips_df"])
+    oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
+    erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
+
+    # 3. Kumulatiivinen trenditietokanta
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
         "paiva"        : paiva_str,
@@ -273,8 +316,9 @@ def tallenna_tulokset(paiva, t):
     trendi = trendi.sort_values("paiva").reset_index(drop=True)
     trendi.to_csv(trendi_polku, index=False, encoding="utf-8-sig")
 
-    print(f"💾 Raportti  → {csv_polku}")
-    print(f"📈 Trendidata → {trendi_polku}  ({len(trendi)} päivää)")
+    print(f"💾 Raportti      → {csv_polku}")
+    print(f"💾 Operaattorit  → {oper_polku}")
+    print(f"📈 Trendidata    → {trendi_polku}  ({len(trendi)} päivää)")
     return trendi
 
 
@@ -340,7 +384,7 @@ def piirra_kuvaaja(trendi_df):
     plt.savefig(polku, dpi=150, bbox_inches="tight",
                 facecolor=fig.get_facecolor())
     plt.close()
-    print(f"📊 Kuvaaja    → {polku}")
+    print(f"📊 Kuvaaja       → {polku}")
 
 
 # ── Pääohjelma ───────────────────────────────────────────────
