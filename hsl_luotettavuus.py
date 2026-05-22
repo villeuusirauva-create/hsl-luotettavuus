@@ -3,15 +3,15 @@ HSL Bussien Luotettavuusanalyysi
 =================================
 Laskee päivittäisen luotettavuusprosentin:
   Luotettavuus = Ajetut lähdöt / Suunnitellut lähdöt × 100
-
+ 
 KÄYTTÖOHJE:
   Avaa komentokehote (CMD) kansiossa jossa tämä tiedosto on, ja aja:
     python hsl_luotettavuus.py
-
-Kirjastojen asennus (vain kerran):BUSSI_TYYPIT
+ 
+Kirjastojen asennus (vain kerran):
     pip install pandas requests zstandard matplotlib
 """
-
+ 
 import os
 import io
 import zipfile
@@ -24,26 +24,30 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
+ 
 # ============================================================
 #  ASETUKSET
 # ============================================================
-
+ 
 # Analysoitava päivä: None = eilen automaattisesti
 # Tietty päivä: "2026-05-20"
 ANALYSOITAVA_PAIVA = None
-
+ 
 # Rinnakkaiset lataukset
 RINNAKKAISET_LATAUKSET = 3
-
+ 
 # Tulosten tallennuskansio
 TULOSKANSIO = "tulokset"
-
+ 
 # ============================================================
-
+ 
 BLOB_BASE_URL = "https://hfpv2.blob.core.windows.net/hfp-v2-prod"
 GTFS_URL      = "https://dev.hsl.fi/gtfs/hsl.zip"
-
+ 
+BUSSI_TYYPIT = {"3","700","701","702","703","704","705",
+                "706","707","708","709","710","711","712",
+                "713","714","715","716"}
+ 
 OPERAATTORIT = {
     "6":   "Pohjolan Liikenne",
     "12":  "Koiviston Auto",
@@ -66,40 +70,38 @@ OPERAATTORIT = {
     "89":  "Metropolia",
     "90":  "VR",
 }
-BUSSI_TYYPIT = {"3","700","701","702","703","704","705",
-                "706","707","708","709","710","711","712",
-                "713","714","715","716"}
-
-
+ 
+ 
 # ── Apufunktiot ─────────────────────────────────────────────
-
+ 
 def maarita_paiva():
     if ANALYSOITAVA_PAIVA:
         return datetime.date.fromisoformat(ANALYSOITAVA_PAIVA)
     return datetime.date.today() - datetime.timedelta(days=1)
-
+ 
 def viikonpaiva(paiva):
     return ["maanantai","tiistai","keskiviikko","torstai",
             "perjantai","lauantai","sunnuntai"][paiva.weekday()]
-
+ 
 def pura_zst(data_bytes):
     dctx = zstandard.ZstdDecompressor()
     with dctx.stream_reader(io.BytesIO(data_bytes)) as reader:
         return reader.read()
-
-
+ 
+ 
 # ── GTFS ────────────────────────────────────────────────────
-
+ 
 def lataa_gtfs(paiva):
     print("📥 Ladataan GTFS-aikataulu HSL:ltä...")
     r = requests.get(GTFS_URL, timeout=120)
     r.raise_for_status()
-
+ 
     with zipfile.ZipFile(io.BytesIO(r.content)) as z:
         trips          = pd.read_csv(z.open("trips.txt"),          dtype=str)
         calendar_dates = pd.read_csv(z.open("calendar_dates.txt"), dtype=str)
         routes         = pd.read_csv(z.open("routes.txt"),         dtype=str,
-                                     usecols=["route_id","route_type","route_short_name","agency_id"])
+                                     usecols=["route_id","route_type",
+                                              "route_short_name","agency_id"])
         agency         = pd.read_csv(z.open("agency.txt"),         dtype=str,
                                      usecols=["agency_id","agency_name"])
         stop_times     = pd.read_csv(z.open("stop_times.txt"),     dtype=str,
@@ -107,23 +109,24 @@ def lataa_gtfs(paiva):
         cal_df = None
         if "calendar.txt" in z.namelist():
             cal_df = pd.read_csv(z.open("calendar.txt"), dtype=str)
-
-    print(f"  ✓ {len(trips):,} reittiajoa, {len(calendar_dates):,} kalenterimerkintää")
-    # Yhdistetään operaattorinimi reitteihin heti tässä
+ 
+    # Yhdistetään operaattorinimi reitteihin heti
     routes = routes.merge(agency, on="agency_id", how="left")
+ 
+    print(f"  ✓ {len(trips):,} reittiajoa, {len(calendar_dates):,} kalenterimerkintää")
     return trips, calendar_dates, routes, stop_times, cal_df
-
-
+ 
+ 
 def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, cal_df=None):
     paiva_str = paiva.strftime("%Y%m%d")
-
+ 
     lisatyt = set(calendar_dates.loc[
         (calendar_dates["date"] == paiva_str) &
         (calendar_dates["exception_type"] == "1"), "service_id"])
     poistetut = set(calendar_dates.loc[
         (calendar_dates["date"] == paiva_str) &
         (calendar_dates["exception_type"] == "2"), "service_id"])
-
+ 
     if not lisatyt and cal_df is not None:
         viikonpaiva_nimi = ["monday","tuesday","wednesday","thursday",
                             "friday","saturday","sunday"][paiva.weekday()]
@@ -134,22 +137,22 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
         )
         lisatyt = set(cal_df.loc[maski, "service_id"])
         print(f"  ✓ calendar.txt: {len(lisatyt)} aktiivista service_id:tä")
-
+ 
     aktiiviset = lisatyt - poistetut
-
+ 
     if not aktiiviset:
         print(f"  ⚠️  Ei palveluja päivälle {paiva_str}")
         return pd.DataFrame()
-
+ 
     trips_r = trips.merge(
-        routes[["route_id","route_type","route_short_name"]],
+        routes[["route_id","route_type","route_short_name","agency_name"]],
         on="route_id", how="left")
-
+ 
     bussit = trips_r[
         (trips_r["service_id"].isin(aktiiviset)) &
         (trips_r["route_type"].isin(BUSSI_TYYPIT))
     ].copy()
-
+ 
     ensim = (
         stop_times.sort_values("stop_sequence")
         .groupby("trip_id").first().reset_index()
@@ -159,10 +162,10 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
     bussit = bussit.merge(ensim, on="trip_id", how="left")
     print(f"  ✓ Suunniteltuja bussivuoroja: {len(bussit):,}")
     return bussit[["trip_id","route_id","route_short_name","agency_name","lahtoaika"]]
-
-
+ 
+ 
 # ── HFP-lataus ───────────────────────────────────────────────
-
+ 
 def generoi_urlit(paiva):
     urlit = []
     for tunti in range(24):
@@ -170,10 +173,9 @@ def generoi_urlit(paiva):
             nimi = f"{paiva}T{tunti:02d}-{kvarttaali}_utc_VP.csv.zst"
             urlit.append(f"{BLOB_BASE_URL}/{nimi}")
     return urlit
-
-
+ 
+ 
 def lataa_yksi_tiedosto(url):
-    """Lataa yhden HFP-tiedoston. Palauttaa dict {avain: oper} tai None."""
     try:
         r = requests.get(url, timeout=60)
         if r.status_code == 404:
@@ -188,7 +190,6 @@ def lataa_yksi_tiedosto(url):
                            df["oday"].astype(str)    + "|" +
                            df["start"].astype(str)   + "|" +
                            df["dir"].astype(str))
-            # Palautetaan dict: avain -> operaattorinumero
             if "oper" in df.columns:
                 return dict(zip(df["avain"], df["oper"].astype(str)))
             else:
@@ -196,19 +197,18 @@ def lataa_yksi_tiedosto(url):
         return {}
     except Exception:
         return None
-
-
+ 
+ 
 def hae_ajetut_trip_id(paiva):
-    """Palauttaa dict {avain: oper} kaikista ajetuista vuoroista."""
     urlit = generoi_urlit(paiva)
     print(f"🌐 Ladataan HFP-data ({len(urlit)} tiedostoa, "
           f"{RINNAKKAISET_LATAUKSET} rinnakkain)...")
     print("   Tämä kestää n. 5–15 minuuttia datan koosta riippuen.")
-
-    ajetut   = {}  # avain -> oper
+ 
+    ajetut   = {}
     valmis   = 0
     virheita = 0
-
+ 
     with ThreadPoolExecutor(max_workers=RINNAKKAISET_LATAUKSET) as executor:
         futures = {executor.submit(lataa_yksi_tiedosto, u): u for u in urlit}
         for future in as_completed(futures):
@@ -221,35 +221,34 @@ def hae_ajetut_trip_id(paiva):
             if valmis % 16 == 0 or valmis == len(urlit):
                 print(f"  ↳ {valmis:>3}/{len(urlit)} | "
                       f"{len(ajetut):,} uniikkia vuoroa löydetty")
-
+ 
     print(f"  ✓ Valmis. Ajettuja vuoroja: {len(ajetut):,} "
           f"({virheita} tiedostoa puuttui / epäonnistui)")
     return ajetut
-
-
+ 
+ 
 # ── Laskenta ────────────────────────────────────────────────
-
+ 
 def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df = suunnitellut_df.copy()
     df["lahtoaika_lyhyt"] = df["lahtoaika"].str[:5]
     df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
-
-    # HFP-avaimet: routeId|start (ilman oday ja dir)
+ 
     hfp_avaimet = {}
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
             hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
-
+ 
     df["ajettu"]   = df["avain"].isin(hfp_avaimet)
-    # Operaattori tulee GTFS:stä (agency_name) – kattaa myös ajamatta jääneet
+    # Operaattori tulee GTFS:stä – kattaa myös ajamatta jääneet
     df["oper"]     = df["agency_name"].fillna("tuntematon")
-
-  n          = len(df)
+ 
+    n          = len(df)
     ajettu_n   = int(df["ajettu"].sum())
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
-
+ 
     return {
         "suunnitellut" : n,
         "ajetut"       : ajettu_n,
@@ -257,10 +256,9 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
         "luotettavuus" : pct,
         "trips_df"     : df,
     }
-
-
+ 
+ 
 def laske_operaattorierittely(trips_df):
-    """Laskee luotettavuuden per operaattorinumero."""
     grp = trips_df.groupby("oper")["ajettu"]
     erittely = pd.DataFrame({
         "oper":         grp.count().index,
@@ -272,10 +270,10 @@ def laske_operaattorierittely(trips_df):
     ).round(2)
     erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
     return erittely
-
-
+ 
+ 
 # ── Raportti & tallennus ─────────────────────────────────────
-
+ 
 def tulosta_raportti(paiva, t):
     p = t["luotettavuus"]
     if   p >= 99: ikoni, arvio = "⭐", "Erinomainen"
@@ -283,7 +281,7 @@ def tulosta_raportti(paiva, t):
     elif p >= 95: ikoni, arvio = "🟡", "Kohtuullinen – hieman poikkeamia"
     elif p >= 90: ikoni, arvio = "🟠", "Heikko – merkittäviä puutteita"
     else:         ikoni, arvio = "🔴", "Erittäin heikko – vakavia häiriöitä"
-
+ 
     print()
     print("═" * 52)
     print("  HSL BUSSILIIKENNE – LUOTETTAVUUSRAPORTTI")
@@ -296,35 +294,30 @@ def tulosta_raportti(paiva, t):
     print(f"  LUOTETTAVUUS          :  {p:>7.2f} %")
     print("═" * 52)
     print(f"  {ikoni}  {arvio}")
-
-    # Operaattorierittely
+ 
     erittely = laske_operaattorierittely(t["trips_df"])
     if len(erittely) > 0:
         print()
         print("  OPERAATTOREITTAIN:")
-        print(f"  {'Oper':>6}  {'Luotettavuus':>13}  {'Ajettu':>8}  {'Suunn.':>8}")
-        print("  " + "─" * 44)
+        print(f"  {'Operaattori':<30}  {'Luotett.':>8}  {'Ajettu/Suunn.':>15}")
+        print("  " + "─" * 58)
         for _, rivi in erittely.iterrows():
-            nimi = OPERAATTORIT.get(str(rivi['oper']), f"Operaattori {rivi['oper']}")
-            print(f"  {nimi:<30}  {rivi['luotettavuus']:>6.2f} %"
+            print(f"  {rivi['oper']:<30}  {rivi['luotettavuus']:>7.2f} %"
                   f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
     print()
-
-
+ 
+ 
 def tallenna_tulokset(paiva, t):
     os.makedirs(TULOSKANSIO, exist_ok=True)
     paiva_str = paiva.strftime("%Y-%m-%d")
-
-    # 1. Yksityiskohtainen päiväkohtainen CSV (sisältää nyt oper-kentän)
+ 
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
-
-    # 2. Operaattorierittely omana CSV:nä
+ 
     erittely = laske_operaattorierittely(t["trips_df"])
     oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
     erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
-
-    # 3. Kumulatiivinen trenditietokanta
+ 
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
         "paiva"        : paiva_str,
@@ -341,45 +334,45 @@ def tallenna_tulokset(paiva, t):
         trendi = uusi
     trendi = trendi.sort_values("paiva").reset_index(drop=True)
     trendi.to_csv(trendi_polku, index=False, encoding="utf-8-sig")
-
+ 
     print(f"💾 Raportti      → {csv_polku}")
     print(f"💾 Operaattorit  → {oper_polku}")
     print(f"📈 Trendidata    → {trendi_polku}  ({len(trendi)} päivää)")
     return trendi
-
-
+ 
+ 
 def piirra_kuvaaja(trendi_df):
     if len(trendi_df) < 2:
         print("ℹ️  Trendikuvaaja piirretään kun dataa on kahdelta päivältä.")
         return
-
+ 
     fig, ax = plt.subplots(figsize=(13, 5))
     fig.patch.set_facecolor("#0f1923")
     ax.set_facecolor("#141f2e")
-
+ 
     paivamaarat    = pd.to_datetime(trendi_df["paiva"])
     luotettavuudet = trendi_df["luotettavuus"]
-
+ 
     for i in range(len(paivamaarat) - 1):
         v = luotettavuudet.iloc[i]
         c = ("#00c896" if v >= 99 else "#4fc3f7" if v >= 97
              else "#ffd54f" if v >= 95 else "#ff8a65" if v >= 90 else "#ef5350")
         ax.plot(paivamaarat.iloc[i:i+2], luotettavuudet.iloc[i:i+2],
                 color=c, linewidth=2.5, solid_capstyle="round")
-
+ 
     ax.fill_between(paivamaarat, luotettavuudet,
                     luotettavuudet.min() - 1, alpha=0.12, color="#4fc3f7")
-
+ 
     for raja, teksti, vari in [(99,"99 %","#00c896"),
                                 (97,"97 %","#4fc3f7"),
                                 (95,"95 %","#ffd54f")]:
         ax.axhline(raja, linestyle="--", linewidth=0.8, color=vari, alpha=0.45)
         ax.text(paivamaarat.iloc[0], raja + 0.08, teksti,
                 color=vari, fontsize=7.5, alpha=0.7, va="bottom")
-
+ 
     ax.scatter(paivamaarat, luotettavuudet,
                color="white", s=35, zorder=5, alpha=0.85)
-
+ 
     viim_x = paivamaarat.iloc[-1]
     viim_y = luotettavuudet.iloc[-1]
     ax.annotate(
@@ -390,7 +383,7 @@ def piirra_kuvaaja(trendi_df):
                   facecolor="#0f3460", edgecolor="#4fc3f7", alpha=0.9),
         arrowprops=dict(arrowstyle="->", color="#4fc3f7", lw=1.2)
     )
-
+ 
     ymin = max(85, luotettavuudet.min() - 1.5)
     ax.set_ylim(ymin, 100.6)
     ax.set_xlabel("Päivä", color="#8899bb", fontsize=10)
@@ -404,49 +397,49 @@ def piirra_kuvaaja(trendi_df):
     for sp in ax.spines.values():
         sp.set_edgecolor("#2a3a5a")
     ax.grid(axis="y", linestyle=":", alpha=0.25, color="#8899bb")
-
+ 
     plt.tight_layout()
     polku = os.path.join(TULOSKANSIO, "luotettavuus_trendi.png")
     plt.savefig(polku, dpi=150, bbox_inches="tight",
                 facecolor=fig.get_facecolor())
     plt.close()
     print(f"📊 Kuvaaja       → {polku}")
-
-
+ 
+ 
 # ── Pääohjelma ───────────────────────────────────────────────
-
+ 
 def main():
     print()
     print("🚌  HSL Luotettavuusanalyysi käynnistyy")
     print("─" * 45)
-
+ 
     paiva = maarita_paiva()
     print(f"📅  Analysoidaan: {paiva.strftime('%d.%m.%Y')} ({viikonpaiva(paiva)})")
     print()
-
+ 
     trips, calendar_dates, routes, stop_times, cal_df = lataa_gtfs(paiva)
     print()
-
+ 
     suunnitellut = suunnitellut_bussivuorot(
         paiva, trips, calendar_dates, routes, stop_times, cal_df)
     if suunnitellut.empty:
         print("❌  Ei suunniteltuja vuoroja – tarkista päivämäärä.")
         return
     print()
-
+ 
     ajetut = hae_ajetut_trip_id(paiva)
     print()
-
+ 
     tulos  = laske_luotettavuus(suunnitellut, ajetut)
     tulosta_raportti(paiva, tulos)
-
+ 
     trendi = tallenna_tulokset(paiva, tulos)
     piirra_kuvaaja(trendi)
-
+ 
     print()
     print(f"✅  Valmis! Tulokset: {os.path.abspath(TULOSKANSIO)}")
     print()
-
-
+ 
+ 
 if __name__ == "__main__":
     main()
