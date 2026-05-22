@@ -240,9 +240,24 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
         if len(osat) >= 3:
             hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
  
-    df["ajettu"]   = df["avain"].isin(hfp_avaimet)
-    # Operaattori tulee GTFS:stä – kattaa myös ajamatta jääneet
-    df["oper"]     = df["agency_name"].fillna("tuntematon")
+    df["ajettu"] = df["avain"].isin(hfp_avaimet)
+
+    # Operaattori HFP:stä per reitti (yleisin arvo per route_id)
+    reitti_oper = {}
+    for a, oper in ajetut_dict.items():
+        osat = a.split("|")
+        if len(osat) >= 3:
+            route = osat[0]
+            if route not in reitti_oper:
+                reitti_oper[route] = []
+            reitti_oper[route].append(oper)
+    # Otetaan yleisin operaattori per reitti
+    reitti_oper_yleisin = {
+        r: max(set(lst), key=lst.count)
+        for r, lst in reitti_oper.items()
+    }
+    df["oper"] = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
+    df["oper"] = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
  
     n          = len(df)
     ajettu_n   = int(df["ajettu"].sum())
