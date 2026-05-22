@@ -333,18 +333,7 @@ def tulosta_raportti(paiva, t):
         for _, rivi in erittely.iterrows():
             print(f"  {rivi['oper']:<30}  {rivi['luotettavuus']:>7.2f} %"
                   f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
-    # Top 10 heikoiten suoriutuneet linjat
-    linjaerittely = laske_linjaerittely(t["trips_df"])
-    heikoimmat = linjaerittely[linjaerittely["suunnitellut"] >= 3].head(10)
-    if len(heikoimmat) > 0:
-        print("  10 HEIKOITEN SUORIUTUNUTTA LINJAA:")
-        print(f"  {'Linja':<8}  {'Operaattori':<25}  {'Luotett.':>8}  {'Ajettu/Suunn.':>15}")
-        print("  " + "─" * 62)
-        for _, rivi in heikoimmat.iterrows():
-            print(f"  {rivi['linja']:<8}  {rivi['operaattori']:<25}"
-                  f"  {rivi['luotettavuus']:>7.2f} %"
-                  f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
-    print()
+
  
  
 def tallenna_tulokset(paiva, t):
