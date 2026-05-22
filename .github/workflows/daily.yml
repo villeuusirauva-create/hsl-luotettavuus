@@ -24,6 +24,7 @@ jobs:
         run: pip install pandas requests zstandard matplotlib
 
       - name: Aja analyysi
+        timeout-minutes: 30
         run: python hsl_luotettavuus.py
 
       - name: Tallenna tulokset GitHubiin
