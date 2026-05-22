@@ -8,7 +8,7 @@ KÄYTTÖOHJE:
   Avaa komentokehote (CMD) kansiossa jossa tämä tiedosto on, ja aja:
     python hsl_luotettavuus.py
 
-Kirjastojen asennus (vain kerran):
+Kirjastojen asennus (vain kerran):BUSSI_TYYPIT
     pip install pandas requests zstandard matplotlib
 """
 
@@ -44,6 +44,27 @@ TULOSKANSIO = "tulokset"
 BLOB_BASE_URL = "https://hfpv2.blob.core.windows.net/hfp-v2-prod"
 GTFS_URL      = "https://dev.hsl.fi/gtfs/hsl.zip"
 
+OPERAATTORIT = {
+    "6":   "Pohjolan Liikenne",
+    "12":  "Koiviston Auto",
+    "17":  "Tammelundin Liikenne",
+    "18":  "Pohjolan Liikenne",
+    "20":  "Bus Travel Åbergin Linja",
+    "21":  "Bus Travel Reissu Ruoti",
+    "22":  "Nobina Finland",
+    "30":  "Savonlinja",
+    "36":  "Nurmijärven Linja",
+    "40":  "HKL-Raitioliikenne",
+    "47":  "Taksikuljetus Oy",
+    "50":  "HKL-Metroliikenne",
+    "51":  "Korsisaari",
+    "54":  "V-S Bussipalvelut",
+    "58":  "Koillisen Liikennepalvelut",
+    "59":  "Tilausliikenne Nikkanen",
+    "60":  "Suomenlinnan Liikenne",
+    "64":  "Taksikuljetus Harri Vuolle",
+    "89":  "Metropolia",
+    "90":  "VR",
 BUSSI_TYYPIT = {"3","700","701","702","703","704","705",
                 "706","707","708","709","710","711","712",
                 "713","714","715","716"}
@@ -278,8 +299,9 @@ def tulosta_raportti(paiva, t):
         print(f"  {'Oper':>6}  {'Luotettavuus':>13}  {'Ajettu':>8}  {'Suunn.':>8}")
         print("  " + "─" * 44)
         for _, rivi in erittely.iterrows():
-            print(f"  {rivi['oper']:>6}  {rivi['luotettavuus']:>12.2f} %"
-                  f"  {int(rivi['ajettu']):>8,}  {int(rivi['suunnitellut']):>8,}")
+            nimi = OPERAATTORIT.get(str(rivi['oper']), f"Operaattori {rivi['oper']}")
+            print(f"  {nimi:<30}  {rivi['luotettavuus']:>6.2f} %"
+                  f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
     print()
 
 
