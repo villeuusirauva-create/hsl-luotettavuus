@@ -1,6 +1,8 @@
 name: HSL Päivittäinen luotettavuusanalyysi
 
 on:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   schedule:
     - cron: '0 4 * * *'  # Joka aamu klo 06:00 Suomen aikaa (UTC+2)
   workflow_dispatch:      # Mahdollistaa myös manuaalisen käynnistyksen
@@ -31,6 +33,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add tulokset/
+          mkdir -p tulokset
+          git add -f tulokset/ || true
           git diff --staged --quiet || git commit -m "Päivittäinen raportti $(date +'%Y-%m-%d')"
-          git push
+          git pull --rebase origin main
+          git push origin main
