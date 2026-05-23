@@ -231,7 +231,16 @@ def hae_ajetut_trip_id(paiva):
  
 def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df = suunnitellut_df.copy()
-    df["lahtoaika_lyhyt"] = df["lahtoaika"].str[:5]
+    def normalisoi_aika(aika_str):
+        if pd.isna(aika_str):
+            return ""
+        osat = aika_str.split(":")
+        if len(osat) >= 2:
+            tunnit = int(osat[0]) % 24
+            return f"{tunnit:02d}:{osat[1]}"
+        return aika_str[:5]
+
+    df["lahtoaika_lyhyt"] = df["lahtoaika"].apply(normalisoi_aika)
     df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
  
     hfp_avaimet = {}
