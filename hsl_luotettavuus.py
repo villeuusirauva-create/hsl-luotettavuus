@@ -88,6 +88,16 @@ def pura_zst(data_bytes):
     with dctx.stream_reader(io.BytesIO(data_bytes)) as reader:
         return reader.read()
  
+def normalisoi_aika(aika_str):
+    """Muuttaa GTFS:n ylipitkät ajat (esim. 25:20) normaaliksi (01:20)."""
+    if pd.isna(aika_str):
+        return ""
+    osat = str(aika_str).split(":")
+    if len(osat) >= 2:
+        tunnit = int(osat[0]) % 24
+        return f"{tunnit:02d}:{osat[1]}"
+    return str(aika_str)[:5]
+ 
  
 # ── GTFS ────────────────────────────────────────────────────
  
@@ -110,9 +120,7 @@ def lataa_gtfs(paiva):
         if "calendar.txt" in z.namelist():
             cal_df = pd.read_csv(z.open("calendar.txt"), dtype=str)
  
-    # Yhdistetään operaattorinimi reitteihin heti
     routes = routes.merge(agency, on="agency_id", how="left")
- 
     print(f"  ✓ {len(trips):,} reittiajoa, {len(calendar_dates):,} kalenterimerkintää")
     return trips, calendar_dates, routes, stop_times, cal_df
  
@@ -231,46 +239,34 @@ def hae_ajetut_trip_id(paiva):
  
 def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df = suunnitellut_df.copy()
-    def normalisoi_aika(aika_str):
-        if pd.isna(aika_str):
-            return ""
-        osat = aika_str.split(":")
-        if len(osat) >= 2:
-            tunnit = int(osat[0]) % 24
-            return f"{tunnit:02d}:{osat[1]}"
-        return aika_str[:5]
-
     df["lahtoaika_lyhyt"] = df["lahtoaika"].apply(normalisoi_aika)
     df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
  
+    # Rakennetaan reitti -> operaattori -hakutaulukko HFP-datasta
+    reitti_oper = {}
     hfp_avaimet = {}
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
-            hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
- 
-    df["ajettu"] = df["avain"].isin(hfp_avaimet)
-    df["oper"] = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
-    df["oper"] = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
-    # Poistetaan vuorot joille ei löydy operaattoria
-    df = df[df["oper"] != "tuntematon"]
-
-    # Operaattori HFP:stä per reitti (yleisin arvo per route_id)
-    reitti_oper = {}
-    for a, oper in ajetut_dict.items():
-        osat = a.split("|")
-        if len(osat) >= 3:
             route = osat[0]
+            lyhyt_avain = f"{osat[0]}|{osat[2]}"
+            hfp_avaimet[lyhyt_avain] = oper
             if route not in reitti_oper:
                 reitti_oper[route] = []
             reitti_oper[route].append(oper)
-    # Otetaan yleisin operaattori per reitti
+ 
+    # Yleisin operaattori per reitti
     reitti_oper_yleisin = {
         r: max(set(lst), key=lst.count)
         for r, lst in reitti_oper.items()
     }
-    df["oper"] = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
-    df["oper"] = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
+ 
+    df["ajettu"] = df["avain"].isin(hfp_avaimet)
+    df["oper"]   = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
+    df["oper"]   = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
+ 
+    # Poistetaan vuorot joille ei löydy operaattoria (esim. 967-linja)
+    df = df[df["oper"] != "tuntematon"].copy()
  
     n          = len(df)
     ajettu_n   = int(df["ajettu"].sum())
@@ -298,7 +294,8 @@ def laske_operaattorierittely(trips_df):
     ).round(2)
     erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
     return erittely
-
+ 
+ 
 def laske_linjaerittely(trips_df):
     grp = trips_df.groupby(["route_short_name", "oper"])["ajettu"]
     erittely = pd.DataFrame({
@@ -346,27 +343,27 @@ def tulosta_raportti(paiva, t):
         for _, rivi in erittely.iterrows():
             print(f"  {rivi['oper']:<30}  {rivi['luotettavuus']:>7.2f} %"
                   f"  {int(rivi['ajettu']):>7,} / {int(rivi['suunnitellut']):>7,}")
-
+    print()
  
  
 def tallenna_tulokset(paiva, t):
     os.makedirs(TULOSKANSIO, exist_ok=True)
     paiva_str = paiva.strftime("%Y-%m-%d")
-
+ 
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Raportti      → {csv_polku}")
-
+ 
     erittely = laske_operaattorierittely(t["trips_df"])
     oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
     erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Operaattorit  → {oper_polku}")
-
+ 
     linjaerittely = laske_linjaerittely(t["trips_df"])
     linja_polku = os.path.join(TULOSKANSIO, f"linjat_{paiva_str}.csv")
     linjaerittely.to_csv(linja_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Linjat        → {linja_polku}")
-
+ 
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
     uusi = pd.DataFrame([{
         "paiva"        : paiva_str,
@@ -489,3 +486,4 @@ def main():
  
 if __name__ == "__main__":
     main()
+ 
