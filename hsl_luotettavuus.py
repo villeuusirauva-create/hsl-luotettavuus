@@ -31,7 +31,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
  
 # Analysoitava päivä: None = eilen automaattisesti
 # Tietty päivä: "2026-05-20"
-ANALYSOITAVA_PAIVA = "2026-05-21"
+ANALYSOITAVA_PAIVA = "None"
  
 # Rinnakkaiset lataukset
 RINNAKKAISET_LATAUKSET = 3
