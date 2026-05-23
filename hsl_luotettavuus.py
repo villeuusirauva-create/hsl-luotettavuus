@@ -266,7 +266,7 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df["oper"]   = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
  
     # Poistetaan vuorot joille ei löydy operaattoria (esim. 967-linja)
-    df = df[df["oper"] != "tuntematon"].copy()
+    df = df[~df["oper"].str.startswith("Operaattori")].copy()
  
     n          = len(df)
     ajettu_n   = int(df["ajettu"].sum())
