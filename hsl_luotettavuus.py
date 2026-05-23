@@ -250,6 +250,8 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
             hfp_avaimet[f"{osat[0]}|{osat[2]}"] = oper
  
     df["ajettu"] = df["avain"].isin(hfp_avaimet)
+    # Poistetaan vuorot joille ei löydy operaattoria HFP-datasta
+    df = df[df["oper"] != "tuntematon"]
 
     # Operaattori HFP:stä per reitti (yleisin arvo per route_id)
     reitti_oper = {}
