@@ -184,10 +184,19 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
 # ── HFP-lataus ───────────────────────────────────────────────
  
 def generoi_urlit(paiva):
+    """Hakee koko päivän + seuraavan päivän yötunnit (00-04)
+    jotta yövuorot joiden oday on vaihtunut löytyvät."""
     urlit = []
+    # Koko analysoitava päivä
     for tunti in range(24):
         for kvarttaali in (1, 2, 3, 4):
             nimi = f"{paiva}T{tunti:02d}-{kvarttaali}_utc_VP.csv.zst"
+            urlit.append(f"{BLOB_BASE_URL}/{nimi}")
+    # Seuraavan päivän yötunnit 00-04 (liikennöintivuorokausi päättyy 04:30)
+    seuraava = paiva + datetime.timedelta(days=1)
+    for tunti in range(5):
+        for kvarttaali in (1, 2, 3, 4):
+            nimi = f"{seuraava}T{tunti:02d}-{kvarttaali}_utc_VP.csv.zst"
             urlit.append(f"{BLOB_BASE_URL}/{nimi}")
     return urlit
  
@@ -278,12 +287,6 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
 
-    # VÄLIAIKAINEN DEBUG – poista kun korjattu
-    n67 = df[df["route_short_name"] == "67N"]
-    if len(n67) > 0:
-        print(f"  DEBUG 67N: {len(n67)} vuoroa, ajettu: {n67['ajettu'].sum()}")
-        for _, r in n67.iterrows():
-            print(f"    avain={r['avain']} ajettu={r['ajettu']}")
   
     return {
         "suunnitellut" : n,
