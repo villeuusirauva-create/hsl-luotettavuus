@@ -29,15 +29,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 #  ASETUKSET
 # ============================================================
  
-# Analysoitava päivä: None = eilen automaattisesti
-# Tietty päivä: "2026-05-20"
-ANALYSOITAVA_PAIVA = None
- 
-# Rinnakkaiset lataukset
+ANALYSOITAVA_PAIVA     = None
 RINNAKKAISET_LATAUKSET = 3
+TULOSKANSIO            = "tulokset"
  
-# Tulosten tallennuskansio
-TULOSKANSIO = "tulokset"
+# Operaattorit joiden trendi piirretään kuvaajaan
+TRENDI_OPERAATTORIT = [
+    "Nobina Finland",
+    "Koiviston Auto",
+    "Pohjolan Liikenne",
+    "Tammelundin Liikenne",
+]
  
 # ============================================================
  
@@ -49,26 +51,34 @@ BUSSI_TYYPIT = {"3","700","701","702","703","704","705",
                 "713","714","715","716"}
  
 OPERAATTORIT = {
-    "6":   "Pohjolan Liikenne",
-    "12":  "Koiviston Auto",
-    "17":  "Tammelundin Liikenne",
-    "18":  "Pohjolan Liikenne",
-    "20":  "Bus Travel Åbergin Linja",
-    "21":  "Bus Travel Reissu Ruoti",
-    "22":  "Nobina Finland",
-    "30":  "Savonlinja",
-    "36":  "Nurmijärven Linja",
-    "40":  "HKL-Raitioliikenne",
-    "47":  "Taksikuljetus Oy",
-    "50":  "HKL-Metroliikenne",
-    "51":  "Korsisaari",
-    "54":  "V-S Bussipalvelut",
-    "58":  "Koillisen Liikennepalvelut",
-    "59":  "Tilausliikenne Nikkanen",
-    "60":  "Suomenlinnan Liikenne",
-    "64":  "Taksikuljetus Harri Vuolle",
-    "89":  "Metropolia",
-    "90":  "VR",
+    "6":  "Pohjolan Liikenne",
+    "12": "Koiviston Auto",
+    "17": "Tammelundin Liikenne",
+    "18": "Pohjolan Liikenne",
+    "20": "Bus Travel Åbergin Linja",
+    "21": "Bus Travel Reissu Ruoti",
+    "22": "Nobina Finland",
+    "30": "Savonlinja",
+    "36": "Nurmijärven Linja",
+    "40": "HKL-Raitioliikenne",
+    "47": "Taksikuljetus Oy",
+    "50": "HKL-Metroliikenne",
+    "51": "Korsisaari",
+    "54": "V-S Bussipalvelut",
+    "58": "Koillisen Liikennepalvelut",
+    "59": "Tilausliikenne Nikkanen",
+    "60": "Suomenlinnan Liikenne",
+    "64": "Taksikuljetus Harri Vuolle",
+    "89": "Metropolia",
+    "90": "VR",
+}
+ 
+# Värit trendikuvaajaan per operaattori
+OPERAATTORI_VARIT = {
+    "Nobina Finland":       "#00a650",
+    "Koiviston Auto":       "#ff6600",
+    "Pohjolan Liikenne":    "#7b2d8b",
+    "Tammelundin Liikenne": "#0071bc",
 }
  
  
@@ -89,7 +99,6 @@ def pura_zst(data_bytes):
         return reader.read()
  
 def normalisoi_aika(aika_str):
-    """Muuttaa GTFS:n ylipitkät ajat (esim. 25:20) normaaliksi (01:20)."""
     if pd.isna(aika_str):
         return ""
     osat = str(aika_str).split(":")
@@ -242,20 +251,16 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df["lahtoaika_lyhyt"] = df["lahtoaika"].apply(normalisoi_aika)
     df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
  
-    # Rakennetaan reitti -> operaattori -hakutaulukko HFP-datasta
     reitti_oper = {}
     hfp_avaimet = {}
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
             route = osat[0]
-            lyhyt_avain = f"{osat[0]}|{osat[2]}"
-            hfp_avaimet[lyhyt_avain] = oper
-            if route not in reitti_oper:
-                reitti_oper[route] = []
-            reitti_oper[route].append(oper)
+            lyhyt = f"{osat[0]}|{osat[2]}"
+            hfp_avaimet[lyhyt] = oper
+            reitti_oper.setdefault(route, []).append(oper)
  
-    # Yleisin operaattori per reitti
     reitti_oper_yleisin = {
         r: max(set(lst), key=lst.count)
         for r, lst in reitti_oper.items()
@@ -264,8 +269,6 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df["ajettu"] = df["avain"].isin(hfp_avaimet)
     df["oper"]   = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
     df["oper"]   = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
- 
-    # Poistetaan vuorot joille ei löydy operaattoria (esim. 967-linja)
     df = df[~df["oper"].str.startswith("Operaattori")].copy()
  
     n          = len(df)
@@ -292,12 +295,11 @@ def laske_operaattorierittely(trips_df):
     erittely["luotettavuus"] = (
         erittely["ajettu"] / erittely["suunnitellut"] * 100
     ).round(2)
-    erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
-    return erittely
+    return erittely.sort_values("luotettavuus").reset_index(drop=True)
  
  
 def laske_linjaerittely(trips_df):
-    grp = trips_df.groupby(["route_short_name", "oper"])["ajettu"]
+    grp = trips_df.groupby(["route_short_name","oper"])["ajettu"]
     erittely = pd.DataFrame({
         "linja":        grp.count().index.get_level_values("route_short_name"),
         "operaattori":  grp.count().index.get_level_values("oper"),
@@ -307,8 +309,7 @@ def laske_linjaerittely(trips_df):
     erittely["luotettavuus"] = (
         erittely["ajettu"] / erittely["suunnitellut"] * 100
     ).round(2)
-    erittely = erittely.sort_values("luotettavuus").reset_index(drop=True)
-    return erittely
+    return erittely.sort_values("luotettavuus").reset_index(drop=True)
  
  
 # ── Raportti & tallennus ─────────────────────────────────────
@@ -350,28 +351,47 @@ def tallenna_tulokset(paiva, t):
     os.makedirs(TULOSKANSIO, exist_ok=True)
     paiva_str = paiva.strftime("%Y-%m-%d")
  
+    # Yksityiskohtainen raportti
     csv_polku = os.path.join(TULOSKANSIO, f"raportti_{paiva_str}.csv")
     t["trips_df"].to_csv(csv_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Raportti      → {csv_polku}")
  
+    # Operaattorierittely
     erittely = laske_operaattorierittely(t["trips_df"])
     oper_polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
     erittely.to_csv(oper_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Operaattorit  → {oper_polku}")
  
+    # Linjaerittely
     linjaerittely = laske_linjaerittely(t["trips_df"])
     linja_polku = os.path.join(TULOSKANSIO, f"linjat_{paiva_str}.csv")
     linjaerittely.to_csv(linja_polku, index=False, encoding="utf-8-sig")
     print(f"💾 Linjat        → {linja_polku}")
  
+    # Kumulatiivinen trendi – kokonais + 4 suurinta operaattoria
     trendi_polku = os.path.join(TULOSKANSIO, "trendi.csv")
+ 
+    # Lasketaan operaattorikohtaiset prosentit
+    oper_pct = {}
+    for oper in TRENDI_OPERAATTORIT:
+        rivi = erittely[erittely["oper"] == oper]
+        if len(rivi) > 0:
+            oper_pct[oper] = float(rivi["luotettavuus"].iloc[0])
+        else:
+            oper_pct[oper] = None
+ 
     uusi = pd.DataFrame([{
-        "paiva"        : paiva_str,
-        "suunnitellut" : t["suunnitellut"],
-        "ajetut"       : t["ajetut"],
-        "ajamatta"     : t["ajamatta"],
-        "luotettavuus" : t["luotettavuus"],
+        "paiva"              : paiva_str,
+        "suunnitellut"       : t["suunnitellut"],
+        "ajetut"             : t["ajetut"],
+        "ajamatta"           : t["ajamatta"],
+        "luotettavuus"       : t["luotettavuus"],
+        "Nobina Finland"     : oper_pct.get("Nobina Finland"),
+        "Koiviston Auto"     : oper_pct.get("Koiviston Auto"),
+        "Pohjolan Liikenne"  : oper_pct.get("Pohjolan Liikenne"),
+        "Tammelundin Liikenne": oper_pct.get("Tammelundin Liikenne"),
     }])
+ 
     if os.path.exists(trendi_polku):
         trendi = pd.read_csv(trendi_polku)
         trendi = trendi[trendi["paiva"] != paiva_str]
@@ -384,18 +404,19 @@ def tallenna_tulokset(paiva, t):
     return trendi
  
  
-def piirra_kuvaaja(trendi_df):
+def piirra_kuvaajat(trendi_df):
     if len(trendi_df) < 2:
-        print("ℹ️  Trendikuvaaja piirretään kun dataa on kahdelta päivältä.")
+        print("ℹ️  Trendikuvaajat piirretään kun dataa on kahdelta päivältä.")
         return
  
+    paivamaarat = pd.to_datetime(trendi_df["paiva"])
+ 
+    # ── Kuvaaja 1: Kokonaisluotettavuus ─────────────────────
     fig, ax = plt.subplots(figsize=(13, 5))
     fig.patch.set_facecolor("#0f1923")
     ax.set_facecolor("#141f2e")
  
-    paivamaarat    = pd.to_datetime(trendi_df["paiva"])
     luotettavuudet = trendi_df["luotettavuus"]
- 
     for i in range(len(paivamaarat) - 1):
         v = luotettavuudet.iloc[i]
         c = ("#00c896" if v >= 99 else "#4fc3f7" if v >= 97
@@ -413,25 +434,22 @@ def piirra_kuvaaja(trendi_df):
         ax.text(paivamaarat.iloc[0], raja + 0.08, teksti,
                 color=vari, fontsize=7.5, alpha=0.7, va="bottom")
  
-    ax.scatter(paivamaarat, luotettavuudet,
-               color="white", s=35, zorder=5, alpha=0.85)
+    ax.scatter(paivamaarat, luotettavuudet, color="white", s=35, zorder=5, alpha=0.85)
  
-    viim_x = paivamaarat.iloc[-1]
     viim_y = luotettavuudet.iloc[-1]
-    ax.annotate(
-        f"{viim_y:.1f} %",
-        xy=(viim_x, viim_y), xytext=(12, 8), textcoords="offset points",
-        color="white", fontsize=11, fontweight="bold",
-        bbox=dict(boxstyle="round,pad=0.35",
-                  facecolor="#0f3460", edgecolor="#4fc3f7", alpha=0.9),
-        arrowprops=dict(arrowstyle="->", color="#4fc3f7", lw=1.2)
-    )
+    ax.annotate(f"{viim_y:.1f} %",
+                xy=(paivamaarat.iloc[-1], viim_y),
+                xytext=(12, 8), textcoords="offset points",
+                color="white", fontsize=11, fontweight="bold",
+                bbox=dict(boxstyle="round,pad=0.35",
+                          facecolor="#0f3460", edgecolor="#4fc3f7", alpha=0.9),
+                arrowprops=dict(arrowstyle="->", color="#4fc3f7", lw=1.2))
  
     ymin = max(85, luotettavuudet.min() - 1.5)
     ax.set_ylim(ymin, 100.6)
     ax.set_xlabel("Päivä", color="#8899bb", fontsize=10)
     ax.set_ylabel("Luotettavuus (%)", color="#8899bb", fontsize=10)
-    ax.set_title("HSL Bussiliikenne – Päivittäinen luotettavuus",
+    ax.set_title("HSL Bussiliikenne – Kokonaisluotettavuus",
                  color="white", fontsize=13, fontweight="bold", pad=14)
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m."))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
@@ -440,13 +458,71 @@ def piirra_kuvaaja(trendi_df):
     for sp in ax.spines.values():
         sp.set_edgecolor("#2a3a5a")
     ax.grid(axis="y", linestyle=":", alpha=0.25, color="#8899bb")
- 
     plt.tight_layout()
-    polku = os.path.join(TULOSKANSIO, "luotettavuus_trendi.png")
-    plt.savefig(polku, dpi=150, bbox_inches="tight",
-                facecolor=fig.get_facecolor())
+ 
+    polku1 = os.path.join(TULOSKANSIO, "luotettavuus_trendi.png")
+    plt.savefig(polku1, dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close()
-    print(f"📊 Kuvaaja       → {polku}")
+    print(f"📊 Kokonaistrendi → {polku1}")
+ 
+    # ── Kuvaaja 2: Operaattorikohtainen trendi ──────────────
+    fig, ax = plt.subplots(figsize=(13, 6))
+    fig.patch.set_facecolor("#0f1923")
+    ax.set_facecolor("#141f2e")
+ 
+    kaikki_arvot = []
+    for oper in TRENDI_OPERAATTORIT:
+        if oper not in trendi_df.columns:
+            continue
+        arvot = pd.to_numeric(trendi_df[oper], errors="coerce")
+        if arvot.isna().all():
+            continue
+        vari = OPERAATTORI_VARIT.get(oper, "#ffffff")
+        ax.plot(paivamaarat, arvot, color=vari, linewidth=2.2,
+                solid_capstyle="round", label=oper)
+        ax.scatter(paivamaarat[arvot.notna()], arvot[arvot.notna()],
+                   color=vari, s=30, zorder=5, alpha=0.85)
+        # Viimeisin arvo labelina
+        viim_idx = arvot.last_valid_index()
+        if viim_idx is not None:
+            viim_y = arvot[viim_idx]
+            viim_x = paivamaarat[viim_idx]
+            ax.annotate(f"{viim_y:.1f} %",
+                        xy=(viim_x, viim_y),
+                        xytext=(8, 0), textcoords="offset points",
+                        color=vari, fontsize=8, fontweight="bold", va="center")
+        kaikki_arvot.extend(arvot.dropna().tolist())
+ 
+    for raja, teksti, vari in [(99,"99 %","#ffffff"),
+                                (97,"97 %","#aaaacc"),
+                                (95,"95 %","#888899")]:
+        ax.axhline(raja, linestyle="--", linewidth=0.7, color=vari, alpha=0.3)
+        ax.text(paivamaarat.iloc[0], raja + 0.08, teksti,
+                color=vari, fontsize=7, alpha=0.5, va="bottom")
+ 
+    if kaikki_arvot:
+        ymin = max(85, min(kaikki_arvot) - 2)
+        ax.set_ylim(ymin, 100.6)
+ 
+    ax.set_xlabel("Päivä", color="#8899bb", fontsize=10)
+    ax.set_ylabel("Luotettavuus (%)", color="#8899bb", fontsize=10)
+    ax.set_title("HSL Bussiliikenne – Operaattorikohtainen luotettavuus",
+                 color="white", fontsize=13, fontweight="bold", pad=14)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m."))
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+    plt.xticks(rotation=40, color="#8899bb", fontsize=8)
+    plt.yticks(color="#8899bb")
+    for sp in ax.spines.values():
+        sp.set_edgecolor("#2a3a5a")
+    ax.grid(axis="y", linestyle=":", alpha=0.25, color="#8899bb")
+    legend = ax.legend(loc="lower left", facecolor="#1a2a3a",
+                       edgecolor="#2a3a5a", labelcolor="white", fontsize=9)
+    plt.tight_layout()
+ 
+    polku2 = os.path.join(TULOSKANSIO, "luotettavuus_operaattorit.png")
+    plt.savefig(polku2, dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.close()
+    print(f"📊 Operaattoritrendi → {polku2}")
  
  
 # ── Pääohjelma ───────────────────────────────────────────────
@@ -477,7 +553,7 @@ def main():
     tulosta_raportti(paiva, tulos)
  
     trendi = tallenna_tulokset(paiva, tulos)
-    piirra_kuvaaja(trendi)
+    piirra_kuvaajat(trendi)
  
     print()
     print(f"✅  Valmis! Tulokset: {os.path.abspath(TULOSKANSIO)}")
@@ -486,4 +562,3 @@ def main():
  
 if __name__ == "__main__":
     main()
- 
