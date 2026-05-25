@@ -704,10 +704,10 @@ def main():
     if os.path.exists(metro_src) and api_avain:
         with open(metro_src, "r", encoding="utf-8") as f:
             metro_html = f.read()
-        metro_html = metro_html.replace(
-            '"digitransit-subscription-key": ""',
-            f'"digitransit-subscription-key": "{api_avain}"'
-        )
+    metro_html = metro_html.replace(
+        'const DIGITRANSIT_KEY = "";',
+        f'const DIGITRANSIT_KEY = "{api_avain}";'
+    )
         with open(metro_src, "w", encoding="utf-8") as f:
             f.write(metro_html)
         print("✅ API-avain injektoitu metro.html:ään")
