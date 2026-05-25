@@ -722,6 +722,19 @@ def main():
         with open(raitio_src, "w", encoding="utf-8") as f:
             f.write(raitio_html)
         print("✅ API-avain injektoitu raitiovaunut.html:ään")
+
+    # Injektoidaan myös junat.html:ään
+    junat_src = os.path.join(DOCS_KANSIO, "junat.html")
+    if os.path.exists(junat_src) and api_avain:
+        with open(junat_src, "r", encoding="utf-8") as f:
+            junat_html = f.read()
+        junat_html = junat_html.replace(
+            'const DIGITRANSIT_KEY = "";',
+            f'const DIGITRANSIT_KEY = "{api_avain}";'
+        )
+        with open(junat_src, "w", encoding="utf-8") as f:
+            f.write(junat_html)
+        print("✅ API-avain injektoitu junat.html:ään")
     
     trendi = lataa_trendi()
     if trendi.empty:
