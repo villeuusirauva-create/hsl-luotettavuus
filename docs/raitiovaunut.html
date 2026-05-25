@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fi">
 <head>
@@ -299,8 +300,8 @@ const DIGITRANSIT_KEY = ""; // automaattisesti injektoitu
 const PIKARATIKKA = [
     {
         numero: "15",
-        nimi: "Raide-Jokeri",
-        reitti: "Itäkeskus – Keilaniemi",
+        nimi: "Linja 15",
+        reitti: "Pikaraitiotie",
         gtfsIdt: ["HSL:2015"],
         pikaratikka: true,
     }
@@ -308,16 +309,16 @@ const PIKARATIKKA = [
 
 const KAUPUNKIRATIKKA = [
     { numero: "1",  nimi: "Linja 1",  reitti: "Käpylä – Eira",               gtfsIdt: ["HSL:1001","HSL:1001H","HSL:1001T"] },
-    { numero: "2",  nimi: "Linja 2",  reitti: "Olympiastadion – Pikku Huopalahti", gtfsIdt: ["HSL:1002","HSL:1002H"] },
-    { numero: "3",  nimi: "Linja 3",  reitti: "Nordenskiöldinkatu – Kauppatori", gtfsIdt: ["HSL:1003","HSL:1003H"] },
+    { numero: "2",  nimi: "Linja 2",  reitti: "Olympiaterminaali – Messukeskus", gtfsIdt: ["HSL:1002","HSL:1002H"] },
+    { numero: "3",  nimi: "Linja 3",  reitti: "Olympiaterminaali – Kuusitie", gtfsIdt: ["HSL:1003","HSL:1003H"] },
     { numero: "4",  nimi: "Linja 4",  reitti: "Munkkiniemi – Katajanokka",    gtfsIdt: ["HSL:1004","HSL:1004H","HSL:1004T"] },
-    { numero: "5",  nimi: "Linja 5",  reitti: "Elielinaukio – Länsi-Pasila",  gtfsIdt: ["HSL:1005","HSL:1005H"] },
-    { numero: "6",  nimi: "Linja 6",  reitti: "Arabianranta – Hietalahti",    gtfsIdt: ["HSL:1006","HSL:1006H"] },
-    { numero: "7",  nimi: "Linja 7",  reitti: "Westendinasema – Kauppatori",  gtfsIdt: ["HSL:1007","HSL:1007H"] },
-    { numero: "8",  nimi: "Linja 8",  reitti: "Rautatientori – Pikku Huopalahti", gtfsIdt: ["HSL:1008","HSL:1008H","HSL:1008T"] },
-    { numero: "9",  nimi: "Linja 9",  reitti: "Iliaslandia – Kauppatori",     gtfsIdt: ["HSL:1009","HSL:1009H","HSL:1009N"] },
-    { numero: "10", nimi: "Linja 10", reitti: "Pikku Huopalahti – Kirurgi",   gtfsIdt: ["HSL:1010","HSL:1010H"] },
-    { numero: "13", nimi: "Linja 13", reitti: "Töölö – Katajanokka",          gtfsIdt: ["HSL:1013","HSL:1013H"] },
+    { numero: "5",  nimi: "Linja 5",  reitti: "Katajanokan terminaali – Päärautatieasema",  gtfsIdt: ["HSL:1005","HSL:1005H"] },
+    { numero: "6",  nimi: "Linja 6",  reitti: "Eiranranta – Arabia",    gtfsIdt: ["HSL:1006","HSL:1006H"] },
+    { numero: "7",  nimi: "Linja 7",  reitti: "Länsisatama – Meilahden sairaala",  gtfsIdt: ["HSL:1007","HSL:1007H"] },
+    { numero: "8",  nimi: "Linja 8",  reitti: "Jätkäsaari – Arabia", gtfsIdt: ["HSL:1008","HSL:1008H","HSL:1008T"] },
+    { numero: "9",  nimi: "Linja 9",  reitti: "Länsisatama – Ilmala",     gtfsIdt: ["HSL:1009","HSL:1009H","HSL:1009N"] },
+    { numero: "10", nimi: "Linja 10", reitti: "Ullanlinna – Pikku-Huopalahti",   gtfsIdt: ["HSL:1010","HSL:1010H"] },
+    { numero: "13", nimi: "Linja 13", reitti: "Nihti – Länsi-Pasila",          gtfsIdt: ["HSL:1013","HSL:1013H"] },
 ];
 
 function graphqlFetch(query) {
