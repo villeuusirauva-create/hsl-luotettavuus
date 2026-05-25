@@ -52,7 +52,12 @@ def laske_1kk_linjat(trendi_df):
     """Laskee viimeisen kuukauden heikoiten suoriutuneet linjat."""
     if trendi_df.empty:
         return pd.DataFrame()
-    kuukausi_sitten = trendi_df["paiva"].max() - pd.Timedelta(days=30)
+    # Käytetään vain dataa 24.5.2026 eteenpäin (korjattu skripti)
+    korjaus_pvm = pd.Timestamp("2026-05-24")
+    kuukausi_sitten = max(
+        trendi_df["paiva"].max() - pd.Timedelta(days=30),
+        korjaus_pvm
+    )
     viime_kk = trendi_df[trendi_df["paiva"] >= kuukausi_sitten]
 
     kaikki_linjat = []
@@ -81,7 +86,8 @@ def laske_halytyslinjat(trendi_df, raja):
     """Linjat jotka ovat alittaneet hälytysrajan viimeisen 5 päivän aikana."""
     if trendi_df.empty:
         return []
-    viimeiset = trendi_df.tail(5)
+    korjaus_pvm = pd.Timestamp("2026-05-24")
+    viimeiset = trendi_df[trendi_df["paiva"] >= korjaus_pvm].tail(5)
     halytyslinjat = []
     for _, rivi in viimeiset.iterrows():
         paiva_str = rivi["paiva"].strftime("%Y-%m-%d")
