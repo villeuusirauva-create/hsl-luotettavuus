@@ -508,6 +508,18 @@ def generoi_html(trendi_df):
 
 <main>
     <!-- Hero: eilinen tilanne -->
+    <!-- Navigaatio linjastatussivuille -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
+        <a href="metro.html" style="display:flex;align-items:center;gap:8px;background:#ff6319;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+            🚇 Metro
+        </a>
+        <a href="raitiovaunut.html" style="display:flex;align-items:center;gap:8px;background:#00985f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+            🚃 Raitiovaunut
+        </a>
+        <a href="junat.html" style="display:flex;align-items:center;gap:8px;background:#8c4799;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+            🚆 Junat
+        </a>
+    </div>
     <div class="hero">
         <div class="hero-left">
             <h2>Kokonaisluotettavuus eilen</h2>
