@@ -698,6 +698,20 @@ def main():
     print("🌐 Generoidaan dashboard...")
     os.makedirs(DOCS_KANSIO, exist_ok=True)
 
+    # Injektoidaan Digitransit API-avain metro.html:ään
+    api_avain = os.environ.get("DIGITRANSIT_API_KEY", "")
+    metro_src = os.path.join(DOCS_KANSIO, "metro.html")
+    if os.path.exists(metro_src) and api_avain:
+        with open(metro_src, "r", encoding="utf-8") as f:
+            metro_html = f.read()
+        metro_html = metro_html.replace(
+            '"digitransit-subscription-key": ""',
+            f'"digitransit-subscription-key": "{api_avain}"'
+        )
+        with open(metro_src, "w", encoding="utf-8") as f:
+            f.write(metro_html)
+        print("✅ API-avain injektoitu metro.html:ään")
+
     trendi = lataa_trendi()
     if trendi.empty:
         print("❌ Ei trenditietoja saatavilla")
