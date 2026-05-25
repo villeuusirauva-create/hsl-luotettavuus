@@ -257,7 +257,9 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
         osat = a.split("|")
         if len(osat) >= 3:
             route = osat[0]
-            lyhyt = f"{osat[0]}|{osat[2]}"
+            lahto = osat[2]
+            # Tallennetaan avain ilman oday-tarkistusta
+            lyhyt = f"{route}|{lahto}"
             hfp_avaimet[lyhyt] = oper
             reitti_oper.setdefault(route, []).append(oper)
  
@@ -275,7 +277,14 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     ajettu_n   = int(df["ajettu"].sum())
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
- 
+
+    # VÄLIAIKAINEN DEBUG – poista kun korjattu
+    n67 = df[df["route_short_name"] == "67N"]
+    if len(n67) > 0:
+        print(f"  DEBUG 67N: {len(n67)} vuoroa, ajettu: {n67['ajettu'].sum()}")
+        for _, r in n67.iterrows():
+            print(f"    avain={r['avain']} ajettu={r['ajettu']}")
+  
     return {
         "suunnitellut" : n,
         "ajetut"       : ajettu_n,
