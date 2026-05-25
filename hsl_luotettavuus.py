@@ -426,7 +426,12 @@ def piirra_kuvaajat(trendi_df):
  
     ax.fill_between(paivamaarat, luotettavuudet,
                     luotettavuudet.min() - 1, alpha=0.12, color="#4fc3f7")
- 
+
+
+      # Värialueet
+    ax.axhspan(99, 100.6, alpha=0.08, color="#00c896", zorder=0)
+    ax.axhspan(max(85, luotettavuudet.min()-1.5), 97, alpha=0.08, color="#ef5350", zorder=0)
+  
     for raja, teksti, vari in [(99,"99 %","#00c896"),
                                 (97,"97 %","#4fc3f7"),
                                 (95,"95 %","#ffd54f")]:
@@ -493,16 +498,19 @@ def piirra_kuvaajat(trendi_df):
                         color=vari, fontsize=8, fontweight="bold", va="center")
         kaikki_arvot.extend(arvot.dropna().tolist())
  
-    for raja, teksti, vari in [(99,"99 %","#ffffff"),
-                                (97,"97 %","#aaaacc"),
-                                (95,"95 %","#888899")]:
-        ax.axhline(raja, linestyle="--", linewidth=0.7, color=vari, alpha=0.3)
-        ax.text(paivamaarat.iloc[0], raja + 0.08, teksti,
-                color=vari, fontsize=7, alpha=0.5, va="bottom")
- 
     if kaikki_arvot:
         ymin = max(85, min(kaikki_arvot) - 2)
         ax.set_ylim(ymin, 100.6)
+
+    # Värialueet: vihreä = hyvä (>=99), punainen = heikko (<97)
+    ax.axhspan(99, 100.6, alpha=0.08, color="#00c896", zorder=0)
+    ax.axhspan(ax.get_ylim()[0], 97, alpha=0.08, color="#ef5350", zorder=0)
+
+    for raja, teksti, vari in [(99,"99 %","#00c896"),
+                                (97,"97 %","#ef5350")]:
+        ax.axhline(raja, linestyle="--", linewidth=0.8, color=vari, alpha=0.4)
+        ax.text(paivamaarat.iloc[0], raja + 0.08, teksti,
+                color=vari, fontsize=7.5, alpha=0.7, va="bottom")
  
     ax.set_xlabel("Päivä", color="#8899bb", fontsize=10)
     ax.set_ylabel("Luotettavuus (%)", color="#8899bb", fontsize=10)
