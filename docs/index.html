@@ -236,7 +236,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 25.05.2026 13:07</div>
+        <div class="paivitys">Päivitetty 25.05.2026 13:26</div>
     </div>
 </header>
 
@@ -244,7 +244,7 @@
     <!-- Hero: eilinen tilanne -->
     <div class="hero">
         <div class="hero-left">
-            <h2>Kokonaisluotettavuus</h2>
+            <h2>Kokonaisluotettavuus eilen</h2>
             <div class="hero-pct">99.3<span style="font-size:32px">%</span></div>
             <div class="hero-paiva">📅 24.05.2026</div>
         </div>
@@ -438,7 +438,7 @@ new Chart(ctx1, {
         scales: {
             y: {
                 min: Math.max(85, Math.min(...trendiData.luotettavuus) - 2),
-                max: 100.5,
+                max: 100,
                 ticks: {
                     callback: v => v + ' %',
                     color: '#6b8caa',
@@ -500,7 +500,7 @@ new Chart(ctx2, {
         scales: {
             y: {
                 min: 90,
-                max: 100.5,
+                max: 100,
                 ticks: {
                     callback: v => v + ' %',
                     color: '#6b8caa',
