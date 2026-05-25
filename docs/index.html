@@ -1,1 +1,643 @@
-<html><body><p>Dashboard latautuu pian...</p></body></html>
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Bussiliikenne – Luotettavuusseuranta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:    #0071bc;
+            --hsl-light:   #e8f4fd;
+            --hsl-dark:    #1e3a5f;
+            --hsl-mid:     #2d6a9f;
+            --green:       #16a34a;
+            --yellow:      #d97706;
+            --red:         #dc2626;
+            --bg:          #f0f6fc;
+            --card:        #ffffff;
+            --border:      #c8dff0;
+            --text:        #1e3a5f;
+            --muted:       #6b8caa;
+            --radius:      12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Figtree', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            background: var(--hsl-dark);
+            color: white;
+            padding: 0;
+            border-bottom: 4px solid var(--hsl-blue);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .hsl-logo {
+            background: var(--hsl-blue);
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            letter-spacing: 1px;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .header-sub {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+        .paivitys {
+            font-size: 12px;
+            opacity: 0.6;
+            font-family: 'DM Mono', monospace;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        .hero {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 32px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.08);
+        }
+        .hero-left h2 {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .hero-pct {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1;
+            color: #16a34a;
+            font-family: 'DM Mono', monospace;
+        }
+        .hero-paiva {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        .oper-grid {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .oper-kortti {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 16px 20px;
+            min-width: 160px;
+            border: 1px solid var(--border);
+        }
+        .oper-nimi {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .oper-pct {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'DM Mono', monospace;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            main { padding: 16px; }
+            .hero-pct { font-size: 56px; }
+        }
+        .kortti {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+        }
+        .kortti-otsikko {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .kortti-otsikko span {
+            background: var(--hsl-light);
+            color: var(--hsl-blue);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+        }
+        .full-width { grid-column: 1 / -1; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--bg);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--bg); }
+        .linja-nimi {
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--hsl-dark);
+        }
+        .muted { color: var(--muted); }
+        .halytys-badge {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .metodiikka {
+            background: var(--hsl-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .metodiikka strong { color: var(--text); }
+        canvas { max-height: 280px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <div class="hsl-logo">HSL</div>
+            <div>
+                <h1>Bussiliikenne – Luotettavuusseuranta</h1>
+                <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
+            </div>
+        </div>
+        <div class="paivitys">Päivitetty 25.05.2026 12:13</div>
+    </div>
+</header>
+
+<main>
+    <!-- Hero: eilinen tilanne -->
+    <div class="hero">
+        <div class="hero-left">
+            <h2>Kokonaisluotettavuus</h2>
+            <div class="hero-pct">99.3<span style="font-size:32px">%</span></div>
+            <div class="hero-paiva">📅 24.05.2026</div>
+        </div>
+        <div class="oper-grid">
+            
+                <div class="oper-kortti">
+                    <div class="oper-nimi" style="color:#00a650">Nobina Finland</div>
+                    <div class="oper-pct" style="color:#16a34a">99.4 %</div>
+                </div>
+                <div class="oper-kortti">
+                    <div class="oper-nimi" style="color:#ff6600">Koiviston Auto</div>
+                    <div class="oper-pct" style="color:#16a34a">99.6 %</div>
+                </div>
+                <div class="oper-kortti">
+                    <div class="oper-nimi" style="color:#7b2d8b">Pohjolan Liikenne</div>
+                    <div class="oper-pct" style="color:#1e3a5f">98.8 %</div>
+                </div>
+                <div class="oper-kortti">
+                    <div class="oper-nimi" style="color:#0071bc">Tammelundin Liikenne</div>
+                    <div class="oper-pct" style="color:#16a34a">100.0 %</div>
+                </div>
+        </div>
+    </div>
+
+    <!-- Kuvaajat -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span></div>
+            <canvas id="kokonaisChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Operaattorikohtainen trendi <span>3 kk</span></div>
+            <canvas id="operChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Kuukausihistoria -->
+    <div class="kortti" style="margin-bottom:24px;overflow-x:auto">
+        <div class="kortti-otsikko">Operaattorikohtainen kuukausihistoria <span>painotettu ka</span></div>
+        <table>
+            <thead><tr><th>Operaattori</th><th>2026-05</th></tr></thead>
+            <tbody><tr><td style="color:#00a650;font-weight:600">Nobina Finland</td><td style="color:#1e3a5f;font-weight:500">98.4 %</td></tr><tr><td style="color:#ff6600;font-weight:600">Koiviston Auto</td><td style="color:#1e3a5f;font-weight:500">98.7 %</td></tr><tr><td style="color:#7b2d8b;font-weight:600">Pohjolan Liikenne</td><td style="color:#1e3a5f;font-weight:500">98.1 %</td></tr><tr><td style="color:#0071bc;font-weight:600">Tammelundin Liikenne</td><td style="color:#1e3a5f;font-weight:500">99.0 %</td></tr></tbody>
+        </table>
+    </div>
+
+    <div class="grid-2">
+        <!-- 10 heikointa linjaa -->
+        <div class="kortti">
+            <div class="kortti-otsikko">10 heikoiten suoriutunutta linjaa <span>1 kk liukuva</span></div>
+            <table>
+                <thead><tr><th>Linja</th><th>Operaattori</th><th>Luotettavuus</th><th>Ajettu/Suunn.</th></tr></thead>
+                <tbody>
+            <tr>
+                <td class="linja-nimi">967</td>
+                <td>Operaattori tuntematon</td>
+                <td style="color:#dc2626;font-weight:600">0.0 %</td>
+                <td class="muted">0 / 12</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">66K</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">54.2 %</td>
+                <td class="muted">13 / 24</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">67N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">57.1 %</td>
+                <td class="muted">16 / 28</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">79N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">67.9 %</td>
+                <td class="muted">38 / 56</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">624N</td>
+                <td>Koiviston Auto</td>
+                <td style="color:#dc2626;font-weight:600">71.4 %</td>
+                <td class="muted">20 / 28</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">87N</td>
+                <td>Nobina Finland</td>
+                <td style="color:#dc2626;font-weight:600">71.4 %</td>
+                <td class="muted">40 / 56</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">173N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">72.2 %</td>
+                <td class="muted">13 / 18</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">721N</td>
+                <td>Koiviston Auto</td>
+                <td style="color:#dc2626;font-weight:600">73.5 %</td>
+                <td class="muted">25 / 34</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">61N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">75.0 %</td>
+                <td class="muted">42 / 56</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">21N</td>
+                <td>Tammelundin Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">75.0 %</td>
+                <td class="muted">42 / 56</td>
+            </tr></tbody>
+            </table>
+        </div>
+
+        <!-- Hälytykset -->
+        <div class="kortti">
+            <div class="kortti-otsikko">
+                Hälytykset <span>viim. 5 pv, raja 85 %</span>
+            </div>
+            <table>
+                <thead><tr><th>Päivä</th><th>Linja</th><th>Operaattori</th><th>Luotettavuus</th><th>Ajettu/Suunn.</th></tr></thead>
+                <tbody>
+            <tr>
+                <td class="muted">2026-05-24</td>
+                <td class="linja-nimi">162</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">74.0 %</td>
+                <td class="muted">54 / 73</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-24</td>
+                <td class="linja-nimi">165N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">77.8 %</td>
+                <td class="muted">7 / 9</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-24</td>
+                <td class="linja-nimi">643K</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">77.8 %</td>
+                <td class="muted">14 / 18</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">163K</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">72.1 %</td>
+                <td class="muted">44 / 61</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">721N</td>
+                <td>Koiviston Auto</td>
+                <td style="color:#dc2626;font-weight:600">72.7 %</td>
+                <td class="muted">8 / 11</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">67N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">75.0 %</td>
+                <td class="muted">9 / 12</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">642</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">75.0 %</td>
+                <td class="muted">24 / 32</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">79N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">76.2 %</td>
+                <td class="muted">16 / 21</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">665</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">76.7 %</td>
+                <td class="muted">23 / 30</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">74N</td>
+                <td>Tammelundin Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">79.3 %</td>
+                <td class="muted">23 / 29</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">736B</td>
+                <td>Koiviston Auto</td>
+                <td style="color:#dc2626;font-weight:600">80.0 %</td>
+                <td class="muted">4 / 5</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-23</td>
+                <td class="linja-nimi">173N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">83.3 %</td>
+                <td class="muted">5 / 6</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">67N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">46.1 %</td>
+                <td class="muted">6 / 13</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">66K</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">58.3 %</td>
+                <td class="muted">7 / 12</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">624N</td>
+                <td>Koiviston Auto</td>
+                <td style="color:#dc2626;font-weight:600">60.0 %</td>
+                <td class="muted">6 / 10</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">79N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">66.7 %</td>
+                <td class="muted">14 / 21</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">87N</td>
+                <td>Nobina Finland</td>
+                <td style="color:#dc2626;font-weight:600">68.4 %</td>
+                <td class="muted">13 / 19</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">61N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">68.4 %</td>
+                <td class="muted">13 / 19</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">118N</td>
+                <td>Nobina Finland</td>
+                <td style="color:#dc2626;font-weight:600">68.4 %</td>
+                <td class="muted">13 / 19</td>
+            </tr>
+            <tr>
+                <td class="muted">2026-05-22</td>
+                <td class="linja-nimi">69N</td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#dc2626;font-weight:600">70.0 %</td>
+                <td class="muted">14 / 20</td>
+            </tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Metodiikka -->
+    <div class="metodiikka">
+        <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
+        Vuoro katsotaan ajetuksi jos ajoneuvolta on saapunut HFP-signaali kyseisen vuoron aikana.
+        Jos HFP-data puuttuu (esim. laiterikko), vuoro merkitään ajamattomaksi vaikka se olisi ajettu –
+        tämä voi aiheuttaa pientä systemaattista aliarviointia todelliseen luotettavuuteen nähden.
+        Pienillä linjoilla (alle 10 vuoroa/kk) yksittäiset poikkeamat vaikuttavat prosenttiin merkittävästi.
+    </div>
+</main>
+
+<script>
+const trendiData = {"paivamaarat": ["2026-05-21", "2026-05-22", "2026-05-23", "2026-05-24"], "luotettavuus": [97.33, 98.55, 98.52, 99.35]};
+const operData = {"paivamaarat": ["2026-05-21", "2026-05-22", "2026-05-23", "2026-05-24"], "operaattorit": {"Nobina Finland": [97.38, 98.64, 98.2, 99.41], "Koiviston Auto": [97.27, 98.72, 99.18, 99.61], "Pohjolan Liikenne": [97.1, 98.12, 98.23, 98.84], "Tammelundin Liikenne": [98.1, 99.07, 98.68, 100.0]}, "varit": {"Nobina Finland": "#00a650", "Koiviston Auto": "#ff6600", "Pohjolan Liikenne": "#7b2d8b", "Tammelundin Liikenne": "#0071bc"}};
+
+// Kokonaistrendi
+const ctx1 = document.getElementById('kokonaisChart').getContext('2d');
+new Chart(ctx1, {
+    type: 'line',
+    data: {
+        labels: trendiData.paivamaarat,
+        datasets: [{
+            label: 'Luotettavuus %',
+            data: trendiData.luotettavuus,
+            borderColor: '#0071bc',
+            backgroundColor: 'rgba(0,113,188,0.08)',
+            borderWidth: 2,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            fill: true,
+            tension: 0.3,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.parsed.y.toFixed(2) + ' %'
+                }
+            }
+        },
+        scales: {
+            y: {
+                min: Math.max(85, Math.min(...trendiData.luotettavuus) - 2),
+                max: 100.5,
+                ticks: {
+                    callback: v => v + ' %',
+                    color: '#6b8caa',
+                    font: { size: 11 }
+                },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: {
+                ticks: {
+                    color: '#6b8caa',
+                    font: { size: 10 },
+                    maxTicksLimit: 8
+                },
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+// Operaattoritrendi
+const ctx2 = document.getElementById('operChart').getContext('2d');
+const datasets = Object.entries(operData.operaattorit).map(([oper, arvot]) => ({
+    label: oper,
+    data: arvot,
+    borderColor: operData.varit[oper] || '#999',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    pointRadius: 2,
+    pointHoverRadius: 5,
+    tension: 0.3,
+    spanGaps: true,
+}));
+
+new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: operData.paivamaarat,
+        datasets: datasets
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    color: '#1e3a5f',
+                    font: { size: 11 },
+                    boxWidth: 12,
+                    padding: 12
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y ? ctx.parsed.y.toFixed(2) + ' %' : '–')
+                }
+            }
+        },
+        scales: {
+            y: {
+                min: 90,
+                max: 100.5,
+                ticks: {
+                    callback: v => v + ' %',
+                    color: '#6b8caa',
+                    font: { size: 11 }
+                },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: {
+                ticks: {
+                    color: '#6b8caa',
+                    font: { size: 10 },
+                    maxTicksLimit: 8
+                },
+                grid: { display: false }
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>
