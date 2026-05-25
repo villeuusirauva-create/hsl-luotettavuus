@@ -249,8 +249,8 @@
         <div class="linja-header">
             <div class="linja-tunnus">M1</div>
             <div class="linja-info">
-                <div class="linja-nimi">Mellunmäki – Matinkylä</div>
-                <div class="linja-reitti">Itäinen metrolinja</div>
+                <div class="linja-nimi">Kivenlahti – Vuosaari</div>
+                <div class="linja-reitti">Läpimetrolinja</div>
                 <div class="myohastyminen" id="myohastyminen-M1">⏱ Ladataan aikataulutietoja...</div>
             </div>
             <div class="status-badge lataa" id="status-M1">
@@ -266,8 +266,8 @@
         <div class="linja-header">
             <div class="linja-tunnus">M2</div>
             <div class="linja-info">
-                <div class="linja-nimi">Vuosaari – Matinkylä</div>
-                <div class="linja-reitti">Läntinen metrolinja</div>
+                <div class="linja-nimi">Tapiola – Mellunmäki</div>
+                <div class="linja-reitti">Poikittaislinja</div>
                 <div class="myohastyminen" id="myohastyminen-M2">⏱ Ladataan aikataulutietoja...</div>
             </div>
             <div class="status-badge lataa" id="status-M2">
@@ -291,8 +291,8 @@ const GRAPHQL_URL   = "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1";
 const DIGITRANSIT_KEY = "39ad7b9a657b4f25a52465f583148f73"; // automaattisesti injektoitu
 
 const METRO_LINJAT = {
-    "M1": { gtfsId: "HSL:31M1", nimi: "Mellunmäki – Matinkylä" },
-    "M2": { gtfsId: "HSL:31M2", nimi: "Vuosaari – Matinkylä"   },
+    "M1": { gtfsId: "HSL:31M1", nimi: "Kivenlahti – Vuosaari" },
+    "M2": { gtfsId: "HSL:31M2", nimi: "Tapiola – Mellunmäki"  },
 };
 
 function graphqlFetch(query) {
