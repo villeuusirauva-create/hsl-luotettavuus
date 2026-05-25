@@ -496,7 +496,7 @@ def generoi_html(trendi_df):
 <header>
     <div class="header-inner">
         <div class="header-title">
-            <div class="hsl-logo">HSL</div>
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
             <div>
                 <h1>Bussiliikenne – Luotettavuusseuranta</h1>
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
