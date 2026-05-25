@@ -176,7 +176,7 @@
             font-family: 'DM Mono', monospace;
         }
         .linja-tunnus.pikaratikka {
-            background: var(--pikaratikka-bg);
+            background: transparent;
             width: 64px;
             height: 64px;
             font-size: 22px;
@@ -345,7 +345,7 @@ function luoKorttiHTML(linja) {
     return `
     <div class="linja-kortti" id="kortti-${linja.numero}">
         <div class="linja-header">
-            <div class="linja-tunnus${pikaClass}">${linja.pikaratikka ? '<img src="images/Pikaratikka.svg" alt="Pikaratikka" style="width:36px;height:36px;">' : linja.numero}</div>
+            <div class="linja-tunnus${pikaClass}">${linja.pikaratikka ? '<img src="images/Pikaratikka.svg" alt="Pikaratikka" style="width:56px;height:56px;">' : linja.numero}</div>
             <div class="linja-info">
                 <div class="linja-nimi">${linja.nimi}</div>
                 <div class="linja-reitti">${linja.reitti}</div>
