@@ -710,7 +710,19 @@ def main():
         with open(metro_src, "w", encoding="utf-8") as f:
             f.write(metro_html)
         print("✅ API-avain injektoitu metro.html:ään")
-
+    # Injektoidaan myös raitiovaunut.html:ään
+    raitio_src = os.path.join(DOCS_KANSIO, "raitiovaunut.html")
+    if os.path.exists(raitio_src) and api_avain:
+        with open(raitio_src, "r", encoding="utf-8") as f:
+            raitio_html = f.read()
+        raitio_html = raitio_html.replace(
+            'const DIGITRANSIT_KEY = "";',
+            f'const DIGITRANSIT_KEY = "{api_avain}";'
+        )
+        with open(raitio_src, "w", encoding="utf-8") as f:
+            f.write(raitio_html)
+        print("✅ API-avain injektoitu raitiovaunut.html:ään")
+    
     trendi = lataa_trendi()
     if trendi.empty:
         print("❌ Ei trenditietoja saatavilla")
