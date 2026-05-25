@@ -383,6 +383,7 @@ async function paivitaMyohastyminen(linja, gtfsId) {
     try {
         const data = await graphqlFetch(query);
         const patterns = data?.data?.route?.patterns || [];
+        console.log(`${linja} patterns:`, patterns.length, JSON.stringify(data).slice(0, 500));
 
         const viiveet = [];
         patterns.forEach(p => {
