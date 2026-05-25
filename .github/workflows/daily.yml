@@ -34,6 +34,8 @@ jobs:
         run: python hsl_luotettavuus.py
 
       - name: Generoi dashboard
+        env:
+          DIGITRANSIT_API_KEY: ${{ secrets.DIGITRANSIT_API_KEY }}
         run: python generate_dashboard.py
 
       - name: Generoi dashboard
