@@ -161,7 +161,9 @@ def laske_kuukausihistoria(trendi_df):
 
     # Järjestetään operaattorit: suurimmat ensin, sitten aakkosjärjestyksessä
     jarjestetty = TRENDI_OPERAATTORIT + sorted(
-        [o for o in kaikki_operaattorit if o not in TRENDI_OPERAATTORIT]
+        [o for o in kaikki_operaattorit
+         if o not in TRENDI_OPERAATTORIT
+         and not o.startswith("Operaattori")]
     )
     return historia, jarjestetty
 
