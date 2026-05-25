@@ -111,21 +111,59 @@ def laske_halytyslinjat(trendi_df, raja):
 
 
 def laske_kuukausihistoria(trendi_df):
-    """Laskee operaattorikohtaisen kuukausihistorian."""
+    """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
     if trendi_df.empty:
-        return {}
-    df = trendi_df.copy()
-    df["kuukausi"] = df["paiva"].dt.to_period("M")
+        return {}, []
+
+    # Kerätään kaikki operaattorit operaattorit_-tiedostoista
+    kaikki_operaattorit = set(TRENDI_OPERAATTORIT)
+    kuukausi_data = {}  # {operaattori: {kuukausi: {ajettu, suunnitellut}}}
+
+    for _, rivi in trendi_df.iterrows():
+        paiva_str = rivi["paiva"].strftime("%Y-%m-%d")
+        kuukausi = rivi["paiva"].strftime("%Y-%m")
+        polku = os.path.join(TULOSKANSIO, f"operaattorit_{paiva_str}.csv")
+
+        if os.path.exists(polku):
+            oper_df = pd.read_csv(polku)
+            for _, o in oper_df.iterrows():
+                oper = o["oper"]
+                kaikki_operaattorit.add(oper)
+                if oper not in kuukausi_data:
+                    kuukausi_data[oper] = {}
+                if kuukausi not in kuukausi_data[oper]:
+                    kuukausi_data[oper][kuukausi] = {"ajettu": 0, "suunnitellut": 0}
+                kuukausi_data[oper][kuukausi]["ajettu"]       += int(o["ajettu"])
+                kuukausi_data[oper][kuukausi]["suunnitellut"] += int(o["suunnitellut"])
+        else:
+            # Vanha data – käytetään trendi.csv:n neljää suurinta
+            for oper in TRENDI_OPERAATTORIT:
+                if oper in rivi and pd.notna(rivi[oper]):
+                    if oper not in kuukausi_data:
+                        kuukausi_data[oper] = {}
+                    if kuukausi not in kuukausi_data[oper]:
+                        kuukausi_data[oper][kuukausi] = {"ajettu": 0, "suunnitellut": 0}
+                    # Arvioidaan ajetut trendi.csv:n prosentista
+                    pct = rivi[oper] / 100
+                    suunn = int(rivi["suunnitellut"] / len(TRENDI_OPERAATTORIT))
+                    kuukausi_data[oper][kuukausi]["ajettu"]       += int(suunn * pct)
+                    kuukausi_data[oper][kuukausi]["suunnitellut"] += suunn
+
+    # Lasketaan prosentit
     historia = {}
-    for oper in TRENDI_OPERAATTORIT:
-        if oper not in df.columns:
-            continue
-        kk_data = df.groupby("kuukausi")[oper].mean().round(2)
-        historia[oper] = {
-            str(kk): val for kk, val in kk_data.items()
-            if not pd.isna(val)
-        }
-    return historia
+    for oper, kk_dict in kuukausi_data.items():
+        historia[oper] = {}
+        for kk, luvut in kk_dict.items():
+            if luvut["suunnitellut"] > 0:
+                historia[oper][kk] = round(
+                    luvut["ajettu"] / luvut["suunnitellut"] * 100, 2
+                )
+
+    # Järjestetään operaattorit: suurimmat ensin, sitten aakkosjärjestyksessä
+    jarjestetty = TRENDI_OPERAATTORIT + sorted(
+        [o for o in kaikki_operaattorit if o not in TRENDI_OPERAATTORIT]
+    )
+    return historia, jarjestetty
 
 
 def generoi_html(trendi_df):
@@ -187,14 +225,14 @@ def generoi_html(trendi_df):
         halytykset_html = f'<tr><td colspan="5" class="muted">Ei hälytyksiä viimeisen 5 päivän aikana (raja: {HALYTYSTARAJA} %)</td></tr>'
 
     # Kuukausihistoria
-    kuukausihistoria = laske_kuukausihistoria(trendi_df)
+    kuukausihistoria, kaikki_operaattorit = laske_kuukausihistoria(trendi_df)
     kuukaudet = sorted(set(
         kk for oper_data in kuukausihistoria.values()
         for kk in oper_data.keys()
     ))
     kk_header = "".join(f"<th>{kk}</th>" for kk in kuukaudet)
     kk_rivit = ""
-    for oper in TRENDI_OPERAATTORIT:
+    for oper in kaikki_operaattorit:
         vari = OPERAATTORI_VARIT.get(oper, "#666")
         kk_rivit += f'<tr><td style="color:{vari};font-weight:600">{oper}</td>'
         for kk in kuukaudet:
