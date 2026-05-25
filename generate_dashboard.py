@@ -509,7 +509,7 @@ def generoi_html(trendi_df):
     <!-- Hero: eilinen tilanne -->
     <div class="hero">
         <div class="hero-left">
-            <h2>Kokonaisluotettavuus</h2>
+            <h2>Kokonaisluotettavuus eilen</h2>
             <div class="hero-pct">{viimeisin_pct:.1f}<span style="font-size:32px">%</span></div>
             <div class="hero-paiva">📅 {viimeisin_paiva}</div>
         </div>
@@ -606,7 +606,7 @@ new Chart(ctx1, {{
         scales: {{
             y: {{
                 min: Math.max(85, Math.min(...trendiData.luotettavuus) - 2),
-                max: 100.5,
+                max: 100,
                 ticks: {{
                     callback: v => v + ' %',
                     color: '#6b8caa',
@@ -668,7 +668,7 @@ new Chart(ctx2, {{
         scales: {{
             y: {{
                 min: 90,
-                max: 100.5,
+                max: 100,
                 ticks: {{
                     callback: v => v + ' %',
                     color: '#6b8caa',
