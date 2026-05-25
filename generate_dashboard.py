@@ -260,7 +260,8 @@ def generoi_html(trendi_df):
                     <div class="oper-pct" style="color:{tekstivari}">{arvo:.1f} %</div>
                 </div>"""
 
-    paivitys_aika = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+    paivitys_aika = (datetime.datetime.utcnow() + 
+                     datetime.timedelta(hours=3)).strftime("%d.%m.%Y %H:%M")
     pct_vari = "#dc2626" if viimeisin_pct < 97 else "#16a34a" if viimeisin_pct >= 99 else "#d97706"
 
     html = f"""<!DOCTYPE html>
