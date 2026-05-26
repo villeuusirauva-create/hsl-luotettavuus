@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Kalusto – Analyysi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --radius:    12px;
+            --c1: #0071bc;
+            --c2: #00985f;
+            --c3: #8c4799;
+            --c4: #ff6319;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .grid-1 { margin-bottom: 24px; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+        }
+        .kortti-otsikko {
+            font-size: 13px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .kortti-otsikko span {
+            background: var(--hsl-light); color: var(--hsl-blue);
+            border-radius: 6px; padding: 2px 8px; font-size: 11px;
+        }
+        canvas { max-height: 300px; }
+        /* Hero-kortit */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 20px 24px;
+            box-shadow: 0 2px 6px rgba(0,113,188,0.06);
+        }
+        .hero-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+        .hero-arvo { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-arvo.sininen { color: var(--hsl-blue); }
+        .hero-arvo.vihrea  { color: #16a34a; }
+        .hero-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+        .info-teksti {
+            background: var(--hsl-light); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px 20px;
+            font-size: 13px; color: var(--muted); margin-top: 24px; line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Kalusto – Analyysi</h1>
+                <div class="header-sub">4 suurinta operaattoria · Kalustorekisteri 26.5.2026</div>
+            </div>
+        </div>
+        <div class="paivitys" id="paivitys">26.5.2026</div>
+    </div>
+</header>
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin luotettavuusseurantaan</a>
+
+    <!-- Hero-luvut -->
+    <div class="hero-grid">
+        <div class="hero-kortti">
+            <div class="hero-label">Ajoneuvoja yhteensä</div>
+            <div class="hero-arvo sininen">1 345</div>
+            <div class="hero-sub">4 suurinta operaattoria</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Sähköbusseja</div>
+            <div class="hero-arvo vihrea">649</div>
+            <div class="hero-sub">48 % kalustosta</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Dieselbusseja</div>
+            <div class="hero-arvo">696</div>
+            <div class="hero-sub">52 % kalustosta</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Keski-ikä</div>
+            <div class="hero-arvo">6.4 v</div>
+            <div class="hero-sub">Koko kalusto</div>
+        </div>
+    </div>
+
+    <!-- Polttoaine per operaattori + yhteensä -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Polttoainejakauma <span>per operaattori</span></div>
+            <canvas id="polttoaineChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Polttoainejakauma <span>yhteensä</span></div>
+            <canvas id="polttoaineYhtChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Sähköbussien merkit -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Sähköbussien merkit <span>per operaattori</span></div>
+            <canvas id="sahkoMerkitChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Sähköbussien merkit <span>yhteensä</span></div>
+            <canvas id="sahkoMerkitYhtChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Ikärakenne -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Kaluston ikärakenne <span>per operaattori</span></div>
+            <canvas id="ikaChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Kaluston ikärakenne <span>yhteensä</span></div>
+            <canvas id="ikaYhtChart"></canvas>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Tietoa datasta:</strong> Kalustodata perustuu HSL:n kalustorekisteriin (26.5.2026).
+        Mukana ovat neljä suurinta operaattoria: Koiviston Auto (sis. HelB), Nobina Finland,
+        Pohjolan Liikenne ja Tammelundin Liikenne. Ikä lasketaan rekisteröintipäivästä.
+    </div>
+</main>
+<script>
+const OPERAATTORIT = ["Koiviston Auto","Nobina Finland","Pohjolan Liikenne","Tammelundin Liikenne"];
+const OP_VARIT = ["#0071bc","#00985f","#8c4799","#ff6319"];
+
+// ── DATA ─────────────────────────────────────────────────────
+const polttoaineData = {
+    "Koiviston Auto":    { diesel: 204, sähkö: 140 },
+    "Nobina Finland":    { diesel: 268, sähkö: 212 },
+    "Pohjolan Liikenne": { diesel: 200, sähkö: 265 },
+    "Tammelundin Liikenne": { diesel: 24, sähkö: 32 },
+};
+
+const sahkoMerkitData = {
+    "Koiviston Auto":    { "Volvo": 83,  "Yutong": 57 },
+    "Nobina Finland":    { "BYD": 187,   "Yutong": 25 },
+    "Pohjolan Liikenne": { "VDL": 16,    "Volvo": 15,  "Yutong": 234 },
+    "Tammelundin Liikenne": { "VDL": 2,  "Volvo": 5,   "Yutong": 25 },
+};
+
+const ikaData = {
+    "Koiviston Auto":    { "0–2 v": 80,  "3–5 v": 60,  "6–9 v": 91,  "10–14 v": 94, "15+ v": 19 },
+    "Nobina Finland":    { "0–2 v": 29,  "3–5 v": 188, "6–9 v": 203, "10–14 v": 60, "15+ v": 0  },
+    "Pohjolan Liikenne": { "0–2 v": 140, "3–5 v": 87,  "6–9 v": 165, "10–14 v": 73, "15+ v": 0  },
+    "Tammelundin Liikenne": { "0–2 v": 17, "3–5 v": 13, "6–9 v": 18, "10–14 v": 8,  "15+ v": 0  },
+};
+
+const ikaLuokat   = ["0–2 v","3–5 v","6–9 v","10–14 v","15+ v"];
+const ikaVarit    = ["#16a34a","#0071bc","#d97706","#dc2626","#6b8caa"];
+const merkitVarit = { "BYD":"#dc2626","Yutong":"#d97706","Volvo":"#0071bc","VDL":"#00985f","Scania":"#8c4799" };
+
+// ── KUVAAJAT ─────────────────────────────────────────────────
+
+// 1. Polttoaine per operaattori (grouped bar)
+new Chart(document.getElementById("polttoaineChart"), {
+    type: "bar",
+    data: {
+        labels: OPERAATTORIT,
+        datasets: [
+            {
+                label: "Diesel",
+                data: OPERAATTORIT.map(o => polttoaineData[o].diesel),
+                backgroundColor: "#94a3b8",
+            },
+            {
+                label: "Sähkö",
+                data: OPERAATTORIT.map(o => polttoaineData[o].sähkö),
+                backgroundColor: "#16a34a",
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } },
+        scales: {
+            x: { ticks: { color: "#6b8caa", font: { size: 11 } } },
+            y: { ticks: { color: "#6b8caa", font: { size: 11 } } }
+        }
+    }
+});
+
+// 2. Polttoaine yhteensä (donut)
+new Chart(document.getElementById("polttoaineYhtChart"), {
+    type: "doughnut",
+    data: {
+        labels: ["Diesel", "Sähkö"],
+        datasets: [{
+            data: [696, 649],
+            backgroundColor: ["#94a3b8","#16a34a"],
+            borderWidth: 2,
+            borderColor: "#fff"
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: "bottom" },
+            tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/1345*100)} %)` } }
+        }
+    }
+});
+
+// 3. Sähköbussien merkit per operaattori (stacked bar)
+const kaikkiMerkit = [...new Set(Object.values(sahkoMerkitData).flatMap(o => Object.keys(o)))];
+new Chart(document.getElementById("sahkoMerkitChart"), {
+    type: "bar",
+    data: {
+        labels: OPERAATTORIT,
+        datasets: kaikkiMerkit.map(merkki => ({
+            label: merkki,
+            data: OPERAATTORIT.map(o => sahkoMerkitData[o][merkki] || 0),
+            backgroundColor: merkitVarit[merkki] || "#999",
+        }))
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } },
+        scales: {
+            x: { stacked: true, ticks: { color: "#6b8caa", font: { size: 11 } } },
+            y: { stacked: true, ticks: { color: "#6b8caa", font: { size: 11 } } }
+        }
+    }
+});
+
+// 4. Sähköbussien merkit yhteensä (donut)
+const merkitYht = {};
+Object.values(sahkoMerkitData).forEach(o => Object.entries(o).forEach(([k,v]) => { merkitYht[k] = (merkitYht[k]||0) + v; }));
+new Chart(document.getElementById("sahkoMerkitYhtChart"), {
+    type: "doughnut",
+    data: {
+        labels: Object.keys(merkitYht),
+        datasets: [{
+            data: Object.values(merkitYht),
+            backgroundColor: Object.keys(merkitYht).map(m => merkitVarit[m] || "#999"),
+            borderWidth: 2, borderColor: "#fff"
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+    }
+});
+
+// 5. Ikärakenne per operaattori (stacked bar)
+new Chart(document.getElementById("ikaChart"), {
+    type: "bar",
+    data: {
+        labels: OPERAATTORIT,
+        datasets: ikaLuokat.map((luokka, i) => ({
+            label: luokka,
+            data: OPERAATTORIT.map(o => ikaData[o][luokka] || 0),
+            backgroundColor: ikaVarit[i],
+        }))
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } },
+        scales: {
+            x: { stacked: true, ticks: { color: "#6b8caa", font: { size: 11 } } },
+            y: { stacked: true, ticks: { color: "#6b8caa", font: { size: 11 } } }
+        }
+    }
+});
+
+// 6. Ikärakenne yhteensä (donut)
+const ikaYht = {};
+ikaLuokat.forEach(l => { ikaYht[l] = OPERAATTORIT.reduce((s,o) => s + (ikaData[o][l]||0), 0); });
+new Chart(document.getElementById("ikaYhtChart"), {
+    type: "doughnut",
+    data: {
+        labels: Object.keys(ikaYht),
+        datasets: [{
+            data: Object.values(ikaYht),
+            backgroundColor: ikaVarit,
+            borderWidth: 2, borderColor: "#fff"
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+    }
+});
+</script>
+</body>
+</html>
