@@ -332,7 +332,7 @@ function luoKorttiHTML(linja) {
             <div class="linja-tunnus">${linja.numero}</div>
             <div class="linja-info">
                 <div class="linja-nimi">${linja.nimi}</div>
-                <div class="linja-reitti">${linja.reitti}</div>
+                <div class="linja-reitti" id="reitti-${linja.numero}">${linja.reitti}</div>
                 ${huomioHTML}
                 <div class="myohastyminen" id="myohastyminen-${linja.numero}">⏱ Ladataan...</div>
             </div>
@@ -463,6 +463,27 @@ async function haeKaikkiHairiot() {
 }
 
 async function paivitaKaikki() {
+    try {
+        // Haetaan reittinimet
+        const reittikysely = `{
+            routes(feeds: ["HSL"], transportModes: RAIL) {
+                gtfsId
+                longName
+            }
+        }`;
+        const reittidata = await graphqlFetch(reittikysely);
+        const reittinimet = {};
+        reittidata?.data?.routes?.forEach(r => {
+            reittinimet[r.gtfsId] = r.longName;
+        });
+
+        // Päivitetään reittinimet kortteihin
+        [...RANTARATA, ...KEHÄRATA, ...PÄÄRATA].forEach(linja => {
+            const el = document.getElementById(`reitti-${linja.numero}`);
+            if (el && reittinimet[linja.gtfsIdt[0]]) {
+                el.textContent = reittinimet[linja.gtfsIdt[0]];
+            }
+        });
     try {
         const hairiot = await haeKaikkiHairiot();
         const kaikkiLinjat = [...RANTARATA, ...KEHÄRATA, ...PÄÄRATA];
