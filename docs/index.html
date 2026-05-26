@@ -236,7 +236,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 26.05.2026 06:47</div>
+        <div class="paivitys">Päivitetty 26.05.2026 06:52</div>
     </div>
 </header>
 
@@ -298,7 +298,7 @@
         <div class="kortti-otsikko">Operaattorikohtainen kuukausihistoria <span>painotettu ka</span></div>
         <table>
             <thead><tr><th>Operaattori</th><th>2026-05</th></tr></thead>
-            <tbody><tr><td style="color:#00a650;font-weight:600">Nobina Finland</td><td style="color:#1e3a5f;font-weight:500">98.9 %</td></tr><tr><td style="color:#ff6600;font-weight:600">Koiviston Auto</td><td style="color:#16a34a;font-weight:500">99.5 %</td></tr><tr><td style="color:#7b2d8b;font-weight:600">Pohjolan Liikenne</td><td style="color:#16a34a;font-weight:500">99.1 %</td></tr><tr><td style="color:#0071bc;font-weight:600">Tammelundin Liikenne</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">Bus Travel Reissu Ruoti</td><td style="color:#1e3a5f;font-weight:500">97.4 %</td></tr><tr><td style="color:#666;font-weight:600">Korsisaari</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">Nurmijärven Linja</td><td style="color:#dc2626;font-weight:500">94.2 %</td></tr><tr><td style="color:#666;font-weight:600">Taksikuljetus Harri Vuolle</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">V-S Bussipalvelut</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr></tbody>
+            <tbody><tr><td style="color:#00a650;font-weight:600">Nobina Finland</td><td style="color:#d97706;font-weight:500">98.9 %</td></tr><tr><td style="color:#ff6600;font-weight:600">Koiviston Auto</td><td style="color:#16a34a;font-weight:500">99.5 %</td></tr><tr><td style="color:#7b2d8b;font-weight:600">Pohjolan Liikenne</td><td style="color:#16a34a;font-weight:500">99.1 %</td></tr><tr><td style="color:#0071bc;font-weight:600">Tammelundin Liikenne</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">Bus Travel Reissu Ruoti</td><td style="color:#dc2626;font-weight:500">97.4 %</td></tr><tr><td style="color:#666;font-weight:600">Korsisaari</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">Nurmijärven Linja</td><td style="color:#dc2626;font-weight:500">94.2 %</td></tr><tr><td style="color:#666;font-weight:600">Taksikuljetus Harri Vuolle</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr><tr><td style="color:#666;font-weight:600">V-S Bussipalvelut</td><td style="color:#16a34a;font-weight:500">100.0 %</td></tr></tbody>
         </table>
     </div>
 
@@ -491,7 +491,7 @@ new Chart(ctx1, {
         },
         scales: {
             y: {
-                min: Math.max(85, Math.min(...trendiData.luotettavuus) - 2),
+                min: 97,
                 max: 100,
                 ticks: {
                     callback: v => v + ' %',
@@ -553,7 +553,7 @@ new Chart(ctx2, {
         },
         scales: {
             y: {
-                min: 90,
+                min: 97,
                 max: 100,
                 ticks: {
                     callback: v => v + ' %',
