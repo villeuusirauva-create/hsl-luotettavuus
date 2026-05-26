@@ -680,7 +680,7 @@ new Chart(ctx2, {{
         }},
         scales: {{
             y: {{
-                min: 97,
+                min: 95,
                 max: 100,
                 ticks: {{
                     callback: v => v + ' %',
