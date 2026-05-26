@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Runkolinjat – Linjastatus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hsl-blue:     #0071bc;
+            --hsl-light:    #e8f4fd;
+            --hsl-dark:     #1e3a5f;
+            --green:        #16a34a;
+            --green-bg:     #f0fdf4;
+            --green-border: #86efac;
+            --yellow:       #d97706;
+            --yellow-bg:    #fffbeb;
+            --yellow-border:#fcd34d;
+            --red:          #dc2626;
+            --red-bg:       #fef2f2;
+            --red-border:   #fca5a5;
+            --bg:           #f0f6fc;
+            --card:         #ffffff;
+            --border:       #c8dff0;
+            --text:         #1e3a5f;
+            --muted:        #6b8caa;
+            --bussi-bg:     #0071bc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Figtree', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            background: var(--hsl-dark);
+            color: white;
+            border-bottom: 4px solid var(--hsl-blue);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys {
+            font-size: 12px;
+            opacity: 0.6;
+            font-family: 'DM Mono', monospace;
+        }
+        .spinner {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+            margin-right: 6px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        .nav-linkki {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--hsl-blue);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .linja-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+        .linja-kortti {
+            background: var(--card);
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            padding: 20px 24px;
+            transition: border-color 0.3s;
+            box-shadow: 0 2px 6px rgba(0,113,188,0.06);
+        }
+        .linja-kortti.ok        { border-color: var(--green-border);  background: var(--green-bg);  }
+        .linja-kortti.hairio    { border-color: var(--yellow-border); background: var(--yellow-bg); }
+        .linja-kortti.keskeytys { border-color: var(--red-border);    background: var(--red-bg);    }
+        .linja-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .linja-tunnus {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: var(--bussi-bg);
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: 'DM Mono', monospace;
+        }
+        .linja-info { flex: 1; min-width: 0; }
+        .linja-nimi {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--hsl-dark);
+            margin-bottom: 2px;
+        }
+        .linja-reitti {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .badge-rivi {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+        .status-badge.ok        { background: #bbf7d0; }
+        .status-badge.hairio    { background: #fde68a; }
+        .status-badge.keskeytys { background: #fecaca; }
+        .status-badge.lataa     { background: var(--border); color: var(--muted); }
+        .aikataulu-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+        .aikataulu-badge.ajoissa      { background: #bbf7d0; }
+        .aikataulu-badge.myohassa     { background: #fde68a; }
+        .aikataulu-badge.paljon       { background: #fecaca; }
+        .aikataulu-badge.ei-tietoa    { background: var(--border); color: var(--muted); }
+        .hairiot-lista { margin-top: 12px; }
+        .hairio-item {
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--yellow);
+            font-size: 12px;
+        }
+        .hairio-item.severe { border-left-color: var(--red); }
+        .hairio-otsikko { font-weight: 600; margin-bottom: 3px; }
+        .hairio-kuvaus  { line-height: 1.5; color: var(--text); }
+        .hairio-aika    { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
+        .info-teksti {
+            background: var(--hsl-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 32px;
+            line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+        @media (max-width: 600px) {
+            main { padding: 16px; }
+            .linja-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Runkolinja.svg" alt="Runkolinja" style="height:40px;">
+            <div>
+                <h1>Runkolinjat – Linjastatus</h1>
+                <div class="header-sub">Reaaliaikainen häiriö- ja aikatauluseuranta</div>
+            </div>
+        </div>
+        <div class="paivitys">
+            <span class="spinner"></span>
+            <span id="paivitysaika">Ladataan...</span>
+        </div>
+    </div>
+</header>
+
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin luotettavuusseurantaan</a>
+    <div class="linja-grid" id="linja-grid"></div>
+
+    <div class="info-teksti">
+        <strong>Tietoa datasta:</strong> Häiriötiedot ja aikataulutiedot haetaan HSL:n
+        Digitransit-rajapinnasta. Sivu päivittyy automaattisesti 2 minuutin välein.
+        Myöhästyminen lasketaan kaikkien tällä hetkellä liikennöivien bussien keskiarvona per linja.
+    </div>
+</main>
+
+<script>
+const GRAPHQL_URL     = "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1";
+const DIGITRANSIT_KEY = ""; // automaattisesti injektoitu
+
+const RUNKOLINJAT = [
+    { numero: "20",  nimi: "Linja 20",  reitti: "Eira – Munkkivuori",              gtfsId: "HSL:1020" },
+    { numero: "30",  nimi: "Linja 30",  reitti: "Eira – Myyrmäki",                 gtfsId: "HSL:1030" },
+    { numero: "40",  nimi: "Linja 40",  reitti: "Pelimanni – Elielinaukio",         gtfsId: "HSL:1040" },
+    { numero: "200", nimi: "Linja 200", reitti: "Elielinaukio – Espoon keskus",     gtfsId: "HSL:2200" },
+    { numero: "300", nimi: "Linja 300", reitti: "Elielinaukio – Myyrmäki",          gtfsId: "HSL:4300" },
+    { numero: "400", nimi: "Linja 400", reitti: "Kamppi – Vantaankoski",            gtfsId: "HSL:4400" },
+    { numero: "500", nimi: "Linja 500", reitti: "Itäkeskus – Munkkivuori",          gtfsId: "HSL:1500" },
+    { numero: "510", nimi: "Linja 510", reitti: "Herttoniemi – Kivenlahti",         gtfsId: "HSL:2510" },
+    { numero: "520", nimi: "Linja 520", reitti: "Matinkylä – Martinlaakso",         gtfsId: "HSL:5520" },
+    { numero: "530", nimi: "Linja 530", reitti: "Matinkylä – Myyrmäki",             gtfsId: "HSL:5530" },
+    { numero: "560", nimi: "Linja 560", reitti: "Rastila – Myyrmäki",               gtfsId: "HSL:4560" },
+    { numero: "570", nimi: "Linja 570", reitti: "Lentoasema – Mellunmäki",          gtfsId: "HSL:4570" },
+    { numero: "600", nimi: "Linja 600", reitti: "Rautatientori – Lentoasema",       gtfsId: "HSL:4600" },
+];
+
+function graphqlFetch(query) {
+    return fetch(GRAPHQL_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "digitransit-subscription-key": DIGITRANSIT_KEY
+        },
+        body: JSON.stringify({ query })
+    }).then(r => r.json());
+}
+
+function muotoileAika(unix) {
+    if (!unix) return "";
+    return new Date(unix * 1000).toLocaleString("fi-FI", {
+        day: "2-digit", month: "2-digit",
+        hour: "2-digit", minute: "2-digit"
+    });
+}
+
+function luoKorttiHTML(linja) {
+    return `
+    <div class="linja-kortti" id="kortti-${linja.numero}">
+        <div class="linja-header">
+            <div class="linja-tunnus">${linja.numero}</div>
+            <div class="linja-info">
+                <div class="linja-nimi">${linja.nimi}</div>
+                <div class="linja-reitti">${linja.reitti}</div>
+                <div class="badge-rivi">
+                    <div class="status-badge lataa" id="status-${linja.numero}">
+                        <span>⏳</span><span>Ladataan</span>
+                    </div>
+                    <div class="aikataulu-badge ei-tietoa" id="aikataulu-${linja.numero}">
+                        <span>⏱</span><span>Ladataan...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hairiot-lista" id="hairiot-${linja.numero}"></div>
+    </div>`;
+}
+
+function paivitaStatus(numero, hairiot) {
+    const kortti    = document.getElementById(`kortti-${numero}`);
+    const statusEl  = document.getElementById(`status-${numero}`);
+    const hairiotEl = document.getElementById(`hairiot-${numero}`);
+    if (!kortti) return;
+
+    const nyt = Date.now() / 1000;
+    const aktiiviset = hairiot.filter(h => {
+        const alku  = h.effectiveStartDate || 0;
+        const loppu = h.effectiveEndDate   || Infinity;
+        return alku <= nyt && nyt <= loppu;
+    });
+
+    kortti.className   = "linja-kortti";
+    statusEl.className = "status-badge";
+    const onSevere = aktiiviset.some(h => h.alertSeverityLevel === "SEVERE");
+
+    if (aktiiviset.length === 0) {
+        kortti.classList.add("ok");
+        statusEl.classList.add("ok");
+        statusEl.innerHTML = `<span>✅</span><span>Normaali</span>`;
+        hairiotEl.innerHTML = "";
+    } else if (onSevere) {
+        kortti.classList.add("keskeytys");
+        statusEl.classList.add("keskeytys");
+        statusEl.innerHTML = `<span>🚨</span><span>Vakava häiriö</span>`;
+        renderHairiot(hairiotEl, aktiiviset, true);
+    } else {
+        kortti.classList.add("hairio");
+        statusEl.classList.add("hairio");
+        statusEl.innerHTML = `<span>⚠️</span><span>Häiriö</span>`;
+        renderHairiot(hairiotEl, aktiiviset, false);
+    }
+}
+
+function renderHairiot(el, hairiot, severe) {
+    el.innerHTML = hairiot.map(h => `
+        <div class="hairio-item ${severe ? 'severe' : ''}">
+            <div class="hairio-otsikko">${h.alertHeaderText || ''}</div>
+            <div class="hairio-kuvaus">${h.alertDescriptionText || ''}</div>
+            <div class="hairio-aika">${muotoileAika(h.effectiveStartDate)} – ${muotoileAika(h.effectiveEndDate) || 'toistaiseksi'}</div>
+        </div>
+    `).join("");
+}
+
+async function paivitaAikataulu(numero, gtfsId) {
+    const el = document.getElementById(`aikataulu-${numero}`);
+    if (!el) return;
+
+    const query = `{
+        route(id: "${gtfsId}") {
+            patterns {
+                stops {
+                    stoptimesWithoutPatterns(numberOfDepartures: 2) {
+                        departureDelay
+                        realtime
+                    }
+                }
+            }
+        }
+    }`;
+
+    try {
+        const data     = await graphqlFetch(query);
+        const patterns = data?.data?.route?.patterns || [];
+        const viiveet  = [];
+
+        patterns.forEach(p => {
+            p.stops?.forEach(s => {
+                s.stoptimesWithoutPatterns?.forEach(st => {
+                    if (st.realtime && st.departureDelay !== null) {
+                        viiveet.push(st.departureDelay);
+                    }
+                });
+            });
+        });
+
+        if (viiveet.length === 0) {
+            el.className = "aikataulu-badge ei-tietoa";
+            el.innerHTML = `<span>⏱</span><span>Ei reaaliaikatietoa</span>`;
+            return;
+        }
+
+        const keskiarvo = viiveet.reduce((a, b) => a + b, 0) / viiveet.length;
+        const sekunnit  = Math.round(keskiarvo);
+        const minuutit  = Math.round(keskiarvo / 60);
+
+        if (Math.abs(sekunnit) < 60) {
+            el.className = "aikataulu-badge ajoissa";
+            el.innerHTML = `<span>🟢</span><span>Aikataulussa (±${Math.abs(sekunnit)}s)</span>`;
+        } else if (Math.abs(minuutit) <= 3) {
+            el.className = "aikataulu-badge myohassa";
+            el.innerHTML = `<span>🟡</span><span>${minuutit > 0 ? '+' : ''}${minuutit} min aikataulusta</span>`;
+        } else {
+            el.className = "aikataulu-badge paljon";
+            el.innerHTML = `<span>🔴</span><span>${minuutit > 0 ? '+' : ''}${minuutit} min aikataulusta</span>`;
+        }
+
+    } catch (e) {
+        el.className = "aikataulu-badge ei-tietoa";
+        el.innerHTML = `<span>⏱</span><span>Ei tietoa</span>`;
+    }
+}
+
+async function haeKaikkiHairiot() {
+    const query = `{
+        alerts(feeds: ["HSL"]) {
+            alertHeaderText(language: "fi")
+            alertDescriptionText(language: "fi")
+            alertSeverityLevel
+            effectiveStartDate
+            effectiveEndDate
+            entities {
+                __typename
+                ... on Route { gtfsId }
+            }
+        }
+    }`;
+    const data = await graphqlFetch(query);
+    return data?.data?.alerts || [];
+}
+
+async function paivitaKaikki() {
+    try {
+        const hairiot = await haeKaikkiHairiot();
+
+        for (const linja of RUNKOLINJAT) {
+            const linjaHairiot = hairiot.filter(h =>
+                h.entities?.some(e => e.gtfsId === linja.gtfsId)
+            );
+            paivitaStatus(linja.numero, linjaHairiot);
+            await paivitaAikataulu(linja.numero, linja.gtfsId);
+        }
+
+        const nyt = new Date().toLocaleString("fi-FI", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit", second: "2-digit"
+        });
+        document.getElementById("paivitysaika").textContent = `Päivitetty ${nyt}`;
+
+    } catch (virhe) {
+        console.error("Virhe:", virhe);
+        document.getElementById("paivitysaika").textContent = "Virhe – yritetään uudelleen...";
+    }
+}
+
+// Rakennetaan kortit
+document.getElementById("linja-grid").innerHTML = RUNKOLINJAT.map(luoKorttiHTML).join("");
+
+// Käynnistys
+paivitaKaikki();
+setInterval(paivitaKaikki, 2 * 60 * 1000);
+</script>
+</body>
+</html>
