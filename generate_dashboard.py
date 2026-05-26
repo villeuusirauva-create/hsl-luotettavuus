@@ -253,7 +253,7 @@ def generoi_html(trendi_df):
             arvo = viimeisin.get(oper)
             if pd.notna(arvo):
                 vari_oper = OPERAATTORI_VARIT.get(oper, "#666")
-                tekstivari = "#dc2626" if arvo < 97 else "#16a34a" if arvo >= 99 else "#1e3a5f"
+                tekstivari = "#dc2626" if arvo < 98 else "#16a34a" if arvo >= 99 else "#1e3a5f"
                 eilinen_oper_html += f"""
                 <div class="oper-kortti">
                     <div class="oper-nimi" style="color:{vari_oper}">{oper}</div>
