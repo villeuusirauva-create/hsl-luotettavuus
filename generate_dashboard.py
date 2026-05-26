@@ -240,7 +240,7 @@ def generoi_html(trendi_df):
         for kk in kuukaudet:
             arvo = kuukausihistoria.get(oper, {}).get(kk)
             if arvo is not None:
-                tekstivari = "#dc2626" if arvo < 97 else "#16a34a" if arvo >= 99 else "#1e3a5f"
+                tekstivari = "#dc2626" if arvo < 98 else "#16a34a" if arvo >= 99 else "#d97706"
                 kk_rivit += f'<td style="color:{tekstivari};font-weight:500">{arvo:.1f} %</td>'
             else:
                 kk_rivit += '<td class="muted">–</td>'
@@ -262,7 +262,7 @@ def generoi_html(trendi_df):
 
     paivitys_aika = (datetime.datetime.utcnow() + 
                      datetime.timedelta(hours=3)).strftime("%d.%m.%Y %H:%M")
-    pct_vari = "#dc2626" if viimeisin_pct < 97 else "#16a34a" if viimeisin_pct >= 99 else "#d97706"
+    pct_vari = "#dc2626" if viimeisin_pct < 98 else "#16a34a" if viimeisin_pct >= 99 else "#d97706"
 
     html = f"""<!DOCTYPE html>
 <html lang="fi">
@@ -618,7 +618,7 @@ new Chart(ctx1, {{
         }},
         scales: {{
             y: {{
-                min: Math.max(85, Math.min(...trendiData.luotettavuus) - 2),
+                min: 97,
                 max: 100,
                 ticks: {{
                     callback: v => v + ' %',
@@ -680,7 +680,7 @@ new Chart(ctx2, {{
         }},
         scales: {{
             y: {{
-                min: 90,
+                min: 97,
                 max: 100,
                 ticks: {{
                     callback: v => v + ' %',
