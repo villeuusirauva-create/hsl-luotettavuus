@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Junat – Linjastatus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hsl-blue:     #0071bc;
+            --hsl-light:    #e8f4fd;
+            --hsl-dark:     #1e3a5f;
+            --green:        #16a34a;
+            --green-bg:     #f0fdf4;
+            --green-border: #86efac;
+            --yellow:       #d97706;
+            --yellow-bg:    #fffbeb;
+            --yellow-border:#fcd34d;
+            --red:          #dc2626;
+            --red-bg:       #fef2f2;
+            --red-border:   #fca5a5;
+            --bg:           #f0f6fc;
+            --card:         #ffffff;
+            --border:       #c8dff0;
+            --text:         #1e3a5f;
+            --muted:        #6b8caa;
+            --juna-bg:      #8c4799;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1100px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        .spinner {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: #4ade80; animation: pulse 2s infinite; margin-right: 6px;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        main { max-width: 1100px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .osio-otsikko {
+            font-size: 13px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin: 32px 0 16px 0;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .osio-otsikko:first-of-type { margin-top: 0; }
+        .linja-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 8px; }
+        .linja-kortti {
+            background: var(--card); border-radius: 14px; border: 2px solid var(--border);
+            padding: 20px 24px; transition: border-color 0.3s; box-shadow: 0 2px 6px rgba(0,113,188,0.06);
+        }
+        .linja-kortti.ok        { border-color: var(--green-border);  background: var(--green-bg);  }
+        .linja-kortti.hairio    { border-color: var(--yellow-border); background: var(--yellow-bg); }
+        .linja-kortti.keskeytys { border-color: var(--red-border);    background: var(--red-bg);    }
+        .linja-header { display: flex; align-items: center; gap: 16px; }
+        .linja-tunnus {
+            width: 52px; height: 52px; border-radius: 10px;
+            background: var(--juna-bg); color: white;
+            font-size: 20px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-family: 'DM Mono', monospace;
+        }
+        .linja-info { flex: 1; min-width: 0; }
+        .linja-nimi { font-size: 15px; font-weight: 600; color: var(--hsl-dark); margin-bottom: 2px; }
+        .linja-reitti { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+        .linja-huomio { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 8px; }
+        .badge-rivi { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #1e3a5f;
+        }
+        .status-badge.ok        { background: #bbf7d0; }
+        .status-badge.hairio    { background: #fde68a; }
+        .status-badge.keskeytys { background: #fecaca; }
+        .status-badge.lataa     { background: var(--border); color: var(--muted); }
+        .aikataulu-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #1e3a5f;
+        }
+        .aikataulu-badge.ajoissa      { background: #bbf7d0; }
+        .aikataulu-badge.myohassa     { background: #fde68a; }
+        .aikataulu-badge.paljon       { background: #fecaca; }
+        .aikataulu-badge.ei-tietoa    { background: var(--border); color: var(--muted); }
+        .hairiot-lista { margin-top: 14px; }
+        .hairio-item {
+            background: rgba(255,255,255,0.7); border-radius: 8px;
+            padding: 12px 16px; margin-bottom: 8px;
+            border-left: 3px solid var(--yellow); font-size: 13px;
+        }
+        .hairio-item.severe { border-left-color: var(--red); }
+        .hairio-otsikko { font-weight: 600; margin-bottom: 4px; }
+        .hairio-kuvaus  { line-height: 1.5; color: var(--text); }
+        .hairio-aika    { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+        .info-teksti {
+            background: var(--hsl-light); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px 20px;
+            font-size: 13px; color: var(--muted); margin-top: 32px; line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+        @media (max-width: 600px) { main { padding: 16px; } .linja-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Juna.svg" alt="Juna" style="height:40px;">
+            <div>
+                <h1>Junat – Linjastatus</h1>
+                <div class="header-sub">Reaaliaikainen häiriö- ja aikatauluseuranta</div>
+            </div>
+        </div>
+        <div class="paivitys">
+            <span class="spinner"></span>
+            <span id="paivitysaika">Ladataan...</span>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin luotettavuusseurantaan</a>
+    <div class="osio-otsikko">Rantarata</div>
+    <div class="linja-grid" id="grid-rantarata"></div>
+    <div class="osio-otsikko">Kehärata</div>
+    <div class="linja-grid" id="grid-kehärata"></div>
+    <div class="osio-otsikko">Päärata</div>
+    <div class="linja-grid" id="grid-päärata"></div>
+    <div class="info-teksti">
+        <strong>Tietoa datasta:</strong> Häiriötiedot ja aikataulutiedot haetaan HSL:n
+        Digitransit-rajapinnasta. Sivu päivittyy automaattisesti 2 minuutin välein.
+        Päätepysäkit haetaan automaattisesti ja päivittyvät muutosten mukaan.
+        Päätepysäkit kuvaavat HSL-alueen viimeistä asemaa – osa linjoista jatkaa HSL-alueen ulkopuolelle.
+    </div>
+</main>
+<script>
+const GRAPHQL_URL     = "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1";
+const DIGITRANSIT_KEY = ""; // automaattisesti injektoitu
+
+const RANTARATA = [
+    { numero: "A", nimi: "Linja A", reitti: "Ladataan...", gtfsIdt: ["HSL:3002A"] },
+    { numero: "E", nimi: "Linja E", reitti: "Ladataan...", gtfsIdt: ["HSL:3002E"] },
+    { numero: "L", nimi: "Linja L", reitti: "Ladataan...", gtfsIdt: ["HSL:3002L"] },
+    { numero: "U", nimi: "Linja U", reitti: "Ladataan...", gtfsIdt: ["HSL:3002U"] },
+    { numero: "Y", nimi: "Linja Y", reitti: "Ladataan...", gtfsIdt: ["HSL:3002Y"] },
+    { numero: "H", nimi: "Linja H", reitti: "Ladataan...", gtfsIdt: ["HSL:3001H"] },
+];
+const KEHÄRATA = [
+    { numero: "I", nimi: "Linja I", reitti: "Ladataan...", gtfsIdt: ["HSL:3001I"] },
+    { numero: "P", nimi: "Linja P", reitti: "Ladataan...", gtfsIdt: ["HSL:3002P"] },
+];
+const PÄÄRATA = [
+    { numero: "D", nimi: "Linja D", reitti: "Ladataan...", gtfsIdt: ["HSL:3001D"], huomio: "Jatkaa Hämeenlinnaan" },
+    { numero: "K", nimi: "Linja K", reitti: "Ladataan...", gtfsIdt: ["HSL:3001K"] },
+    { numero: "R", nimi: "Linja R", reitti: "Ladataan...", gtfsIdt: ["HSL:3001R"], huomio: "Jatkaa Nokialle" },
+    { numero: "T", nimi: "Linja T", reitti: "Ladataan...", gtfsIdt: ["HSL:3001T"], huomio: "Jatkaa Riihimäelle" },
+    { numero: "Z", nimi: "Linja Z", reitti: "Ladataan...", gtfsIdt: ["HSL:3001Z"], huomio: "Jatkaa pidemmälle" },
+];
+
+function graphqlFetch(query) {
+    return fetch(GRAPHQL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "digitransit-subscription-key": DIGITRANSIT_KEY },
+        body: JSON.stringify({ query })
+    }).then(r => r.json());
+}
+
+function muotoileAika(unix) {
+    if (!unix) return "";
+    return new Date(unix * 1000).toLocaleString("fi-FI", {
+        day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
+    });
+}
+
+function luoKorttiHTML(linja) {
+    const huomioHTML = linja.huomio ? `<div class="linja-huomio">↪ ${linja.huomio}</div>` : "";
+    return `
+    <div class="linja-kortti" id="kortti-${linja.numero}">
+        <div class="linja-header">
+            <div class="linja-tunnus">${linja.numero}</div>
+            <div class="linja-info">
+                <div class="linja-nimi">${linja.nimi}</div>
+                <div class="linja-reitti" id="reitti-${linja.numero}">${linja.reitti}</div>
+                ${huomioHTML}
+                <div class="badge-rivi">
+                    <div class="status-badge lataa" id="status-${linja.numero}"><span>⏳</span><span>Ladataan</span></div>
+                    <div class="aikataulu-badge ei-tietoa" id="aikataulu-${linja.numero}"><span>⏱</span><span>Ladataan...</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="hairiot-lista" id="hairiot-${linja.numero}"></div>
+    </div>`;
+}
+
+function paivitaStatus(numero, hairiot) {
+    const kortti    = document.getElementById(`kortti-${numero}`);
+    const statusEl  = document.getElementById(`status-${numero}`);
+    const hairiotEl = document.getElementById(`hairiot-${numero}`);
+    if (!kortti) return;
+    const nyt = Date.now() / 1000;
+    const aktiiviset = hairiot.filter(h => {
+        const alku  = h.effectiveStartDate || 0;
+        const loppu = h.effectiveEndDate   || Infinity;
+        return alku <= nyt && nyt <= loppu;
+    });
+    kortti.className   = "linja-kortti";
+    statusEl.className = "status-badge";
+    const onSevere = aktiiviset.some(h => h.alertSeverityLevel === "SEVERE");
+    if (aktiiviset.length === 0) {
+        kortti.classList.add("ok");
+        statusEl.classList.add("ok");
+        statusEl.innerHTML = `<span>✅</span><span>Normaali</span>`;
+        hairiotEl.innerHTML = "";
+    } else if (onSevere) {
+        kortti.classList.add("keskeytys");
+        statusEl.classList.add("keskeytys");
+        statusEl.innerHTML = `<span>🚨</span><span>Vakava häiriö</span>`;
+        renderHairiot(hairiotEl, aktiiviset, true);
+    } else {
+        kortti.classList.add("hairio");
+        statusEl.classList.add("hairio");
+        statusEl.innerHTML = `<span>⚠️</span><span>Häiriö</span>`;
+        renderHairiot(hairiotEl, aktiiviset, false);
+    }
+}
+
+function renderHairiot(el, hairiot, severe) {
+    el.innerHTML = hairiot.map(h => `
+        <div class="hairio-item ${severe ? 'severe' : ''}">
+            <div class="hairio-otsikko">${h.alertHeaderText || ''}</div>
+            <div class="hairio-kuvaus">${h.alertDescriptionText || ''}</div>
+            <div class="hairio-aika">${muotoileAika(h.effectiveStartDate)} – ${muotoileAika(h.effectiveEndDate) || 'toistaiseksi'}</div>
+        </div>`).join("");
+}
+
+async function paivitaAikataulu(numero, gtfsIdt) {
+    const el = document.getElementById(`aikataulu-${numero}`);
+    if (!el) return;
+    const viiveet = [];
+    for (const gtfsId of gtfsIdt) {
+        const query = `{ route(id: "${gtfsId}") { patterns { stops { stoptimesWithoutPatterns(numberOfDepartures: 2) { departureDelay realtime } } } } }`;
+        try {
+            const data = await graphqlFetch(query);
+            data?.data?.route?.patterns?.forEach(p => {
+                p.stops?.forEach(s => {
+                    s.stoptimesWithoutPatterns?.forEach(st => {
+                        if (st.realtime && st.departureDelay !== null) viiveet.push(st.departureDelay);
+                    });
+                });
+            });
+        } catch (e) {}
+    }
+    if (viiveet.length === 0) {
+        el.className = "aikataulu-badge ei-tietoa";
+        el.innerHTML = `<span>⏱</span><span>Ei reaaliaikatietoa</span>`;
+        return;
+    }
+    const ka = viiveet.reduce((a, b) => a + b, 0) / viiveet.length;
+    const s  = Math.round(ka);
+    const m  = Math.round(ka / 60);
+    if (Math.abs(s) < 60) {
+        el.className = "aikataulu-badge ajoissa";
+        el.innerHTML = `<span>🟢</span><span>Aikataulussa (±${Math.abs(s)}s)</span>`;
+    } else if (Math.abs(m) <= 3) {
+        el.className = "aikataulu-badge myohassa";
+        el.innerHTML = `<span>🟡</span><span>${m > 0 ? '+' : ''}${m} min aikataulusta</span>`;
+    } else {
+        el.className = "aikataulu-badge paljon";
+        el.innerHTML = `<span>🔴</span><span>${m > 0 ? '+' : ''}${m} min aikataulusta</span>`;
+    }
+}
+
+async function paivitaKaikki() {
+    try {
+        // Haetaan reittinimet automaattisesti
+        const reittiKysely = `{ routes(feeds: ["HSL"], transportModes: RAIL) { gtfsId longName } }`;
+        const reittiData = await graphqlFetch(reittiKysely);
+        const reittinimet = {};
+        reittiData?.data?.routes?.forEach(r => { if (r.longName) reittinimet[r.gtfsId] = r.longName; });
+
+        // Päivitetään reittinimet kortteihin
+        [...RANTARATA, ...KEHÄRATA, ...PÄÄRATA].forEach(linja => {
+            const el = document.getElementById(`reitti-${linja.numero}`);
+            if (el && reittinimet[linja.gtfsIdt[0]]) el.textContent = reittinimet[linja.gtfsIdt[0]];
+        });
+
+        // Häiriöt
+        const hairioKysely = `{ alerts(feeds: ["HSL"]) { alertHeaderText(language: "fi") alertDescriptionText(language: "fi") alertSeverityLevel effectiveStartDate effectiveEndDate entities { __typename ... on Route { gtfsId } } } }`;
+        const hairioData = await graphqlFetch(hairioKysely);
+        const hairiot = hairioData?.data?.alerts || [];
+
+        for (const linja of [...RANTARATA, ...KEHÄRATA, ...PÄÄRATA]) {
+            const linjaHairiot = hairiot.filter(h => h.entities?.some(e => linja.gtfsIdt.includes(e.gtfsId)));
+            paivitaStatus(linja.numero, linjaHairiot);
+            await paivitaAikataulu(linja.numero, linja.gtfsIdt);
+        }
+
+        const nyt = new Date().toLocaleString("fi-FI", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit", second: "2-digit"
+        });
+        document.getElementById("paivitysaika").textContent = `Päivitetty ${nyt}`;
+    } catch (virhe) {
+        console.error("Virhe:", virhe);
+        document.getElementById("paivitysaika").textContent = "Virhe – yritetään uudelleen...";
+    }
+}
+
+document.getElementById("grid-rantarata").innerHTML = RANTARATA.map(luoKorttiHTML).join("");
+document.getElementById("grid-kehärata").innerHTML  = KEHÄRATA.map(luoKorttiHTML).join("");
+document.getElementById("grid-päärata").innerHTML   = PÄÄRATA.map(luoKorttiHTML).join("");
+
+paivitaKaikki();
+setInterval(paivitaKaikki, 2 * 60 * 1000);
+</script>
+</body>
+</html>
