@@ -520,7 +520,7 @@ def generoi_html(trendi_df):
         <a href="junat.html" style="display:flex;align-items:center;gap:8px;background:#8c4799;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
             <img src="images/Juna.svg" alt="Juna" style="width:24px;height:24px;"> Junat
         </a>
-        <a href="bussit.html" style="display:flex;align-items:center;gap:8px;background:#0071bc;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+        <a href="bussit.html" style="display:flex;align-items:center;gap:8px;background:#ff6319;color:white;
             <img src="images/Runkolinja.svg" alt="Runkolinja" style="width:24px;height:24px;"> Runkolinjat
         </a>
     </div>
