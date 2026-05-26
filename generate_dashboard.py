@@ -82,8 +82,33 @@ def laske_1kk_linjat(trendi_df):
     yhteenveto = yhteenveto[yhteenveto["suunnitellut"] >= 10]
     return yhteenveto.sort_values("luotettavuus").head(10)
 
-
 def laske_halytyslinjat(trendi_df, raja):
+    """Linjat jotka ovat alittaneet hälytysrajan viimeisen 5 päivän aikana."""
+    if trendi_df.empty:
+        return []
+    korjaus_pvm = pd.Timestamp("2026-05-24")
+    viimeiset = trendi_df[trendi_df["paiva"] >= korjaus_pvm].tail(5)
+    halytyslinjat = []
+    for _, rivi in viimeiset.iterrows():
+        paiva_str = rivi["paiva"].strftime("%Y-%m-%d")
+        linjadata = lataa_linjadata(paiva_str)
+        if linjadata.empty:
+            continue
+        ongelmat = linjadata[
+            (linjadata["luotettavuus"] < raja) &
+            (linjadata["suunnitellut"] >= 5)
+        ]
+        for _, linja in ongelmat.iterrows():
+            halytyslinjat.append({
+                "paiva": paiva_str,
+                "linja": linja["linja"],
+                "operaattori": linja["operaattori"],
+                "luotettavuus": linja["luotettavuus"],
+                "ajettu": int(linja["ajettu"]),
+                "suunnitellut": int(linja["suunnitellut"]),
+            })
+    return sorted(halytyslinjat, key=lambda x: x["paiva"], reverse=True)
+    
 def hae_reittinimet(api_avain):
     """Hakee kaikkien linjojen longName Digitransitista."""
     if not api_avain:
@@ -286,7 +311,7 @@ def generoi_html(trendi_df, reittinimet={}):
             arvo = viimeisin.get(oper)
             if pd.notna(arvo):
                 vari_oper = OPERAATTORI_VARIT.get(oper, "#666")
-                tekstivari = "#dc2626" if arvo < 98 else "#16a34a" if arvo >= 99 else "#1e3a5f"
+                tekstivari = "#dc2626" if arvo < 98 else "#16a34a" if arvo >= 99 else "#d97706"
                 eilinen_oper_html += f"""
                 <div class="oper-kortti">
                     <div class="oper-nimi" style="color:{vari_oper}">{oper}</div>
