@@ -520,6 +520,9 @@ def generoi_html(trendi_df):
         <a href="junat.html" style="display:flex;align-items:center;gap:8px;background:#8c4799;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
             <img src="images/Juna.svg" alt="Juna" style="width:24px;height:24px;"> Junat
         </a>
+        <a href="bussit.html" style="display:flex;align-items:center;gap:8px;background:#0071bc;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+            <img src="images/Runkolinja.svg" alt="Runkolinja" style="width:24px;height:24px;"> Runkolinjat
+        </a>
     </div>
     <div class="hero">
         <div class="hero-left">
@@ -748,7 +751,20 @@ def main():
         with open(junat_src, "w", encoding="utf-8") as f:
             f.write(junat_html)
         print("✅ API-avain injektoitu junat.html:ään")
-    
+        
+    # Injektoidaan myös bussit.html:ään
+    bussit_src = os.path.join(DOCS_KANSIO, "bussit.html")
+    if os.path.exists(bussit_src) and api_avain:
+        with open(bussit_src, "r", encoding="utf-8") as f:
+            bussit_html = f.read()
+        bussit_html = bussit_html.replace(
+            'const DIGITRANSIT_KEY = "";',
+            f'const DIGITRANSIT_KEY = "{api_avain}";'
+        )
+        with open(bussit_src, "w", encoding="utf-8") as f:
+            f.write(bussit_html)
+        print("✅ API-avain injektoitu bussit.html:ään")
+        
     trendi = lataa_trendi()
     if trendi.empty:
         print("❌ Ei trenditietoja saatavilla")
