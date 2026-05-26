@@ -1,30 +1,29 @@
 ﻿linja,operaattori,suunnitellut,ajettu,luotettavuus
 66K,Pohjolan Liikenne,12,7,58.33
 16,Nobina Finland,90,60,66.67
-163K,Pohjolan Liikenne,66,49,74.24
 86N,Nobina Finland,4,3,75.0
+163K,Pohjolan Liikenne,66,50,75.76
 35,Nurmijärven Linja,10,8,80.0
 719B,Bus Travel Reissu Ruoti,6,5,83.33
 903K,Pohjolan Liikenne,12,10,83.33
 34,Nurmijärven Linja,20,17,85.0
-718,Koiviston Auto,14,12,85.71
 32,Nurmijärven Linja,8,7,87.5
 31,Nurmijärven Linja,8,7,87.5
-118,Nobina Finland,181,161,88.95
-713,Bus Travel Reissu Ruoti,12,11,91.67
+118,Nobina Finland,181,163,90.06
 908,Pohjolan Liikenne,12,11,91.67
-587BK,Koiviston Auto,13,12,92.31
+713,Bus Travel Reissu Ruoti,12,11,91.67
 243,Nobina Finland,27,25,92.59
+718,Koiviston Auto,14,13,92.86
 718A,Koiviston Auto,15,14,93.33
 69,Koiviston Auto,136,127,93.38
 964,Pohjolan Liikenne,16,15,93.75
 831,Pohjolan Liikenne,33,31,93.94
-510,Nobina Finland,221,209,94.57
 165,Pohjolan Liikenne,99,94,94.95
+510,Nobina Finland,221,210,95.02
 63,Koiviston Auto,146,139,95.21
 244,Nobina Finland,28,27,96.43
-56,Nobina Finland,201,194,96.52
 227,Pohjolan Liikenne,64,62,96.88
+56,Nobina Finland,201,195,97.01
 37,Nobina Finland,128,125,97.66
 574,Pohjolan Liikenne,88,86,97.73
 571,Pohjolan Liikenne,94,92,97.87
@@ -33,18 +32,15 @@
 70,Koiviston Auto,126,124,98.41
 83,Nobina Finland,65,64,98.46
 81,Nobina Finland,150,148,98.67
-335,Nobina Finland,84,83,98.81
 215,Pohjolan Liikenne,86,85,98.84
 214,Pohjolan Liikenne,86,85,98.84
-30,Nobina Finland,184,182,98.91
-553,Koiviston Auto,116,115,99.14
-562,Koiviston Auto,118,117,99.15
 600,Koiviston Auto,255,253,99.22
 533,Nobina Finland,129,128,99.22
 82,Nobina Finland,145,144,99.31
 75,Pohjolan Liikenne,146,145,99.32
 80,Nobina Finland,156,155,99.36
 23,Pohjolan Liikenne,157,156,99.36
+30,Nobina Finland,184,183,99.46
 994,Pohjolan Liikenne,7,7,100.0
 993K,Pohjolan Liikenne,5,5,100.0
 993,Pohjolan Liikenne,8,8,100.0
@@ -102,6 +98,7 @@
 236,Pohjolan Liikenne,63,63,100.0
 235N,Pohjolan Liikenne,5,5,100.0
 232,V-S Bussipalvelut,4,4,100.0
+335,Nobina Finland,84,84,100.0
 33,Nurmijärven Linja,33,33,100.0
 321,Nobina Finland,45,45,100.0
 313,Korsisaari,6,6,100.0
@@ -114,6 +111,22 @@
 246T,Nobina Finland,7,7,100.0
 246KT,Nobina Finland,3,3,100.0
 246K,Nobina Finland,11,11,100.0
+213,Nobina Finland,63,63,100.0
+212,Nobina Finland,45,45,100.0
+21,Tammelundin Liikenne,231,231,100.0
+207,V-S Bussipalvelut,13,13,100.0
+203,Pohjolan Liikenne,46,46,100.0
+202,Pohjolan Liikenne,103,103,100.0
+201B,Pohjolan Liikenne,36,36,100.0
+201,Nurmijärven Linja,14,14,100.0
+200,Nobina Finland,195,195,100.0
+20,Nobina Finland,179,179,100.0
+184,Taksikuljetus Harri Vuolle,4,4,100.0
+183,Taksikuljetus Harri Vuolle,2,2,100.0
+182K,Pohjolan Liikenne,1,1,100.0
+182A,Pohjolan Liikenne,1,1,100.0
+182,Pohjolan Liikenne,3,3,100.0
+181,Pohjolan Liikenne,6,6,100.0
 41A,Nobina Finland,106,106,100.0
 415N,Pohjolan Liikenne,5,5,100.0
 413,Korsisaari,6,6,100.0
@@ -143,22 +156,6 @@
 431B,Koiviston Auto,23,23,100.0
 431,Koiviston Auto,66,66,100.0
 42,Nobina Finland,102,102,100.0
-213,Nobina Finland,63,63,100.0
-212,Nobina Finland,45,45,100.0
-21,Tammelundin Liikenne,231,231,100.0
-207,V-S Bussipalvelut,13,13,100.0
-203,Pohjolan Liikenne,46,46,100.0
-202,Pohjolan Liikenne,103,103,100.0
-201B,Pohjolan Liikenne,36,36,100.0
-201,Nurmijärven Linja,14,14,100.0
-200,Nobina Finland,195,195,100.0
-20,Nobina Finland,179,179,100.0
-184,Taksikuljetus Harri Vuolle,4,4,100.0
-183,Taksikuljetus Harri Vuolle,2,2,100.0
-182K,Pohjolan Liikenne,1,1,100.0
-182A,Pohjolan Liikenne,1,1,100.0
-182,Pohjolan Liikenne,3,3,100.0
-181,Pohjolan Liikenne,6,6,100.0
 544,Nobina Finland,124,124,100.0
 542,Pohjolan Liikenne,184,184,100.0
 54,Koiviston Auto,111,111,100.0
@@ -177,9 +174,11 @@
 572,Nobina Finland,63,63,100.0
 570,Koiviston Auto,232,232,100.0
 566,Nobina Finland,55,55,100.0
+562,Koiviston Auto,118,118,100.0
 561,Koiviston Auto,110,110,100.0
 560,Koiviston Auto,229,229,100.0
 554,Koiviston Auto,121,121,100.0
+553,Koiviston Auto,116,116,100.0
 55,Pohjolan Liikenne,147,147,100.0
 549,Nobina Finland,142,142,100.0
 548,Nobina Finland,140,140,100.0
@@ -190,6 +189,7 @@
 59,Pohjolan Liikenne,214,214,100.0
 588B,Koiviston Auto,8,8,100.0
 588,Koiviston Auto,8,8,100.0
+587BK,Koiviston Auto,13,13,100.0
 587,Koiviston Auto,53,53,100.0
 584T,Tammelundin Liikenne,1,1,100.0
 584,Tammelundin Liikenne,76,76,100.0
