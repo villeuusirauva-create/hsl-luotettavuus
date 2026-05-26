@@ -8,6 +8,7 @@ Ajetaan GitHub Actionsissa joka päivä analyysin jälkeen.
 import os
 import json
 import datetime
+import requests
 import pandas as pd
 from pathlib import Path
 
@@ -83,6 +84,36 @@ def laske_1kk_linjat(trendi_df):
 
 
 def laske_halytyslinjat(trendi_df, raja):
+def hae_reittinimet(api_avain):
+    """Hakee kaikkien linjojen longName Digitransitista."""
+    if not api_avain:
+        return {}
+    query = """
+    {
+      routes(feeds: ["HSL"]) {
+        gtfsId
+        shortName
+        longName
+        mode
+      }
+    }
+    """
+    try:
+        r = requests.post(
+            "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1",
+            json={"query": query},
+            headers={"digitransit-subscription-key": api_avain},
+            timeout=30
+        )
+        routes = r.json().get("data", {}).get("routes", [])
+        return {
+            route["shortName"]: route.get("longName", "")
+            for route in routes
+            if route.get("shortName") and route.get("longName")
+        }
+    except Exception as e:
+        print(f"  ⚠️ Reittinimien haku epäonnistui: {e}")
+        return {}
     """Linjat jotka ovat alittaneet hälytysrajan viimeisen 5 päivän aikana."""
     if trendi_df.empty:
         return []
@@ -168,7 +199,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df):
+def generoi_html(trendi_df, reittinimet={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -198,14 +229,15 @@ def generoi_html(trendi_df):
     heikoimmat = laske_1kk_linjat(trendi_df)
     heikoimmat_html = ""
     if not heikoimmat.empty:
-        for _, r in heikoimmat.iterrows():
-            vari = "#dc2626" if r["luotettavuus"] < 90 else "#d97706" if r["luotettavuus"] < 95 else "#2563eb"
+        for _, rivi in heikoimmat.iterrows():
+            vari = "#dc2626" if rivi["luotettavuus"] < 90 else "#d97706" if rivi["luotettavuus"] < 95 else "#2563eb"
+            reitti = reittinimet.get(str(rivi['linja']), "")
             heikoimmat_html += f"""
             <tr>
-                <td class="linja-nimi">{r['linja']}</td>
-                <td>{r['operaattori']}</td>
-                <td style="color:{vari};font-weight:600">{r['luotettavuus']:.1f} %</td>
-                <td class="muted">{int(r['ajettu']):,} / {int(r['suunnitellut']):,}</td>
+                <td class="linja-nimi">{rivi['linja']}<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">{reitti}</span></td>
+                <td>{rivi['operaattori']}</td>
+                <td style="color:{vari};font-weight:600">{rivi['luotettavuus']:.1f} %</td>
+                <td class="muted">{int(rivi['ajettu']):,} / {int(rivi['suunnitellut']):,}</td>
             </tr>"""
     else:
         heikoimmat_html = '<tr><td colspan="4" class="muted">Linjakohtainen data kertyy päivittäin</td></tr>'
@@ -215,10 +247,11 @@ def generoi_html(trendi_df):
     halytykset_html = ""
     if halytyslinjat:
         for h in halytyslinjat[:20]:
-            halytykset_html += f"""
+                reitti = reittinimet.get(str(h['linja']), "")
+                halytykset_html += f"""
             <tr>
                 <td class="muted">{h['paiva']}</td>
-                <td class="linja-nimi">{h['linja']}</td>
+                <td class="linja-nimi">{h['linja']}<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">{reitti}</span></td>
                 <td>{h['operaattori']}</td>
                 <td style="color:#dc2626;font-weight:600">{h['luotettavuus']:.1f} %</td>
                 <td class="muted">{h['ajettu']} / {h['suunnitellut']}</td>
@@ -770,7 +803,10 @@ def main():
         print("❌ Ei trenditietoja saatavilla")
         return
 
-    html = generoi_html(trendi)
+    api_avain = os.environ.get("DIGITRANSIT_API_KEY", "")
+    reittinimet = hae_reittinimet(api_avain)
+    print(f"  ✓ {len(reittinimet)} reittinimeä haettu")
+    html = generoi_html(trendi, reittinimet)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
