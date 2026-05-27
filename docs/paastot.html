@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Päästökehitys</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .hero-kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 20px 24px;
+            box-shadow: 0 2px 6px rgba(0,113,188,0.06);
+        }
+        .hero-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-arvo.vihrea { color: var(--green); }
+        .hero-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        /* Toggle */
+        .toggle-rivi {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+        }
+        .toggle-label { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .toggle-btn {
+            display: flex; border-radius: 8px; overflow: hidden;
+            border: 2px solid var(--border);
+        }
+        .toggle-btn button {
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border: none; cursor: pointer; font-family: 'Figtree', sans-serif;
+            background: white; color: var(--muted); transition: all 0.2s;
+        }
+        .toggle-btn button.active {
+            background: var(--hsl-blue); color: white;
+        }
+
+        /* Kortit */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+        }
+        .kortti-otsikko {
+            font-size: 15px; font-weight: 700; color: var(--hsl-dark);
+            margin-bottom: 4px;
+        }
+        .kortti-alateksti {
+            font-size: 12px; color: var(--muted); margin-bottom: 20px;
+        }
+        canvas { max-height: 320px; }
+
+        .info-teksti {
+            background: var(--hsl-light); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px 20px;
+            font-size: 13px; color: var(--muted); margin-top: 24px; line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+        .info-teksti ul { margin-left: 20px; margin-top: 8px; }
+        .info-teksti li { margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <div>
+                <h1>Päästökehitys 2010–2025</h1>
+                <div class="header-sub">CO₂-päästöt tonneina · Bussiliikenteen operointi ja koko HSL</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin luotettavuusseurantaan</a>
+
+    <!-- Hero -->
+    <div class="hero-grid">
+        <div class="hero-kortti">
+            <div class="hero-label">Bussit 2025 (vanha tapa)</div>
+            <div class="hero-arvo vihrea">18 744</div>
+            <div class="hero-sub">t CO₂</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Vähenemä 2010–2025 (vanha)</div>
+            <div class="hero-arvo vihrea">-83 %</div>
+            <div class="hero-sub">112 795 → 18 744 t</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Koko HSL 2025 (LCA)</div>
+            <div class="hero-arvo vihrea">39 939</div>
+            <div class="hero-sub">t CO₂</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Vähenemä 2010–2025 (LCA)</div>
+            <div class="hero-arvo vihrea">-75 %</div>
+            <div class="hero-sub">158 526 → 39 939 t</div>
+        </div>
+    </div>
+
+    <!-- Toggle -->
+    <div class="toggle-rivi">
+        <span class="toggle-label">Näytä:</span>
+        <div class="toggle-btn">
+            <button class="active" id="btn-tonnit" onclick="vaihdaNakyma('tonnit')">Tonnit (t CO₂)</button>
+            <button id="btn-prosentti" onclick="vaihdaNakyma('prosentti')">Muutos 2010 = 100 %</button>
+        </div>
+    </div>
+
+    <!-- Kuvaajat -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Bussiliikenteen operointi</div>
+            <div class="kortti-alateksti">Vanha tapa ja LCA 2010–2025 · Uusi tapa 2024–2025 (vain tonnit)</div>
+            <canvas id="bussitChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Koko HSL:n operointi</div>
+            <div class="kortti-alateksti">LCA 2010–2025 · Uusi tapa 2024–2025 (vain tonnit)</div>
+            <canvas id="hslChart"></canvas>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Laskentatavoista:</strong>
+        <ul>
+            <li><strong>Vanha tapa</strong> – HSL:n aiempi laskentametodi, kattaa bussiliikenteen 2010–2025</li>
+            <li><strong>LCA (elinkaarianalyysi)</strong> – huomioi ajoneuvon valmistuksen ja energiantuotannon päästöt, kattaa 2010–2025</li>
+            <li><strong>Uusi tapa</strong> – HSL:n uusin laskentametodi, saatavilla vain 2024–2025. Esitetään vain tonneissa (ei %-muutosta lyhyen aikasarjan vuoksi)</li>
+        </ul>
+        <br>
+        <strong>%-muutos</strong> on indeksoitu vuoteen 2010 (= 100 %). Uusi tapa ei ole mukana %-kuvaajassa.
+    </div>
+</main>
+<script>
+const VUODET = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+
+// ── DATA ─────────────────────────────────────────────────────
+const data = {
+    bussit_vanha: [112795,107832,106059,96225,96000,85215,82025,77896,69320,65654,57644,53262,53150,42199,32217,18744],
+    bussit_lca:   [155920,145295,152644,134400,134272,119451,119480,104399,97223,105448,78070,76913,84228,59466,50605,30159],
+    bussit_uusi:  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,53617,37041],
+    hsl_lca:      [158526,148211,155480,137277,137564,122755,123608,109591,105239,113651,86163,85166,92701,68116,59619,39939],
+    hsl_uusi:     [null,null,null,null,null,null,null,null,null,null,null,null,null,null,56244,39528],
+};
+
+// Lasketaan %-muutos (indeksi 2010=100%)
+function indeksoi(arr) {
+    const base = arr[0];
+    return arr.map(v => v !== null ? Math.round(v / base * 100) : null);
+}
+
+const dataProsentti = {
+    bussit_vanha: indeksoi(data.bussit_vanha),
+    bussit_lca:   indeksoi(data.bussit_lca),
+    hsl_lca:      indeksoi(data.hsl_lca),
+};
+
+let nakyma = 'tonnit';
+let bussitChart, hslChart;
+
+function luoDatasetit(tyyppi) {
+    const onTonnit = nakyma === 'tonnit';
+    if (tyyppi === 'bussit') {
+        const ds = [
+            {
+                label: 'Vanha tapa',
+                data: onTonnit ? data.bussit_vanha : dataProsentti.bussit_vanha,
+                borderColor: '#0071bc', backgroundColor: 'rgba(0,113,188,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false,
+            },
+            {
+                label: 'LCA',
+                data: onTonnit ? data.bussit_lca : dataProsentti.bussit_lca,
+                borderColor: '#8c4799', backgroundColor: 'rgba(140,71,153,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false,
+            },
+        ];
+        if (onTonnit) {
+            ds.push({
+                label: 'Uusi tapa',
+                data: data.bussit_uusi,
+                borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)',
+                borderWidth: 2.5, pointRadius: 4, tension: 0.3,
+                fill: false, spanGaps: false,
+                borderDash: [6,3],
+            });
+        }
+        return ds;
+    } else {
+        const ds = [
+            {
+                label: 'LCA',
+                data: onTonnit ? data.hsl_lca : dataProsentti.hsl_lca,
+                borderColor: '#8c4799', backgroundColor: 'rgba(140,71,153,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false,
+            },
+        ];
+        if (onTonnit) {
+            ds.push({
+                label: 'Uusi tapa',
+                data: data.hsl_uusi,
+                borderColor: '#16a34a',
+                borderWidth: 2.5, pointRadius: 4, tension: 0.3,
+                fill: false, spanGaps: false,
+                borderDash: [6,3],
+            });
+        }
+        return ds;
+    }
+}
+
+function luoOptions(yLabel) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 16 } },
+            tooltip: {
+                callbacks: {
+                    label: ctx => {
+                        if (ctx.parsed.y === null) return null;
+                        return nakyma === 'tonnit'
+                            ? `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('fi-FI')} t CO₂`
+                            : `${ctx.dataset.label}: ${ctx.parsed.y} %`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } },
+            y: {
+                ticks: {
+                    color: '#6b8caa', font: { size: 11 },
+                    callback: v => nakyma === 'tonnit'
+                        ? v.toLocaleString('fi-FI') + ' t'
+                        : v + ' %'
+                },
+                grid: { color: 'rgba(0,113,188,0.08)' },
+                title: { display: true, text: yLabel, color: '#6b8caa', font: { size: 11 } }
+            }
+        }
+    };
+}
+
+function rakennaPaastotChartit() {
+    const yLabel = nakyma === 'tonnit' ? 't CO₂' : '% (2010 = 100)';
+
+    if (bussitChart) bussitChart.destroy();
+    if (hslChart)    hslChart.destroy();
+
+    bussitChart = new Chart(document.getElementById('bussitChart'), {
+        type: 'line',
+        data: { labels: VUODET, datasets: luoDatasetit('bussit') },
+        options: luoOptions(yLabel),
+    });
+
+    hslChart = new Chart(document.getElementById('hslChart'), {
+        type: 'line',
+        data: { labels: VUODET, datasets: luoDatasetit('hsl') },
+        options: luoOptions(yLabel),
+    });
+}
+
+function vaihdaNakyma(uusi) {
+    nakyma = uusi;
+    document.getElementById('btn-tonnit').classList.toggle('active', nakyma === 'tonnit');
+    document.getElementById('btn-prosentti').classList.toggle('active', nakyma === 'prosentti');
+    rakennaPaastotChartit();
+}
+
+rakennaPaastotChartit();
+</script>
+</body>
+</html>
