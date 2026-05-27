@@ -581,8 +581,8 @@ def generoi_html(trendi_df, reittinimet={}):
         <a href="bussit.html" style="display:flex;align-items:center;gap:8px;background:#ff6319;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
             <img src="images/Runkolinja.svg" alt="Runkolinja" style="width:24px;height:24px;"> Runkolinjat
         </a>
-        <a href="kalusto.html" style="display:flex;align-items:center;gap:8px;background:#1e3a5f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
-            <img src="images/Bussi.svg" alt="Kalusto" style="width:24px;height:24px;"> Kalusto
+        <a href="tilastot.html" style="display:flex;align-items:center;gap:8px;background:#1e3a5f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
+            <img src="images/Bussi.svg" alt="Tilastot" style="width:24px;height:24px;"> Tilastot
         </a>
     </div>
     <div class="hero">
