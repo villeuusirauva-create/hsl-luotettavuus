@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Kustannustehokkuus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --radius:    12px;
+            --c-raw:     #94a3b8;
+            --c-diesel:  #0071bc;
+            --c-sahko:   #16a34a;
+            --c-yhdist:  #ff6319;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+        }
+        .kortti-otsikko {
+            font-size: 16px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px;
+        }
+        .kortti-alateksti {
+            font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.5;
+        }
+        canvas { max-height: 300px; }
+        .legenda-huomio {
+            font-size: 11px; color: var(--muted); margin-top: 10px;
+            padding: 8px 12px; background: var(--hsl-light);
+            border-radius: 6px; line-height: 1.5;
+        }
+        .info-teksti {
+            background: var(--hsl-light); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px 20px;
+            font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+        .info-teksti ul { margin-left: 20px; margin-top: 6px; }
+        .info-teksti li { margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Kustannustehokkuus 2010–2025</h1>
+                <div class="header-sub">Bussiliikenteen kustannukset eri mittareilla</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <div class="grid-2">
+
+        <!-- 1. eur/linja-km -->
+        <div class="kortti">
+            <div class="kortti-otsikko">eur / linja-km</div>
+            <div class="kortti-alateksti">Hinta per ajettu linjakilometri</div>
+            <canvas id="chart1"></canvas>
+        </div>
+
+        <!-- 2. snt/paikka-km -->
+        <div class="kortti">
+            <div class="kortti-otsikko">snt / paikka-km</div>
+            <div class="kortti-alateksti">
+                Hinta per matkustajapaikan kilometri<br>
+                <span style="color:#94a3b8">2010–2016 haaleana: laskentatapa muuttunut 2016 jälkeen</span>
+            </div>
+            <canvas id="chart2"></canvas>
+        </div>
+
+        <!-- 3. eur/matkustaja-km -->
+        <div class="kortti">
+            <div class="kortti-otsikko">eur / matkustaja-km</div>
+            <div class="kortti-alateksti">
+                Hinta per matkustajan kulkema kilometri<br>
+                <span style="color:#94a3b8">2010–2017 haaleana: laskentatapa muuttunut 2017 jälkeen</span>
+            </div>
+            <canvas id="chart3"></canvas>
+        </div>
+
+        <!-- 4. eur/nousu -->
+        <div class="kortti">
+            <div class="kortti-otsikko">eur / nousu</div>
+            <div class="kortti-alateksti">Hinta per matkustajien nousu bussiin</div>
+            <canvas id="chart4"></canvas>
+        </div>
+
+    </div>
+
+    <div class="info-teksti">
+        <strong>Indeksikorjauksista:</strong>
+        <ul>
+            <li><strong>Indeksikorjaamaton</strong> – nimellishinnat, ei inflaatiokorjausta</li>
+            <li><strong>Dieselindeksi</strong> – korjattu dieselkustannusten kehityksellä, 2010–2025</li>
+            <li><strong>Sähköbussi-indeksi</strong> – korjattu sähköbussien kustannuskehityksellä, saatavilla 2022→</li>
+            <li><strong>Yhdistelmäindeksi</strong> – diesel- ja sähköbussi-indeksien yhdistelmä, saatavilla 2022→</li>
+        </ul>
+    </div>
+</main>
+<script>
+const VUODET = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+const N = VUODET.length; // 16
+
+// ── DATA ─────────────────────────────────────────────────────
+const D = {
+    // Indeksikorjaamaton
+    raw_linja:   [2.77,2.95,3.21,3.31,3.38,3.43,3.45,3.53,3.61,3.58,3.55,3.58,3.75,3.68,3.64,3.79],
+    raw_paikka:  [4.54,4.76,5.52,5.62,5.70,5.73,5.72,5.22,5.35,5.26,5.57,5.23,5.41,5.28,5.22,5.39],
+    raw_matk:    [0.23,0.23,0.25,0.25,0.25,0.25,0.25,0.25,0.38,0.36,0.56,0.59,0.51,0.43,0.40,0.39],
+    raw_nousu:   [1.52,1.58,1.69,1.72,1.72,1.74,1.75,1.81,1.89,1.89,3.00,3.07,2.62,2.19,2.16,2.13],
+    // Dieselindeksi
+    die_linja:   [2.77,2.80,2.90,2.96,3.02,3.09,3.11,3.16,3.16,3.11,3.13,2.98,2.85,2.72,2.69,2.77],
+    die_paikka:  [4.54,4.52,4.99,5.04,5.08,5.16,5.16,4.67,4.68,4.57,4.91,4.35,4.11,3.91,3.86,3.94],
+    die_matk:    [0.23,0.22,0.22,0.22,0.22,0.22,0.22,0.23,0.33,0.31,0.50,0.49,0.39,0.32,0.30,0.29],
+    die_nousu:   [1.52,1.50,1.53,1.54,1.53,1.57,1.58,1.62,1.66,1.64,2.64,2.56,2.00,1.62,1.60,1.55],
+    // Sähköbussi-indeksi (2022→, indeksi 12)
+    sah_linja:   [null,null,null,null,null,null,null,null,null,null,null,null,2.85,2.81,2.84,2.90],
+    sah_paikka:  [null,null,null,null,null,null,null,null,null,null,null,null,4.11,4.03,4.07,4.12],
+    sah_matk:    [null,null,null,null,null,null,null,null,null,null,null,null,0.39,0.33,0.31,0.30],
+    sah_nousu:   [null,null,null,null,null,null,null,null,null,null,null,null,2.00,1.67,1.69,1.62],
+    // Yhdistelmäindeksi (2022→)
+    yh_linja:    [null,null,null,null,null,null,null,null,null,null,null,null,2.85,2.75,2.75,2.84],
+    yh_paikka:   [null,null,null,null,null,null,null,null,null,null,null,null,4.11,3.95,3.94,4.03],
+    yh_matk:     [null,null,null,null,null,null,null,null,null,null,null,null,0.39,0.32,0.30,0.29],
+    yh_nousu:    [null,null,null,null,null,null,null,null,null,null,null,null,2.00,1.64,1.64,1.59],
+};
+
+// Värit
+const CV = {
+    raw:    '#94a3b8',
+    diesel: '#0071bc',
+    sahko:  '#16a34a',
+    yhdist: '#ff6319',
+};
+
+// Haaleana näytettävät vuodet segmentoidaan Chart.js segment-toiminnolla
+function segmentColor(color, haaleatLoppuun) {
+    // haaleatLoppuun = viimeinen indeksi joka näytetään haaleana (0-pohjainen)
+    return {
+        borderColor: (ctx) => {
+            const i = ctx.p0DataIndex;
+            return i <= haaleatLoppuun ? color + '55' : color;
+        },
+        borderDash: () => undefined,
+    };
+}
+
+function luoDatasetit(linja, paikka_tai_matk_haaleat, sarjat) {
+    // sarjat = [raw, diesel, sahko, yhdist] avaimet
+    return [
+        {
+            label: 'Indeksikorjaamaton',
+            data: D[sarjat[0]],
+            borderColor: CV.raw,
+            borderWidth: 2,
+            pointRadius: 2,
+            tension: 0.3,
+            spanGaps: false,
+            segment: paikka_tai_matk_haaleat !== null ? segmentColor(CV.raw, paikka_tai_matk_haaleat) : undefined,
+        },
+        {
+            label: 'Dieselindeksi',
+            data: D[sarjat[1]],
+            borderColor: CV.diesel,
+            borderWidth: 2,
+            pointRadius: 2,
+            tension: 0.3,
+            spanGaps: false,
+            segment: paikka_tai_matk_haaleat !== null ? segmentColor(CV.diesel, paikka_tai_matk_haaleat) : undefined,
+        },
+        {
+            label: 'Sähköbussi-indeksi',
+            data: D[sarjat[2]],
+            borderColor: CV.sahko,
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3,
+            spanGaps: false,
+            borderDash: [5,3],
+        },
+        {
+            label: 'Yhdistelmäindeksi',
+            data: D[sarjat[3]],
+            borderColor: CV.yhdist,
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3,
+            spanGaps: false,
+            borderDash: [5,3],
+        },
+    ];
+}
+
+function luoOptions(yLabel) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { font: { size: 11 }, padding: 12, boxWidth: 20 }
+            },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.parsed.y !== null
+                        ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2).replace('.', ',')} ${yLabel}`
+                        : null
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: '#6b8caa', font: { size: 10 }, maxTicksLimit: 8 },
+                grid: { display: false }
+            },
+            y: {
+                ticks: {
+                    color: '#6b8caa', font: { size: 11 },
+                    callback: v => v.toFixed(2).replace('.', ',') + ' ' + yLabel
+                },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            }
+        }
+    };
+}
+
+// ── KUVAAJAT ─────────────────────────────────────────────────
+
+// 1. eur/linja-km – ei haalea
+new Chart(document.getElementById('chart1'), {
+    type: 'line',
+    data: {
+        labels: VUODET,
+        datasets: luoDatasetit('linja', null, ['raw_linja','die_linja','sah_linja','yh_linja'])
+    },
+    options: luoOptions('€/linja-km'),
+});
+
+// 2. snt/paikka-km – haaleana 2010-2016 (indeksit 0-6)
+new Chart(document.getElementById('chart2'), {
+    type: 'line',
+    data: {
+        labels: VUODET,
+        datasets: luoDatasetit('paikka', 5, ['raw_paikka','die_paikka','sah_paikka','yh_paikka'])
+    },
+    options: luoOptions('snt/paikka-km'),
+});
+
+// 3. eur/matkustaja-km – haaleana 2010-2017 (indeksit 0-7)
+new Chart(document.getElementById('chart3'), {
+    type: 'line',
+    data: {
+        labels: VUODET,
+        datasets: luoDatasetit('matk', 6, ['raw_matk','die_matk','sah_matk','yh_matk'])
+    },
+    options: luoOptions('€/matk-km'),
+});
+
+// 4. eur/nousu – ei haalea
+new Chart(document.getElementById('chart4'), {
+    type: 'line',
+    data: {
+        labels: VUODET,
+        datasets: luoDatasetit('nousu', null, ['raw_nousu','die_nousu','sah_nousu','yh_nousu'])
+    },
+    options: luoOptions('€/nousu'),
+});
+</script>
+</body>
+</html>
