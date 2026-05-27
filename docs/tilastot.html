@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Bussiliikenteen tilastoja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 32px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .osio-otsikko {
+            font-size: 13px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .kortti-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .tilasto-kortti {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 28px 28px 24px;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+            transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .tilasto-kortti:hover {
+            box-shadow: 0 6px 20px rgba(0,113,188,0.14);
+            border-color: var(--hsl-blue);
+            transform: translateY(-2px);
+        }
+        .kortti-ikoni {
+            width: 48px; height: 48px;
+        }
+        .kortti-nimi {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--hsl-dark);
+        }
+        .kortti-kuvaus {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.5;
+            flex: 1;
+        }
+        .kortti-nuoli {
+            font-size: 13px;
+            color: var(--hsl-blue);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        @media (max-width: 600px) {
+            main { padding: 16px; }
+            .kortti-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+        <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+        <div>
+            <h1>Bussiliikenteen tilastoja</h1>
+            <div class="header-sub">Kalusto, päästöt ja sopimukset</div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin luotettavuusseurantaan</a>
+
+    <div class="osio-otsikko">Tilastot</div>
+    <div class="kortti-grid">
+
+        <a href="kalusto.html" class="tilasto-kortti">
+            <img src="images/Bussi.svg" alt="Kalusto" class="kortti-ikoni">
+            <div class="kortti-nimi">Kalusto</div>
+            <div class="kortti-kuvaus">
+                Kaluston ikärakenne, polttoainejakauma, sähköbussien merkit
+                ja kalustotyypit operaattoreittain.
+            </div>
+            <div class="kortti-nuoli">Avaa → </div>
+        </a>
+
+        <a href="paastot.html" class="tilasto-kortti">
+            <img src="images/HSL.svg" alt="Päästöt" class="kortti-ikoni">
+            <div class="kortti-nimi">Päästökehitys</div>
+            <div class="kortti-kuvaus">
+                CO₂-päästöjen kehitys 2010–2025. Bussiliikenteen operointi
+                ja koko HSL eri laskentatavoilla.
+            </div>
+            <div class="kortti-nuoli">Avaa → </div>
+        </a>
+
+    </div>
+</main>
+</body>
+</html>
