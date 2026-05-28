@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Kalusto – Analyysi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--hsl-blue); text-decoration: none;
+            font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0;
+        }
+        .nav-linkki:hover { text-decoration: underline; }
+        .hero-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .hero-kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 20px 24px;
+            box-shadow: 0 2px 6px rgba(0,113,188,0.06);
+        }
+        .hero-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+        .hero-arvo { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-arvo.vihrea { color: var(--green); }
+        .hero-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+        /* Toggle */
+        .toggle-rivi {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+        }
+        .toggle-label { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .toggle-btn {
+            display: flex; border-radius: 8px; overflow: hidden;
+            border: 2px solid var(--border);
+        }
+        .toggle-btn button {
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border: none; cursor: pointer; font-family: 'Figtree', sans-serif;
+            background: white; color: var(--muted); transition: all 0.2s;
+        }
+        .toggle-btn button.active { background: var(--hsl-blue); color: white; }
+        /* Kortit */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti {
+            background: var(--card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,113,188,0.06);
+        }
+        .kortti-otsikko {
+            font-size: 13px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .kortti-otsikko span {
+            background: var(--hsl-light); color: var(--hsl-blue);
+            border-radius: 6px; padding: 2px 8px; font-size: 11px;
+        }
+        canvas { max-height: 300px; }
+        .info-teksti {
+            background: var(--hsl-light); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px 20px;
+            font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6;
+        }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Kalusto – Analyysi</h1>
+                <div class="header-sub">4 suurinta operaattoria · Kalustorekisteri 26.5.2026</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <!-- Hero -->
+    <div class="hero-grid">
+        <div class="hero-kortti">
+            <div class="hero-label">Ajoneuvoja yhteensä</div>
+            <div class="hero-arvo sininen">1 345</div>
+            <div class="hero-sub">4 suurinta operaattoria</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Sähköbusseja</div>
+            <div class="hero-arvo vihrea">649</div>
+            <div class="hero-sub">48 % kalustosta</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Dieselbusseja</div>
+            <div class="hero-arvo">696</div>
+            <div class="hero-sub">52 % kalustosta</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Keski-ikä, kaikki</div>
+            <div class="hero-arvo">6.4 v</div>
+            <div class="hero-sub">Koko kalusto</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Keski-ikä polttoaineittain</div>
+            <div style="display:flex;gap:20px;align-items:baseline;margin-bottom:4px;">
+                <div>
+                    <div style="font-size:11px;color:#6b8caa;margin-bottom:2px;">Sähkö</div>
+                    <div class="hero-arvo vihrea" style="font-size:24px;">3.2 v</div>
+                </div>
+                <div>
+                    <div style="font-size:11px;color:#6b8caa;margin-bottom:2px;">Diesel</div>
+                    <div class="hero-arvo" style="font-size:24px;">9.5 v</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toggle lkm / % -->
+    <div class="toggle-rivi">
+        <span class="toggle-label">Näytä:</span>
+        <div class="toggle-btn">
+            <button class="active" id="btn-lkm" onclick="vaihda('lkm')">Lukumäärä</button>
+            <button id="btn-pct" onclick="vaihda('pct')">%-osuus</button>
+        </div>
+    </div>
+
+    <!-- Polttoaine -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Polttoainejakauma <span>per operaattori</span></div>
+            <canvas id="polttoaineChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Polttoainejakauma <span>yhteensä</span></div>
+            <canvas id="polttoaineYhtChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Sähkömerkit -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Sähköbussien merkit <span>per operaattori</span></div>
+            <canvas id="sahkoMerkitChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Sähköbussien merkit <span>yhteensä</span></div>
+            <canvas id="sahkoMerkitYhtChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Ikärakenne -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Kaluston ikärakenne <span>per operaattori</span></div>
+            <canvas id="ikaChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Kaluston ikärakenne <span>yhteensä</span></div>
+            <canvas id="ikaYhtChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Kalustotyyppi -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Kalustotyyppijakauma <span>per operaattori</span></div>
+            <canvas id="kaltyyppiChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Kalustotyyppijakauma <span>kaikki operaattorit</span></div>
+            <canvas id="kaltyyppiYhtChart"></canvas>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Tietoa datasta:</strong> Kalustodata perustuu HSL:n kalustorekisteriin (26.5.2026).
+        Mukana ovat neljä suurinta operaattoria: Koiviston Auto (sis. HelB), Nobina Finland,
+        Pohjolan Liikenne ja Tammelundin Liikenne. Ikä lasketaan rekisteröintipäivästä.
+        Kalustotyyppijakauma kattaa kaikki operaattorit.
+    </div>
+</main>
+<script>
+const OPERAATTORIT = ["Koiviston Auto","Nobina Finland","Pohjolan Liikenne","Tammelundin Liikenne"];
+const OP_TOT = [344, 480, 465, 56]; // yhteensä per operaattori
+
+// ── DATA (lukumäärät) ─────────────────────────────────────────
+const LKM = {
+    poltto: {
+        diesel: [204, 268, 200, 24],
+        sahko:  [140, 212, 265, 32],
+    },
+    sahkoMerkit: {
+        "BYD":   [0,   187, 0,   0 ],
+        "Volvo": [83,  0,   15,  5 ],
+        "VDL":   [0,   0,   16,  2 ],
+        "Yutong":[57,  25,  234, 25],
+    },
+    ika: {
+        "0–2 v":   [80,  29,  140, 17],
+        "3–5 v":   [60,  188, 87,  13],
+        "6–9 v":   [91,  203, 165, 18],
+        "10–14 v": [94,  60,  73,  8 ],
+        "15+ v":   [19,  0,   0,   0 ],
+    },
+    kaltyyppi: {
+        "A1": [33,  55,  88,  15],
+        "A2": [121, 216, 143, 31],
+        "C":  [149, 155, 234, 9 ],
+        "D":  [38,  47,  0,   0 ],
+    },
+    polttoYht:      { diesel: 696, sahko: 649 },
+    sahkoMerkitYht: { BYD: 187, Volvo: 103, VDL: 18, Yutong: 341 },
+    ikaYht:         { "0–2 v": 266, "3–5 v": 348, "6–9 v": 477, "10–14 v": 235, "15+ v": 19 },
+    kaltyyppiYht:   { A1: 208, A2: 527, C: 548, D: 86, MiniB: 53 },
+    sahkoTot: [140, 212, 265, 32],
+    kalTot4: [341, 473, 465, 55],
+    kalTotAll: 1422,
+    ikaYhtTot: 1345,
+};
+
+// Muunnetaan %-osuuksiksi
+function toPct(arr, tots) {
+    return arr.map((v, i) => tots ? Math.round(v / tots[i] * 100) : Math.round(v / arr.reduce((a,b)=>a+b,0) * 100));
+}
+function objToPct(obj, tot) {
+    const res = {};
+    for (const [k,v] of Object.entries(obj)) res[k] = Math.round(v/tot*100);
+    return res;
+}
+
+let nakyma = 'lkm';
+let chartit = {};
+
+const VARIT = {
+    poltto:   { diesel: '#94a3b8', sahko: '#16a34a' },
+    sahko:    { BYD: '#dc2626', Volvo: '#0071bc', VDL: '#00985f', Yutong: '#d97706' },
+    ika:      ['#16a34a','#0071bc','#d97706','#dc2626','#6b8caa'],
+    kaltyyppi:['#0071bc','#00985f','#ff6319','#8c4799','#6b8caa'],
+};
+
+function yLabel() { return nakyma === 'lkm' ? 'kpl' : '%'; }
+
+function stackedOptions(yMark) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12, boxWidth: 16 } },
+            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} ${yMark}` } }
+        },
+        scales: {
+            x: { stacked: true, ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } },
+            y: { stacked: true, ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' ' + yMark }, grid: { color: 'rgba(0,113,188,0.08)' } }
+        }
+    };
+}
+
+function doughnutOptions(yMark) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+            tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} ${yMark}` } }
+        }
+    };
+}
+
+function getData(arr, tots) {
+    if (nakyma === 'lkm') return arr;
+    return toPct(arr, tots);
+}
+
+function rakennaChartit() {
+    const yl = yLabel();
+
+    // Tuhotaan vanhat
+    Object.values(chartit).forEach(c => c.destroy());
+    chartit = {};
+
+    // 1. Polttoaine per operaattori
+    chartit.p1 = new Chart(document.getElementById('polttoaineChart'), {
+        type: 'bar',
+        data: {
+            labels: OPERAATTORIT,
+            datasets: [
+                { label: 'Diesel', data: getData(LKM.poltto.diesel, OP_TOT), backgroundColor: VARIT.poltto.diesel },
+                { label: 'Sähkö',  data: getData(LKM.poltto.sahko,  OP_TOT), backgroundColor: VARIT.poltto.sahko  },
+            ]
+        },
+        options: stackedOptions(yl),
+    });
+
+    // 2. Polttoaine yhteensä
+    const pYht = nakyma === 'lkm'
+        ? [LKM.polttoYht.diesel, LKM.polttoYht.sahko]
+        : [Math.round(LKM.polttoYht.diesel/1345*100), Math.round(LKM.polttoYht.sahko/1345*100)];
+    chartit.p2 = new Chart(document.getElementById('polttoaineYhtChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Diesel','Sähkö'],
+            datasets: [{ data: pYht, backgroundColor: [VARIT.poltto.diesel, VARIT.poltto.sahko], borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: doughnutOptions(yl),
+    });
+
+    // 3. Sähkömerkit per operaattori
+    chartit.s1 = new Chart(document.getElementById('sahkoMerkitChart'), {
+        type: 'bar',
+        data: {
+            labels: OPERAATTORIT,
+            datasets: Object.entries(LKM.sahkoMerkit).map(([merkki, arr]) => ({
+                label: merkki,
+                data: getData(arr, LKM.sahkoTot),
+                backgroundColor: VARIT.sahko[merkki] || '#999',
+            }))
+        },
+        options: stackedOptions(yl),
+    });
+
+    // 4. Sähkömerkit yhteensä
+    const sTot = Object.values(LKM.sahkoMerkitYht).reduce((a,b)=>a+b,0);
+    const sYht = nakyma === 'lkm'
+        ? Object.values(LKM.sahkoMerkitYht)
+        : Object.values(LKM.sahkoMerkitYht).map(v => Math.round(v/sTot*100));
+    chartit.s2 = new Chart(document.getElementById('sahkoMerkitYhtChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(LKM.sahkoMerkitYht),
+            datasets: [{ data: sYht, backgroundColor: Object.keys(LKM.sahkoMerkitYht).map(k => VARIT.sahko[k]||'#999'), borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: doughnutOptions(yl),
+    });
+
+    // 5. Ikärakenne per operaattori
+    chartit.i1 = new Chart(document.getElementById('ikaChart'), {
+        type: 'bar',
+        data: {
+            labels: OPERAATTORIT,
+            datasets: Object.entries(LKM.ika).map(([luokka, arr], i) => ({
+                label: luokka,
+                data: getData(arr, OP_TOT),
+                backgroundColor: VARIT.ika[i],
+            }))
+        },
+        options: stackedOptions(yl),
+    });
+
+    // 6. Ikärakenne yhteensä
+    const iYht = nakyma === 'lkm'
+        ? Object.values(LKM.ikaYht)
+        : Object.values(LKM.ikaYht).map(v => Math.round(v/LKM.ikaYhtTot*100));
+    chartit.i2 = new Chart(document.getElementById('ikaYhtChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(LKM.ikaYht),
+            datasets: [{ data: iYht, backgroundColor: VARIT.ika, borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: doughnutOptions(yl),
+    });
+
+    // 7. Kalustotyyppi per operaattori
+    chartit.k1 = new Chart(document.getElementById('kaltyyppiChart'), {
+        type: 'bar',
+        data: {
+            labels: OPERAATTORIT,
+            datasets: Object.entries(LKM.kaltyyppi).map(([tyyppi, arr], i) => ({
+                label: tyyppi,
+                data: getData(arr, LKM.kalTot4),
+                backgroundColor: VARIT.kaltyyppi[i],
+            }))
+        },
+        options: stackedOptions(yl),
+    });
+
+    // 8. Kalustotyyppi yhteensä
+    const kYht = nakyma === 'lkm'
+        ? Object.values(LKM.kaltyyppiYht)
+        : Object.values(LKM.kaltyyppiYht).map(v => Math.round(v/LKM.kalTotAll*100));
+    chartit.k2 = new Chart(document.getElementById('kaltyyppiYhtChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(LKM.kaltyyppiYht),
+            datasets: [{ data: kYht, backgroundColor: [...VARIT.kaltyyppi], borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: doughnutOptions(yl),
+    });
+}
+
+function vaihda(uusi) {
+    nakyma = uusi;
+    document.getElementById('btn-lkm').classList.toggle('active', nakyma === 'lkm');
+    document.getElementById('btn-pct').classList.toggle('active', nakyma === 'pct');
+    rakennaChartit();
+}
+
+rakennaChartit();
+</script>
+</body>
+</html>
