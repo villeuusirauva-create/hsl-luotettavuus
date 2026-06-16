@@ -177,6 +177,9 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
         .rename(columns={"departure_time":"lahtoaika"})
     )
     bussit = bussit.merge(ensim, on="trip_id", how="left")
+    # VÄLIAIKAINEN DEBUG
+    debug570 = bussit[bussit["route_short_name"] == "570"]
+    print(f"  DEBUG 570 route_id:t: {debug570['route_id'].unique().tolist()}")
     print(f"  ✓ Suunniteltuja bussivuoroja: {len(bussit):,}")
     return bussit[["trip_id","route_id","route_short_name","agency_name","lahtoaika"]]
  
