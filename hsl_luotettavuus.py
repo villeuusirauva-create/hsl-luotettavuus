@@ -130,6 +130,7 @@ def lataa_gtfs(paiva):
             cal_df = pd.read_csv(z.open("calendar.txt"), dtype=str)
  
     routes = routes.merge(agency, on="agency_id", how="left")
+    routes["route_short_name"] = routes["route_short_name"].str.strip()
     print(f"  ✓ {len(trips):,} reittiajoa, {len(calendar_dates):,} kalenterimerkintää")
     return trips, calendar_dates, routes, stop_times, cal_df
  
@@ -177,14 +178,7 @@ def suunnitellut_bussivuorot(paiva, trips, calendar_dates, routes, stop_times, c
         .rename(columns={"departure_time":"lahtoaika"})
     )
     bussit = bussit.merge(ensim, on="trip_id", how="left")
-    # VÄLIAIKAINEN DEBUG
-    debug570 = bussit[bussit["route_short_name"] == "570"]
-    print(f"  DEBUG 570 route_id:t: {debug570['route_id'].unique().tolist()}")
-    # Katsotaan kaikki 570-alkuiset
-    debug570x = bussit[bussit["route_short_name"].str.contains("570", na=False)]
-    print(f"  DEBUG 570* short_namet: {debug570x['route_short_name'].unique().tolist()}")
-    debug570r = bussit[bussit["route_id"].str.contains("4570", na=False)]
-    print(f"  DEBUG 4570* route_id:t: {debug570r[['route_id','route_short_name']].drop_duplicates().to_string()}")
+
     print(f"  ✓ Suunniteltuja bussivuoroja: {len(bussit):,}")
     return bussit[["trip_id","route_id","route_short_name","agency_name","lahtoaika"]]
  
