@@ -260,13 +260,12 @@ def hae_ajetut_trip_id(paiva):
 def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     df = suunnitellut_df.copy()
     df["lahtoaika_lyhyt"] = df["lahtoaika"].apply(normalisoi_aika)
-    df["avain"] = df["route_id"].astype(str) + "|" + df["lahtoaika_lyhyt"]
+    df["route_id_norm"] = df["route_id"].astype(str).apply(lambda x: x.split(" ")[0].strip())
+    df["avain"] = df["route_id_norm"] + "|" + df["lahtoaika_lyhyt"]
  
     reitti_oper = {}
     hfp_avaimet = {}
-    # VÄLIAIKAINEN DEBUG HFP
-    hfp_570 = [a for a in ajetut_dict.keys() if "4570" in str(a)]
-    print(f"  DEBUG HFP 4570*: {hfp_570[:5]}")
+
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
