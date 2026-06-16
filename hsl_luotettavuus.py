@@ -289,6 +289,9 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
 
+    # VÄLIAIKAINEN DEBUG
+    debug = df[df["route_short_name"].str.strip() == "570"]
+    print(f"  DEBUG 570: {len(debug)} vuoroa, ajettu: {debug['ajettu'].sum()}, suunn: {len(debug)}")
   
     return {
         "suunnitellut" : n,
