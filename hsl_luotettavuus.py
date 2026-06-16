@@ -282,10 +282,11 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     }
  
     df["ajettu"] = df["avain"].isin(hfp_avaimet)
-    # VÄLIAIKAINEN DEBUG
     debug570_gtfs = df[df["route_short_name"].str.strip() == "570"]
-    print(f"  DEBUG GTFS 570 avaimet: {debug570_gtfs['avain'].tolist()[:3]}")
+    print(f"  DEBUG GTFS 570 avaimet kaikki: {sorted(debug570_gtfs['avain'].tolist())[:10]}")
     
+    hfp_570 = {k: v for k, v in hfp_avaimet.items() if "4570" in k}
+    print(f"  DEBUG HFP 4570 avaimet kaikki: {sorted(hfp_570.keys())[:10]}")
     hfp_570 = {k: v for k, v in hfp_avaimet.items() if "4570" in k}
     print(f"  DEBUG HFP 4570 avaimet: {list(hfp_570.keys())[:3]}")
     df["oper"]   = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
