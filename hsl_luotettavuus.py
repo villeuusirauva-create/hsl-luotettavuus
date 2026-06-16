@@ -269,9 +269,8 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
-            route = osat[0]
+            route = osat[0].split(" ")[0].strip()  # normalisoi: '4570 3' → '4570'
             lahto = osat[2]
-            # Tallennetaan avain ilman oday-tarkistusta
             lyhyt = f"{route}|{lahto}"
             hfp_avaimet[lyhyt] = oper
             reitti_oper.setdefault(route, []).append(oper)
@@ -282,13 +281,6 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     }
  
     df["ajettu"] = df["avain"].isin(hfp_avaimet)
-    debug570_gtfs = df[df["route_short_name"].str.strip() == "570"]
-    print(f"  DEBUG GTFS 570 avaimet kaikki: {sorted(debug570_gtfs['avain'].tolist())[:10]}")
-    
-    hfp_570 = {k: v for k, v in hfp_avaimet.items() if "4570" in k}
-    print(f"  DEBUG HFP 4570 avaimet kaikki: {sorted(hfp_570.keys())[:10]}")
-    hfp_570 = {k: v for k, v in hfp_avaimet.items() if "4570" in k}
-    print(f"  DEBUG HFP 4570 avaimet: {list(hfp_570.keys())[:3]}")
     df["oper"]   = df["route_id"].map(reitti_oper_yleisin).fillna("tuntematon")
     df["oper"]   = df["oper"].map(lambda x: OPERAATTORIT.get(x, f"Operaattori {x}"))
     df = df[~df["oper"].str.startswith("Operaattori")].copy()
