@@ -264,6 +264,9 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
  
     reitti_oper = {}
     hfp_avaimet = {}
+    # VÄLIAIKAINEN DEBUG HFP
+    hfp_570 = [a for a in ajetut_dict.keys() if "4570" in str(a)]
+    print(f"  DEBUG HFP 4570*: {hfp_570[:5]}")
     for a, oper in ajetut_dict.items():
         osat = a.split("|")
         if len(osat) >= 3:
@@ -289,10 +292,7 @@ def laske_luotettavuus(suunnitellut_df, ajetut_dict):
     ajamatta_n = n - ajettu_n
     pct        = round((ajettu_n / n) * 100, 2) if n else 0.0
 
-    # VÄLIAIKAINEN DEBUG
-    debug = df[df["route_short_name"].str.strip() == "570"]
-    print(f"  DEBUG 570: {len(debug)} vuoroa, ajettu: {debug['ajettu'].sum()}, suunn: {len(debug)}")
-  
+
     return {
         "suunnitellut" : n,
         "ajetut"       : ajettu_n,
