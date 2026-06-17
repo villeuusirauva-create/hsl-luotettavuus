@@ -1,39 +1,38 @@
 ﻿linja,operaattori,suunnitellut,ajettu,luotettavuus
 444T,Korsisaari,7,4,57.14
-311,Koiviston Auto,74,60,81.08
 444,Korsisaari,11,9,81.82
-401X,Nobina Finland,195,161,82.56
 721N,Koiviston Auto,6,5,83.33
+311,Koiviston Auto,74,62,83.78
+401X,Nobina Finland,195,164,84.1
 95N,Koiviston Auto,8,7,87.5
 446,Korsisaari,19,17,89.47
-59,Pohjolan Liikenne,182,165,90.66
+59,Pohjolan Liikenne,182,166,91.21
 544,Nobina Finland,122,113,92.62
 721,Koiviston Auto,101,94,93.07
 118,Nobina Finland,131,122,93.13
 57,Nobina Finland,199,186,93.47
-16,Nobina Finland,92,86,93.48
-37,Nobina Finland,178,167,93.82
 300,Nobina Finland,206,194,94.17
-52,Nobina Finland,194,183,94.33
 447,Korsisaari,19,18,94.74
+52,Nobina Finland,194,184,94.85
 548,Nobina Finland,97,92,94.85
+37,Nobina Finland,178,169,94.94
+16,Nobina Finland,92,88,95.65
 69,Koiviston Auto,116,111,95.69
 125,Nobina Finland,101,97,96.04
 97V,Koiviston Auto,92,89,96.74
 111,Koiviston Auto,126,122,96.83
-159,Nobina Finland,127,123,96.85
 114,Koiviston Auto,128,124,96.88
 41,Nobina Finland,102,99,97.06
-600,Koiviston Auto,220,214,97.27
-158,Nobina Finland,132,129,97.73
+159,Nobina Finland,127,124,97.64
 63,Koiviston Auto,132,129,97.73
+600,Koiviston Auto,220,215,97.73
 98,Koiviston Auto,103,101,98.06
 70,Koiviston Auto,105,103,98.1
+158,Nobina Finland,132,130,98.48
 95,Koiviston Auto,135,133,98.52
 24,Nobina Finland,74,73,98.65
 731,Koiviston Auto,93,92,98.92
 510,Nobina Finland,187,185,98.93
-631,Koiviston Auto,100,99,99.0
 113,Koiviston Auto,129,128,99.22
 92,Koiviston Auto,132,131,99.24
 400,Koiviston Auto,337,336,99.7
@@ -197,6 +196,7 @@
 64,Pohjolan Liikenne,107,107,100.0
 633N,Pohjolan Liikenne,2,2,100.0
 633,Koiviston Auto,42,42,100.0
+631,Koiviston Auto,100,100,100.0
 625,Korsisaari,37,37,100.0
 624N,Koiviston Auto,4,4,100.0
 624,Koiviston Auto,99,99,100.0
