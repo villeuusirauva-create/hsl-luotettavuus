@@ -240,19 +240,19 @@ const GRAPHQL_URL     = "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1";
 const DIGITRANSIT_KEY = "39ad7b9a657b4f25a52465f583148f73"; // automaattisesti injektoitu
 
 const RUNKOLINJAT = [
-    { numero: "20",  nimi: "Linja 20",  reitti: "Eira – Munkkivuori",              gtfsId: "HSL:1020" },
-    { numero: "30",  nimi: "Linja 30",  reitti: "Eira – Myyrmäki",                 gtfsId: "HSL:1030" },
-    { numero: "40",  nimi: "Linja 40",  reitti: "Pelimanni – Elielinaukio",         gtfsId: "HSL:1040" },
-    { numero: "200", nimi: "Linja 200", reitti: "Elielinaukio – Espoon keskus",     gtfsId: "HSL:2200" },
-    { numero: "300", nimi: "Linja 300", reitti: "Elielinaukio – Myyrmäki",          gtfsId: "HSL:4300" },
-    { numero: "400", nimi: "Linja 400", reitti: "Kamppi – Vantaankoski",            gtfsId: "HSL:4400" },
-    { numero: "500", nimi: "Linja 500", reitti: "Itäkeskus – Munkkivuori",          gtfsId: "HSL:1500" },
-    { numero: "510", nimi: "Linja 510", reitti: "Herttoniemi – Kivenlahti",         gtfsId: "HSL:2510" },
-    { numero: "520", nimi: "Linja 520", reitti: "Matinkylä – Martinlaakso",         gtfsId: "HSL:5520" },
-    { numero: "530", nimi: "Linja 530", reitti: "Matinkylä – Myyrmäki",             gtfsId: "HSL:5530" },
-    { numero: "560", nimi: "Linja 560", reitti: "Rastila – Myyrmäki",               gtfsId: "HSL:4560" },
-    { numero: "570", nimi: "Linja 570", reitti: "Lentoasema – Mellunmäki",          gtfsId: "HSL:4570" },
-    { numero: "600", nimi: "Linja 600", reitti: "Rautatientori – Lentoasema",       gtfsId: "HSL:4600" },
+    { numero: "20",  nimi: "Linja 20",  reitti: "Ladataan...", gtfsId: "HSL:1020" },
+    { numero: "30",  nimi: "Linja 30",  reitti: "Ladataan...", gtfsId: "HSL:1030" },
+    { numero: "40",  nimi: "Linja 40",  reitti: "Ladataan...", gtfsId: "HSL:1040" },
+    { numero: "200", nimi: "Linja 200", reitti: "Ladataan...", gtfsId: "HSL:2200" },
+    { numero: "300", nimi: "Linja 300", reitti: "Ladataan...", gtfsId: "HSL:4300" },
+    { numero: "400", nimi: "Linja 400", reitti: "Ladataan...", gtfsId: "HSL:4400" },
+    { numero: "500", nimi: "Linja 500", reitti: "Ladataan...", gtfsId: "HSL:1500" },
+    { numero: "510", nimi: "Linja 510", reitti: "Ladataan...", gtfsId: "HSL:2510" },
+    { numero: "520", nimi: "Linja 520", reitti: "Ladataan...", gtfsId: "HSL:5520" },
+    { numero: "530", nimi: "Linja 530", reitti: "Ladataan...", gtfsId: "HSL:5530" },
+    { numero: "560", nimi: "Linja 560", reitti: "Ladataan...", gtfsId: "HSL:4560" },
+    { numero: "570", nimi: "Linja 570", reitti: "Ladataan...", gtfsId: "HSL:4570" },
+    { numero: "600", nimi: "Linja 600", reitti: "Ladataan...", gtfsId: "HSL:4600" },
 ];
 
 function graphqlFetch(query) {
@@ -278,7 +278,7 @@ function luoKorttiHTML(linja) {
     return `
     <div class="linja-kortti" id="kortti-${linja.numero}">
         <div class="linja-header">
-            <div class="linja-tunnus">${linja.numero}</div>
+            <div class="linja-reitti" id="reitti-${linja.numero}">${linja.reitti}</div>
             <div class="linja-info">
                 <div class="linja-nimi">${linja.nimi}</div>
                 <div class="linja-reitti">${linja.reitti}</div>
@@ -420,6 +420,18 @@ async function haeKaikkiHairiot() {
 
 async function paivitaKaikki() {
     try {
+        // Haetaan reittinimet automaattisesti
+        const reittiKysely = `{ routes(feeds: ["HSL"], transportModes: BUS) { gtfsId longName } }`;
+        const reittiData = await graphqlFetch(reittiKysely);
+        const reittinimet = {};
+        reittiData?.data?.routes?.forEach(r => { if (r.longName) reittinimet[r.gtfsId] = r.longName; });
+
+        // Päivitetään reittinimet kortteihin
+        RUNKOLINJAT.forEach(linja => {
+            const el = document.getElementById(`reitti-${linja.numero}`);
+            if (el && reittinimet[linja.gtfsId]) el.textContent = reittinimet[linja.gtfsId];
+        });
+
         const hairiot = await haeKaikkiHairiot();
 
         for (const linja of RUNKOLINJAT) {
