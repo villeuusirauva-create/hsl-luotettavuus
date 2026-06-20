@@ -237,7 +237,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 20.06.2026 11:45</div>
+        <div class="paivitys">Päivitetty 20.06.2026 13:00</div>
     </div>
 </header>
 
@@ -608,23 +608,33 @@ new Chart(ctx1, {
     }
 });
 
-// Viikonpäiväanalyysi
+// Viikonpäiväanalyysi (operaattoreittain)
+const viikonpaivaOperData = {"Nobina Finland": {"Ma": 98.9, "Ti": 99.0, "Ke": 99.1, "To": 99.0, "Pe": 98.8, "La": 98.8, "Su": 99.2}, "Koiviston Auto": {"Ma": 99.1, "Ti": 98.9, "Ke": 98.8, "To": 99.0, "Pe": 99.1, "La": 99.0, "Su": 98.9}, "Pohjolan Liikenne": {"Ma": 98.9, "Ti": 98.5, "Ke": 98.7, "To": 98.7, "Pe": 98.4, "La": 99.0, "Su": 99.0}, "Tammelundin Liikenne": {"Ma": 99.6, "Ti": 99.5, "Ke": 99.6, "To": 99.6, "Pe": 99.6, "La": 99.6, "Su": 99.6}};
+const operVarit = {
+    "Nobina Finland": "#0071bc",
+    "Koiviston Auto": "#00985f",
+    "Pohjolan Liikenne": "#8c4799",
+    "Tammelundin Liikenne": "#ff6319"
+};
 const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
 new Chart(ctxVko, {
-    type: 'bar',
+    type: 'line',
     data: {
         labels: ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"],
-        datasets: [{
-            label: 'Luotettavuus %',
-            data: [99.0, 98.9, 98.9, 98.9, 98.8, 99.0, 99.1],
-            backgroundColor: '#0071bc',
-            borderRadius: 6,
-        }]
+        datasets: Object.entries(viikonpaivaOperData).map(([oper, data]) => ({
+            label: oper,
+            data: Object.values(data),
+            borderColor: operVarit[oper] || '#999',
+            backgroundColor: 'transparent',
+            borderWidth: 2.5,
+            pointRadius: 3,
+            tension: 0.3,
+        }))
     },
     options: {
         responsive: true,
         plugins: {
-            legend: { display: false },
+            legend: { display: true, position: 'bottom' },
             tooltip: {
                 callbacks: {
                     label: ctx => ctx.parsed.y.toFixed(2) + ' %'
