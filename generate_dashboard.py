@@ -165,6 +165,16 @@ def hae_reittinimet(api_avain):
             })
     return sorted(halytyslinjat, key=lambda x: x["paiva"], reverse=True)
 
+def laske_viikonpaivat(trendi_df):
+    """Laskee keskimääräisen luotettavuuden viikonpäivittäin, viimeiset 12kk."""
+    if trendi_df.empty:
+        return {}
+    raja = trendi_df["paiva"].max() - pd.Timedelta(days=365)
+    data = trendi_df[trendi_df["paiva"] >= raja].copy()
+    data["viikonpaiva"] = data["paiva"].dt.dayofweek  # 0=ma, 6=su
+    keskiarvot = data.groupby("viikonpaiva")["luotettavuus"].mean()
+    nimet = ["Ma","Ti","Ke","To","Pe","La","Su"]
+    return {nimet[i]: round(keskiarvot.get(i, 0), 1) for i in range(7)}
 
 def laske_kuukausihistoria(trendi_df):
     """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
@@ -224,7 +234,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -639,6 +649,12 @@ def generoi_html(trendi_df, reittinimet={}):
         </div>
     </div>
 
+    <!-- Viikonpäiväanalyysi -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Luotettavuus viikonpäivittäin <span>12 kk keskiarvo</span></div>
+        <canvas id="viikonpaivaChart"></canvas>
+    </div>
+
     <!-- Metodiikka -->
     <div class="metodiikka">
         <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
@@ -697,6 +713,51 @@ new Chart(ctx1, {{
                     color: '#6b8caa',
                     font: {{ size: 10 }},
                     maxTicksLimit: 8
+                }},
+                grid: {{ display: false }}
+            }}
+        }}
+    }}
+}});
+
+// Viikonpäiväanalyysi
+const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
+new Chart(ctxVko, {{
+    type: 'bar',
+    data: {{
+        labels: {viikonpaiva_labels},
+        datasets: [{{
+            label: 'Luotettavuus %',
+            data: {viikonpaiva_arvot},
+            backgroundColor: '#0071bc',
+            borderRadius: 6,
+        }}]
+    }},
+    options: {{
+        responsive: true,
+        plugins: {{
+            legend: {{ display: false }},
+            tooltip: {{
+                callbacks: {{
+                    label: ctx => ctx.parsed.y.toFixed(2) + ' %'
+                }}
+            }}
+        }},
+        scales: {{
+            y: {{
+                min: 95,
+                max: 100,
+                ticks: {{
+                    callback: v => v + ' %',
+                    color: '#6b8caa',
+                    font: {{ size: 11 }}
+                }},
+                grid: {{ color: 'rgba(0,113,188,0.08)' }}
+            }},
+            x: {{
+                ticks: {{
+                    color: '#6b8caa',
+                    font: {{ size: 12 }}
                 }},
                 grid: {{ display: false }}
             }}
@@ -834,7 +895,9 @@ def main():
     api_avain = os.environ.get("DIGITRANSIT_API_KEY", "")
     reittinimet = hae_reittinimet(api_avain)
     print(f"  ✓ {len(reittinimet)} reittinimeä haettu")
-    html = generoi_html(trendi, reittinimet)
+    viikonpaivat = laske_viikonpaivat(trendi)
+    print(f"  ✓ Viikonpäiväkeskiarvot laskettu")
+    html = generoi_html(trendi, reittinimet, viikonpaivat)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
