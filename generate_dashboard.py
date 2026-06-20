@@ -258,8 +258,12 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
 
     viikonpaiva_labels = json.dumps(list(viikonpaivat.keys()))
     viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
+    
     kellonaika_labels  = json.dumps(list(kellonajat.keys()))
     kellonaika_arvot   = json.dumps(list(kellonajat.values()))
+
+    alkupaiva_data = trendi_df["paiva"].min().strftime("%-d.%-m.%Y") if not trendi_df.empty else ""
+    alkupaiva_kello = "19.6.2026"
     
     # Operaattoritrendi JSON
     oper_data = {}
@@ -622,11 +626,11 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
     <!-- Kuvaajat -->
     <div class="grid-2">
         <div class="kortti">
-            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span></div>
+            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div
             <canvas id="kokonaisChart"></canvas>
         </div>
         <div class="kortti">
-            <div class="kortti-otsikko">Operaattorikohtainen trendi <span>3 kk</span></div>
+            <div class="kortti-otsikko">Operaattorikohtainen trendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
             <canvas id="operChart"></canvas>
         </div>
     </div>
@@ -664,13 +668,13 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
 
     <!-- Viikonpäiväanalyysi -->
     <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Luotettavuus viikonpäivittäin <span>12 kk keskiarvo</span></div>
+        <div class="kortti-otsikko">Luotettavuus viikonpäivittäin <span>12 kk keskiarvo</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
         <canvas id="viikonpaivaChart"></canvas>
     </div>
 
     <!-- Kellonaika-analyysi -->
     <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Luotettavuus kellonajan mukaan <span>kumulatiivinen keskiarvo</span></div>
+        <div class="kortti-otsikko">Luotettavuus kellonajan mukaan <span>kumulatiivinen keskiarvo</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_kello}</i></div>
         <canvas id="kellonaikaChart"></canvas>
     </div>
 
