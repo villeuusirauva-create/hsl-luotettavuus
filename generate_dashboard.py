@@ -764,7 +764,7 @@ new Chart(ctxVko, {{
         }},
         scales: {{
             y: {{
-                min: 95,
+                min: 97,
                 max: 100,
                 ticks: {{
                     callback: v => v + ' %',
@@ -809,7 +809,7 @@ new Chart(ctxKlo, {{
         }},
         scales: {{
             y: {{
-                min: 90,
+                min: 95,
                 max: 100,
                 ticks: {{
                     callback: v => v + ' %',
