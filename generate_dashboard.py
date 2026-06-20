@@ -758,10 +758,10 @@ new Chart(ctx1, {{
 // Viikonpäiväanalyysi (operaattoreittain)
 const viikonpaivaOperData = {viikonpaiva_oper_json};
 const operVarit = {{
-    "Nobina Finland": "#0071bc",
-    "Koiviston Auto": "#00985f",
-    "Pohjolan Liikenne": "#8c4799",
-    "Tammelundin Liikenne": "#ff6319"
+    "Nobina Finland": "#00a650",
+    "Koiviston Auto": "#ff6600",
+    "Pohjolan Liikenne": "#7b2d8b",
+    "Tammelundin Liikenne": "#0071bc"
 }};
 const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
 new Chart(ctxVko, {{
