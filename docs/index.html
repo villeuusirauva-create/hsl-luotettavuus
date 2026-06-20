@@ -237,7 +237,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 20.06.2026 09:41</div>
+        <div class="paivitys">Päivitetty 20.06.2026 10:40</div>
     </div>
 </header>
 
@@ -531,6 +531,12 @@
         </div>
     </div>
 
+    <!-- Viikonpäiväanalyysi -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Luotettavuus viikonpäivittäin <span>12 kk keskiarvo</span></div>
+        <canvas id="viikonpaivaChart"></canvas>
+    </div>
+
     <!-- Metodiikka -->
     <div class="metodiikka">
         <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
@@ -589,6 +595,51 @@ new Chart(ctx1, {
                     color: '#6b8caa',
                     font: { size: 10 },
                     maxTicksLimit: 8
+                },
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+// Viikonpäiväanalyysi
+const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
+new Chart(ctxVko, {
+    type: 'bar',
+    data: {
+        labels: ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"],
+        datasets: [{
+            label: 'Luotettavuus %',
+            data: [99.0, 98.9, 98.9, 98.9, 98.8, 99.0, 99.1],
+            backgroundColor: '#0071bc',
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.parsed.y.toFixed(2) + ' %'
+                }
+            }
+        },
+        scales: {
+            y: {
+                min: 95,
+                max: 100,
+                ticks: {
+                    callback: v => v + ' %',
+                    color: '#6b8caa',
+                    font: { size: 11 }
+                },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: {
+                ticks: {
+                    color: '#6b8caa',
+                    font: { size: 12 }
                 },
                 grid: { display: false }
             }
