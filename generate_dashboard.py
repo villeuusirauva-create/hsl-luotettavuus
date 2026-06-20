@@ -174,15 +174,25 @@ def hae_reittinimet(api_avain):
     return sorted(halytyslinjat, key=lambda x: x["paiva"], reverse=True)
 
 def laske_viikonpaivat(trendi_df):
-    """Laskee keskimääräisen luotettavuuden viikonpäivittäin, viimeiset 12kk."""
+    """Laskee keskimääräisen luotettavuuden viikonpäivittäin, kokonaisuutena ja per operaattori, viimeiset 12kk."""
     if trendi_df.empty:
-        return {}
+        return {}, {}
     raja = trendi_df["paiva"].max() - pd.Timedelta(days=365)
     data = trendi_df[trendi_df["paiva"] >= raja].copy()
     data["viikonpaiva"] = data["paiva"].dt.dayofweek  # 0=ma, 6=su
-    keskiarvot = data.groupby("viikonpaiva")["luotettavuus"].mean()
     nimet = ["Ma","Ti","Ke","To","Pe","La","Su"]
-    return {nimet[i]: round(keskiarvot.get(i, 0), 1) for i in range(7)}
+
+    keskiarvot = data.groupby("viikonpaiva")["luotettavuus"].mean()
+    kokonais = {nimet[i]: round(keskiarvot.get(i, 0), 1) for i in range(7)}
+
+    operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"]
+    oper_data = {}
+    for oper in operaattorit:
+        if oper in data.columns:
+            ka = data.groupby("viikonpaiva")[oper].mean()
+            oper_data[oper] = {nimet[i]: round(ka.get(i, 0), 1) for i in range(7)}
+
+    return kokonais, oper_data
 
 def laske_kuukausihistoria(trendi_df):
     """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
@@ -242,7 +252,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -264,6 +274,8 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
 
     alkupaiva_data = trendi_df["paiva"].min().strftime("%-d.%-m.%Y") if not trendi_df.empty else ""
     alkupaiva_kello = "19.6.2026"
+
+    viikonpaiva_oper_json = json.dumps(viikonpaivat_oper)
     
     # Operaattoritrendi JSON
     oper_data = {}
@@ -743,23 +755,33 @@ new Chart(ctx1, {{
     }}
 }});
 
-// Viikonpäiväanalyysi
+// Viikonpäiväanalyysi (operaattoreittain)
+const viikonpaivaOperData = {viikonpaiva_oper_json};
+const operVarit = {{
+    "Nobina Finland": "#0071bc",
+    "Koiviston Auto": "#00985f",
+    "Pohjolan Liikenne": "#8c4799",
+    "Tammelundin Liikenne": "#ff6319"
+}};
 const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
 new Chart(ctxVko, {{
-    type: 'bar',
+    type: 'line',
     data: {{
         labels: {viikonpaiva_labels},
-        datasets: [{{
-            label: 'Luotettavuus %',
-            data: {viikonpaiva_arvot},
-            backgroundColor: '#0071bc',
-            borderRadius: 6,
-        }}]
+        datasets: Object.entries(viikonpaivaOperData).map(([oper, data]) => ({{
+            label: oper,
+            data: Object.values(data),
+            borderColor: operVarit[oper] || '#999',
+            backgroundColor: 'transparent',
+            borderWidth: 2.5,
+            pointRadius: 3,
+            tension: 0.3,
+        }}))
     }},
     options: {{
         responsive: true,
         plugins: {{
-            legend: {{ display: false }},
+            legend: {{ display: true, position: 'bottom' }},
             tooltip: {{
                 callbacks: {{
                     label: ctx => ctx.parsed.y.toFixed(2) + ' %'
@@ -963,11 +985,11 @@ def main():
     api_avain = os.environ.get("DIGITRANSIT_API_KEY", "")
     reittinimet = hae_reittinimet(api_avain)
     print(f"  ✓ {len(reittinimet)} reittinimeä haettu")
-    viikonpaivat = laske_viikonpaivat(trendi)
+    viikonpaivat, viikonpaivat_oper = laske_viikonpaivat(trendi)
     print(f"  ✓ Viikonpäiväkeskiarvot laskettu")
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
-    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat)
+    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
