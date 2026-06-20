@@ -626,7 +626,7 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
     <!-- Kuvaajat -->
     <div class="grid-2">
         <div class="kortti">
-            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div
+            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
             <canvas id="kokonaisChart"></canvas>
         </div>
         <div class="kortti">
