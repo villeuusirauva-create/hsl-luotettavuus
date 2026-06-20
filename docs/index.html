@@ -237,7 +237,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 20.06.2026 13:00</div>
+        <div class="paivitys">Päivitetty 20.06.2026 13:08</div>
     </div>
 </header>
 
@@ -359,16 +359,16 @@
                 <td class="muted">51 / 55</td>
             </tr>
             <tr>
-                <td class="linja-nimi">901K<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">Luoma-Masala-Gesterby-Hirsala</span></td>
-                <td>Pohjolan Liikenne</td>
-                <td style="color:#d97706;font-weight:600">93.3 %</td>
-                <td class="muted">14 / 15</td>
-            </tr>
-            <tr>
                 <td class="linja-nimi">903K<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">Kirkkonummi-Kantvik-Hila</span></td>
                 <td>Pohjolan Liikenne</td>
                 <td style="color:#d97706;font-weight:600">93.3 %</td>
                 <td class="muted">83 / 89</td>
+            </tr>
+            <tr>
+                <td class="linja-nimi">901K<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">Luoma-Masala-Gesterby-Hirsala</span></td>
+                <td>Pohjolan Liikenne</td>
+                <td style="color:#d97706;font-weight:600">93.3 %</td>
+                <td class="muted">14 / 15</td>
             </tr>
             <tr>
                 <td class="linja-nimi">713<span style="font-size:11px;color:#6b8caa;font-weight:400;margin-left:6px;">Hakunilan palvelulinja</span></td>
@@ -611,10 +611,10 @@ new Chart(ctx1, {
 // Viikonpäiväanalyysi (operaattoreittain)
 const viikonpaivaOperData = {"Nobina Finland": {"Ma": 98.9, "Ti": 99.0, "Ke": 99.1, "To": 99.0, "Pe": 98.8, "La": 98.8, "Su": 99.2}, "Koiviston Auto": {"Ma": 99.1, "Ti": 98.9, "Ke": 98.8, "To": 99.0, "Pe": 99.1, "La": 99.0, "Su": 98.9}, "Pohjolan Liikenne": {"Ma": 98.9, "Ti": 98.5, "Ke": 98.7, "To": 98.7, "Pe": 98.4, "La": 99.0, "Su": 99.0}, "Tammelundin Liikenne": {"Ma": 99.6, "Ti": 99.5, "Ke": 99.6, "To": 99.6, "Pe": 99.6, "La": 99.6, "Su": 99.6}};
 const operVarit = {
-    "Nobina Finland": "#0071bc",
-    "Koiviston Auto": "#00985f",
-    "Pohjolan Liikenne": "#8c4799",
-    "Tammelundin Liikenne": "#ff6319"
+    "Nobina Finland": "#00a650",
+    "Koiviston Auto": "#ff6600",
+    "Pohjolan Liikenne": "#7b2d8b",
+    "Tammelundin Liikenne": "#0071bc"
 };
 const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
 new Chart(ctxVko, {
