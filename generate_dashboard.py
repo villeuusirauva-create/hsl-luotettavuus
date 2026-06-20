@@ -248,6 +248,9 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}):
         "luotettavuus": trendi_df["luotettavuus"].tolist(),
     })
 
+    viikonpaiva_labels = json.dumps(list(viikonpaivat.keys()))
+    viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
+    
     # Operaattoritrendi JSON
     oper_data = {}
     for oper in TRENDI_OPERAATTORIT:
