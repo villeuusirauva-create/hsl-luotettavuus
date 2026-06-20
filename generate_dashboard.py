@@ -40,6 +40,14 @@ def lataa_trendi():
     df["paiva"] = pd.to_datetime(df["paiva"])
     return df.sort_values("paiva").reset_index(drop=True)
 
+def laske_kellonaika():
+    """Lataa kellonaika.csv ja laskee keskimääräisen luotettavuuden per tunti."""
+    polku = os.path.join(TULOSKANSIO, "kellonaika.csv")
+    if not os.path.exists(polku):
+        return {}
+    df = pd.read_csv(polku)
+    keskiarvot = df.groupby("tunti")["luotettavuus"].mean()
+    return {f"{int(t):02d}": round(keskiarvot.get(t, 0), 1) for t in range(24)}
 
 def lataa_linjadata(paivamaara):
     """Lataa linjakohtaisen datan annetulle päivälle."""
@@ -234,7 +242,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -250,6 +258,8 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}):
 
     viikonpaiva_labels = json.dumps(list(viikonpaivat.keys()))
     viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
+    kellonaika_labels  = json.dumps(list(kellonajat.keys()))
+    kellonaika_arvot   = json.dumps(list(kellonajat.values()))
     
     # Operaattoritrendi JSON
     oper_data = {}
@@ -658,6 +668,12 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}):
         <canvas id="viikonpaivaChart"></canvas>
     </div>
 
+    <!-- Kellonaika-analyysi -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Luotettavuus kellonajan mukaan <span>kumulatiivinen keskiarvo</span></div>
+        <canvas id="kellonaikaChart"></canvas>
+    </div>
+
     <!-- Metodiikka -->
     <div class="metodiikka">
         <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
@@ -761,6 +777,51 @@ new Chart(ctxVko, {{
                 ticks: {{
                     color: '#6b8caa',
                     font: {{ size: 12 }}
+                }},
+                grid: {{ display: false }}
+            }}
+        }}
+    }}
+}});
+
+// Kellonaika-analyysi
+const ctxKlo = document.getElementById('kellonaikaChart').getContext('2d');
+new Chart(ctxKlo, {{
+    type: 'bar',
+    data: {{
+        labels: {kellonaika_labels},
+        datasets: [{{
+            label: 'Luotettavuus %',
+            data: {kellonaika_arvot},
+            backgroundColor: '#00985f',
+            borderRadius: 6,
+        }}]
+    }},
+    options: {{
+        responsive: true,
+        plugins: {{
+            legend: {{ display: false }},
+            tooltip: {{
+                callbacks: {{
+                    label: ctx => ctx.parsed.y.toFixed(2) + ' %'
+                }}
+            }}
+        }},
+        scales: {{
+            y: {{
+                min: 90,
+                max: 100,
+                ticks: {{
+                    callback: v => v + ' %',
+                    color: '#6b8caa',
+                    font: {{ size: 11 }}
+                }},
+                grid: {{ color: 'rgba(0,113,188,0.08)' }}
+            }},
+            x: {{
+                ticks: {{
+                    color: '#6b8caa',
+                    font: {{ size: 10 }}
                 }},
                 grid: {{ display: false }}
             }}
@@ -900,7 +961,9 @@ def main():
     print(f"  ✓ {len(reittinimet)} reittinimeä haettu")
     viikonpaivat = laske_viikonpaivat(trendi)
     print(f"  ✓ Viikonpäiväkeskiarvot laskettu")
-    html = generoi_html(trendi, reittinimet, viikonpaivat)
+    kellonajat = laske_kellonaika()
+    print(f"  ✓ Kellonaikakeskiarvot laskettu")
+    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
