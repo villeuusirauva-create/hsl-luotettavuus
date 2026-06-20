@@ -417,7 +417,29 @@ def tallenna_tulokset(paiva, t):
     trendi.to_csv(trendi_polku, index=False, encoding="utf-8-sig")
     print(f"📈 Trendidata    → {trendi_polku}  ({len(trendi)} päivää)")
     return trendi
- 
+
+def tallenna_kellonaikadata(paiva, trips_df):
+    """Laskee ja tallentaa luotettavuuden tunneittain, kumulatiivinen tiedosto."""
+    df = trips_df.copy()
+    df["tunti"] = df["lahtoaika_lyhyt"].str[:2].astype(int)
+
+    erittely = df.groupby("tunti").agg(
+        suunnitellut=("ajettu", "count"),
+        ajetut=("ajettu", "sum"),
+    ).reset_index()
+    erittely["luotettavuus"] = (erittely["ajetut"] / erittely["suunnitellut"] * 100).round(2)
+    erittely["paiva"] = paiva.strftime("%Y-%m-%d")
+
+    polku = os.path.join(TULOSKANSIO, "kellonaika.csv")
+    if os.path.exists(polku):
+        vanha = pd.read_csv(polku)
+        vanha = vanha[vanha["paiva"] != paiva.strftime("%Y-%m-%d")]  # poistetaan jos sama päivä ajettu uudelleen
+        yhdistetty = pd.concat([vanha, erittely], ignore_index=True)
+    else:
+        yhdistetty = erittely
+
+    yhdistetty.to_csv(polku, index=False, encoding="utf-8-sig")
+    print(f"💾 Kellonaikadata → {polku}")
  
 def piirra_kuvaajat(trendi_df):
     if len(trendi_df) < 2:
@@ -574,10 +596,12 @@ def main():
  
     tulos  = laske_luotettavuus(suunnitellut, ajetut)
     tulosta_raportti(paiva, tulos)
- 
+
     trendi = tallenna_tulokset(paiva, tulos)
     piirra_kuvaajat(trendi)
- 
+
+    tallenna_kellonaikadata(paiva, tulos["trips_df"])
+
     print()
     print(f"✅  Valmis! Tulokset: {os.path.abspath(TULOSKANSIO)}")
     print()
