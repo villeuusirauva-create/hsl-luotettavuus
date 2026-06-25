@@ -2082,7 +2082,7 @@
 1052_20260624_Ke_2_0710,1052,52,Helsingin seudun liikenne,07:10:00,07:10,1052,1052|07:10,True,Nobina Finland
 1052_20260624_Ke_2_0720,1052,52,Helsingin seudun liikenne,07:20:00,07:20,1052,1052|07:20,True,Nobina Finland
 1052_20260624_Ke_2_0729,1052,52,Helsingin seudun liikenne,07:29:00,07:29,1052,1052|07:29,True,Nobina Finland
-1052_20260624_Ke_2_0739,1052,52,Helsingin seudun liikenne,07:39:00,07:39,1052,1052|07:39,False,Nobina Finland
+1052_20260624_Ke_2_0739,1052,52,Helsingin seudun liikenne,07:39:00,07:39,1052,1052|07:39,True,Nobina Finland
 1052_20260624_Ke_2_0748,1052,52,Helsingin seudun liikenne,07:48:00,07:48,1052,1052|07:48,True,Nobina Finland
 1052_20260624_Ke_2_0758,1052,52,Helsingin seudun liikenne,07:58:00,07:58,1052,1052|07:58,True,Nobina Finland
 1052_20260624_Ke_2_0809,1052,52,Helsingin seudun liikenne,08:09:00,08:09,1052,1052|08:09,True,Nobina Finland
@@ -9334,7 +9334,7 @@
 2163K_20260624_Ke_1_0547,2163K,163K,Helsingin seudun liikenne,05:47:00,05:47,2163K,2163K|05:47,True,Pohjolan Liikenne
 2163K_20260624_Ke_1_0647,2163K,163K,Helsingin seudun liikenne,06:47:00,06:47,2163K,2163K|06:47,True,Pohjolan Liikenne
 2163K_20260624_Ke_1_0716,2163K,163K,Helsingin seudun liikenne,07:16:00,07:16,2163K,2163K|07:16,True,Pohjolan Liikenne
-2163K_20260624_Ke_1_0746,2163K,163K,Helsingin seudun liikenne,07:46:00,07:46,2163K,2163K|07:46,False,Pohjolan Liikenne
+2163K_20260624_Ke_1_0746,2163K,163K,Helsingin seudun liikenne,07:46:00,07:46,2163K,2163K|07:46,True,Pohjolan Liikenne
 2163K_20260624_Ke_1_0815,2163K,163K,Helsingin seudun liikenne,08:15:00,08:15,2163K,2163K|08:15,True,Pohjolan Liikenne
 2163K_20260624_Ke_1_0845,2163K,163K,Helsingin seudun liikenne,08:45:00,08:45,2163K,2163K|08:45,True,Pohjolan Liikenne
 2163K_20260624_Ke_1_0915,2163K,163K,Helsingin seudun liikenne,09:15:00,09:15,2163K,2163K|09:15,True,Pohjolan Liikenne
@@ -13642,7 +13642,7 @@
 4446_20260624_Ke_2_0626,4446,446,Helsingin seudun liikenne,06:26:00,06:26,4446,4446|06:26,True,Korsisaari
 4446_20260624_Ke_2_0700,4446,446,Helsingin seudun liikenne,07:00:00,07:00,4446,4446|07:00,True,Korsisaari
 4446_20260624_Ke_2_0726,4446,446,Helsingin seudun liikenne,07:26:00,07:26,4446,4446|07:26,True,Korsisaari
-4446_20260624_Ke_2_0800,4446,446,Helsingin seudun liikenne,08:00:00,08:00,4446,4446|08:00,False,Korsisaari
+4446_20260624_Ke_2_0800,4446,446,Helsingin seudun liikenne,08:00:00,08:00,4446,4446|08:00,True,Korsisaari
 4446_20260624_Ke_2_0830,4446,446,Helsingin seudun liikenne,08:30:00,08:30,4446,4446|08:30,True,Korsisaari
 4446_20260624_Ke_2_0900,4446,446,Helsingin seudun liikenne,09:00:00,09:00,4446,4446|09:00,False,Korsisaari
 4446_20260624_Ke_2_0944,4446,446,Helsingin seudun liikenne,09:44:00,09:44,4446,4446|09:44,False,Korsisaari
@@ -13650,7 +13650,7 @@
 4447_20260624_Ke_1_0605,4447,447,Helsingin seudun liikenne,06:05:00,06:05,4447,4447|06:05,True,Korsisaari
 4447_20260624_Ke_1_0636,4447,447,Helsingin seudun liikenne,06:36:00,06:36,4447,4447|06:36,False,Korsisaari
 4447_20260624_Ke_1_0707,4447,447,Helsingin seudun liikenne,07:07:00,07:07,4447,4447|07:07,True,Korsisaari
-4447_20260624_Ke_1_0736,4447,447,Helsingin seudun liikenne,07:36:00,07:36,4447,4447|07:36,False,Korsisaari
+4447_20260624_Ke_1_0736,4447,447,Helsingin seudun liikenne,07:36:00,07:36,4447,4447|07:36,True,Korsisaari
 4447_20260624_Ke_1_0809,4447,447,Helsingin seudun liikenne,08:09:00,08:09,4447,4447|08:09,True,Korsisaari
 4447_20260624_Ke_1_0833,4447,447,Helsingin seudun liikenne,08:33:00,08:33,4447,4447|08:33,False,Korsisaari
 4447_20260624_Ke_1_0926,4447,447,Helsingin seudun liikenne,09:26:00,09:26,4447,4447|09:26,False,Korsisaari
@@ -15704,7 +15704,7 @@
 4717_20260624_Ke_2_0642,4717,717,Helsingin seudun liikenne,06:42:00,06:42,4717,4717|06:42,True,Koiviston Auto
 4717_20260624_Ke_2_0705,4717,717,Helsingin seudun liikenne,07:05:00,07:05,4717,4717|07:05,True,Koiviston Auto
 4717_20260624_Ke_2_0724,4717,717,Helsingin seudun liikenne,07:24:00,07:24,4717,4717|07:24,True,Koiviston Auto
-4717_20260624_Ke_2_0745,4717,717,Helsingin seudun liikenne,07:45:00,07:45,4717,4717|07:45,False,Koiviston Auto
+4717_20260624_Ke_2_0745,4717,717,Helsingin seudun liikenne,07:45:00,07:45,4717,4717|07:45,True,Koiviston Auto
 4717_20260624_Ke_2_0805,4717,717,Helsingin seudun liikenne,08:05:00,08:05,4717,4717|08:05,True,Koiviston Auto
 4717_20260624_Ke_2_0825,4717,717,Helsingin seudun liikenne,08:25:00,08:25,4717,4717|08:25,True,Koiviston Auto
 4717_20260624_Ke_2_0845,4717,717,Helsingin seudun liikenne,08:45:00,08:45,4717,4717|08:45,True,Koiviston Auto
@@ -16429,7 +16429,7 @@
 5520_20260624_Ke_2_0710,5520,520,Helsingin seudun liikenne,07:10:00,07:10,5520,5520|07:10,True,Pohjolan Liikenne
 5520_20260624_Ke_2_0719,5520,520,Helsingin seudun liikenne,07:19:00,07:19,5520,5520|07:19,True,Pohjolan Liikenne
 5520_20260624_Ke_2_0729,5520,520,Helsingin seudun liikenne,07:29:00,07:29,5520,5520|07:29,True,Pohjolan Liikenne
-5520_20260624_Ke_2_0739,5520,520,Helsingin seudun liikenne,07:39:00,07:39,5520,5520|07:39,False,Pohjolan Liikenne
+5520_20260624_Ke_2_0739,5520,520,Helsingin seudun liikenne,07:39:00,07:39,5520,5520|07:39,True,Pohjolan Liikenne
 5520_20260624_Ke_2_0749,5520,520,Helsingin seudun liikenne,07:49:00,07:49,5520,5520|07:49,True,Pohjolan Liikenne
 5520_20260624_Ke_2_0800,5520,520,Helsingin seudun liikenne,08:00:00,08:00,5520,5520|08:00,True,Pohjolan Liikenne
 5520_20260624_Ke_2_0809,5520,520,Helsingin seudun liikenne,08:09:00,08:09,5520,5520|08:09,True,Pohjolan Liikenne
