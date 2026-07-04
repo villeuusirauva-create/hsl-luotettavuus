@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Luotettavuus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="suoriutuminen_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --yellow:    #d97706;
+            --red:       #dc2626;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; padding: 8px 0; }
+        .nav-linkki:hover { text-decoration: underline; }
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .hero-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .osio-otsikko { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 16px 0; display: flex; align-items: center; gap: 10px; }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+        canvas { max-height: 300px; }
+        .hajonta-grid { display: grid; gap: 8px; margin-top: 8px; }
+        .hajonta-rivi { display: flex; align-items: center; gap: 10px; }
+        .hajonta-label { width: 150px; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .hajonta-bar-bg { flex: 1; height: 22px; background: #e8f4fd; border-radius: 4px; overflow: hidden; }
+        .hajonta-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: white; white-space: nowrap; transition: width 0.4s; }
+        .hajonta-arvo { width: 60px; text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; }
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Luotettavuus</h1>
+                <div class="header-sub">Operaattorikohtainen luotettavuuskehitys 2017–nykyhetki</div>
+            </div>
+        </div>
+        <div class="paivitys" id="paivitys-aika"></div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+    <div class="hero-grid" id="hero-grid"></div>
+    <div class="osio-otsikko">Kehitys 2017–nykyhetki</div>
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Koko HSL – vuositaso</div>
+            <div class="kortti-alateksti">Kaikkien operaattoreiden painottamaton keskiarvo</div>
+            <canvas id="chart-historia-hsl"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Operaattoreittain – vuositaso</div>
+            <div class="kortti-alateksti">Kukin operaattori erikseen, 2017–nykyhetki</div>
+            <canvas id="chart-historia-oper"></canvas>
+        </div>
+    </div>
+    <div class="osio-otsikko">Lähihistoria – viimeiset 12 kuukautta</div>
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Koko HSL – kuukausitaso</div>
+            <div class="kortti-alateksti">Kaikkien operaattoreiden kuukausikeskiarvo</div>
+            <canvas id="chart-12kk-hsl"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Operaattoreittain – kuukausitaso</div>
+            <div class="kortti-alateksti">Aktiiviset operaattorit, viimeiset 12kk</div>
+            <canvas id="chart-12kk-oper"></canvas>
+        </div>
+    </div>
+    <div class="osio-otsikko">Viimeisin kuukausi – operaattorivertailu</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko" id="hajonta-otsikko"></div>
+        <div class="kortti-alateksti">Viimeisimmän saatavilla olevan kuukauden tulos</div>
+        <div class="hajonta-grid" id="hajonta-grid"></div>
+    </div>
+    <div class="info-teksti">
+        <strong>Mittausmetodista:</strong> Luotettavuus kuvaa sanktioidun osuuden käänteislukua –
+        mitä lähempänä 100%, sen vähemmän ajamattomia lähtöjä operaattorilla on ollut suhteessa
+        suunniteltuihin. Pohjolan kaupunkiliikenne ja Transdev näkyvät historiassa mutta ovat
+        sittemmin yhdistyneet tai poistuneet markkinoilta.
+    </div>
+</main>
+<script>
+// Kaikki data tulee suoriutuminen_data.js -tiedostosta (SUORIUTUMINEN-muuttuja)
+const D = SUORIUTUMINEN.luotettavuus;
+const VARIT = SUORIUTUMINEN.varit;
+const AKTIIVISET = SUORIUTUMINEN.aktiiviset;
+const KAIKKI = SUORIUTUMINEN.kaikki_oper;
+
+// Päivitysaika
+document.getElementById('paivitys-aika').textContent =
+    'Päivitetty ' + SUORIUTUMINEN.paivitetty;
+
+// ── APUFUNKTIOT ──────────────────────────────────────────────
+function arvoVari(v) {
+    if (v >= 99.5) return '#16a34a';
+    if (v >= 98.5) return '#d97706';
+    return '#dc2626';
+}
+
+function luoOptions(yMin, yMax) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font:{size:11}, padding:12, boxWidth:16 } },
+            tooltip: { callbacks: { label: ctx => ctx.parsed.y !== null
+                ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} %` : null } }
+        },
+        scales: {
+            x: { ticks: { color:'#6b8caa', font:{size:10} }, grid:{display:false} },
+            y: {
+                min: yMin, max: yMax,
+                ticks: { color:'#6b8caa', font:{size:11}, callback: v => v.toFixed(1)+' %' },
+                grid: { color:'rgba(0,113,188,0.08)' }
+            }
+        }
+    };
+}
+
+// ── HERO ─────────────────────────────────────────────────────
+const heroGrid = document.getElementById('hero-grid');
+
+// HSL yhteensä
+heroGrid.innerHTML = `
+    <div class="hero-kortti">
+        <div class="hero-label">Koko HSL – viimeisin</div>
+        <div class="hero-arvo" style="color:${arvoVari(D.hsl_viimeisin)}">${D.hsl_viimeisin.toFixed(2)} %</div>
+        <div class="hero-sub">${D.hsl_kk}</div>
+    </div>`;
+
+AKTIIVISET.forEach(op => {
+    if (!D.hero[op]) return;
+    const h = D.hero[op];
+    heroGrid.innerHTML += `
+        <div class="hero-kortti">
+            <div class="hero-label">
+                <span class="hero-dot" style="background:${VARIT[op]}"></span>${op}
+            </div>
+            <div class="hero-arvo" style="color:${arvoVari(h.arvo)}">${h.arvo.toFixed(2)} %</div>
+            <div class="hero-sub">${h.kk}</div>
+        </div>`;
+});
+
+// ── KUVAAJA 1: Historia HSL ───────────────────────────────────
+new Chart(document.getElementById('chart-historia-hsl'), {
+    type: 'line',
+    data: {
+        labels: D.vuodet,
+        datasets: [{
+            label: 'Koko HSL',
+            data: D.vuosi_kaikki,
+            borderColor: '#0071bc',
+            backgroundColor: 'rgba(0,113,188,0.08)',
+            borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true,
+        }]
+    },
+    options: luoOptions(98.5, 100.2),
+});
+
+// ── KUVAAJA 2: Historia operaattoreittain ─────────────────────
+new Chart(document.getElementById('chart-historia-oper'), {
+    type: 'line',
+    data: {
+        labels: D.vuodet,
+        datasets: KAIKKI.filter(op => D.vuosi_oper[op]).map(op => ({
+            label: op,
+            data: D.vuosi_oper[op],
+            borderColor: VARIT[op],
+            borderWidth: AKTIIVISET.includes(op) ? 2.5 : 1.5,
+            borderDash: AKTIIVISET.includes(op) ? undefined : [4,3],
+            pointRadius: 2, tension: 0.3, fill: false, spanGaps: false,
+        }))
+    },
+    options: luoOptions(98.5, 100.2),
+});
+
+// ── KUVAAJA 3: 12kk HSL ──────────────────────────────────────
+new Chart(document.getElementById('chart-12kk-hsl'), {
+    type: 'line',
+    data: {
+        labels: D.kk_labels,
+        datasets: [{
+            label: 'Koko HSL',
+            data: D.kk_kaikki,
+            borderColor: '#0071bc',
+            backgroundColor: 'rgba(0,113,188,0.08)',
+            borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true,
+        }]
+    },
+    options: luoOptions(98.5, 100.2),
+});
+
+// ── KUVAAJA 4: 12kk operaattoreittain ────────────────────────
+new Chart(document.getElementById('chart-12kk-oper'), {
+    type: 'line',
+    data: {
+        labels: D.kk_labels,
+        datasets: AKTIIVISET.filter(op => D.kk_oper[op]).map(op => ({
+            label: op,
+            data: D.kk_oper[op],
+            borderColor: VARIT[op],
+            borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false, spanGaps: false,
+        }))
+    },
+    options: luoOptions(98.5, 100.2),
+});
+
+// ── HAJONTAKUVAAJA ────────────────────────────────────────────
+document.getElementById('hajonta-otsikko').textContent =
+    `Luotettavuus operaattoreittain – ${D.hsl_kk}`;
+
+const hajontaData = AKTIIVISET
+    .filter(op => D.hero[op] && D.hero[op].kk === D.hsl_kk)
+    .map(op => ({ op, arvo: D.hero[op].arvo }))
+    .sort((a,b) => b.arvo - a.arvo);
+
+const hMin = Math.min(...hajontaData.map(d=>d.arvo)) - 0.5;
+const hMax = 100;
+const hajontaGrid = document.getElementById('hajonta-grid');
+hajontaData.forEach(({op, arvo}) => {
+    const pct = ((arvo - hMin) / (hMax - hMin) * 100).toFixed(1);
+    hajontaGrid.innerHTML += `
+        <div class="hajonta-rivi">
+            <div class="hajonta-label" title="${op}">${op}</div>
+            <div class="hajonta-bar-bg">
+                <div class="hajonta-bar" style="width:${pct}%;background:${VARIT[op]}">${arvo.toFixed(2)}%</div>
+            </div>
+            <div class="hajonta-arvo" style="color:${arvoVari(arvo)}">${arvo.toFixed(2)} %</div>
+        </div>`;
+});
+</script>
+</body>
+</html>
