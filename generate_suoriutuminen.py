@@ -305,7 +305,7 @@ def laske_luka_data(df):
     # Viimeisin kuukausi – sopimuskohtainen
     viim_sub = df[df["pvm"]==viimeisin_pvm]
     data["viimeisin_kk_label"] = viimeisin_pvm.strftime("%m/%Y")
-    data["sopimukset"] = viim_sub[["operaattori","sopimus_id","K2_pct","A_kattavuus","kannuste_pct","korvaus_eur"]]\
+    data["sopimukset"] = viim_sub[["operaattori","sopimus_id","K1_pct","K2_pct","K3_pct","A_kattavuus","kannuste_pct","korvaus_eur"]]\
         .dropna(subset=["K2_pct"])\
         .sort_values("K2_pct", ascending=False)\
         .to_dict(orient="records")
