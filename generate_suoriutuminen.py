@@ -19,7 +19,7 @@ OUTPUT_POLKU = os.path.join("docs", "suoriutuminen_data.js")
 OPERAATTORIT = ["Koiviston Auto", "Nobina Finland", "Pohjolan Liikenne",
                 "Pohjolan kaupunkiliikenne", "Tammelundin Liikenne", "Transdev"]
 
-AKTIIVISET = ["Koiviston Auto", "Nobina Finland", "Pohjolan Liikenne", "Tammelundin Liikenne"]
+AKTIIVISET = ["Koiviston Auto", "Nobina Finland", "Pohjolan Liikenne"]
 
 VARIT = {
     "Koiviston Auto":            "#ff6600",
