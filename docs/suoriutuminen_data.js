@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 04.07.2026 17:02
+// Generoitu automaattisesti: 04.07.2026 19:46
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "04.07.2026 17:02",
+  "paivitetty": "04.07.2026 19:46",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -47,7 +47,7 @@ const SUORIUTUMINEN = {
       99.653,
       99.483,
       99.752,
-      99.089
+      99.255
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
@@ -60,7 +60,7 @@ const SUORIUTUMINEN = {
         99.822,
         99.783,
         99.806,
-        99.68
+        99.722
       ],
       "Nobina Finland": [
         99.888,
@@ -72,7 +72,7 @@ const SUORIUTUMINEN = {
         99.458,
         99.388,
         99.759,
-        99.553
+        99.61
       ],
       "Pohjolan Liikenne": [
         99.737,
@@ -84,7 +84,7 @@ const SUORIUTUMINEN = {
         99.678,
         99.278,
         99.691,
-        98.033
+        98.433
       ],
       "Pohjolan kaupunkiliikenne": [
         99.852,
@@ -124,7 +124,6 @@ const SUORIUTUMINEN = {
       ]
     },
     "kk_labels": [
-      "04/25",
       "05/25",
       "06/25",
       "07/25",
@@ -135,10 +134,10 @@ const SUORIUTUMINEN = {
       "12/25",
       "01/26",
       "02/26",
-      "03/26"
+      "03/26",
+      "04/26"
     ],
     "kk_kaikki": [
-      99.79,
       99.817,
       99.81,
       99.78,
@@ -149,11 +148,11 @@ const SUORIUTUMINEN = {
       99.78,
       98.977,
       98.683,
-      99.607
+      99.607,
+      99.753
     ],
     "kk_oper": {
       "Koiviston Auto": [
-        99.84,
         99.82,
         99.79,
         99.73,
@@ -164,10 +163,10 @@ const SUORIUTUMINEN = {
         99.81,
         99.55,
         99.66,
-        99.83
+        99.83,
+        99.85
       ],
       "Nobina Finland": [
-        99.79,
         99.85,
         99.86,
         99.83,
@@ -178,10 +177,10 @@ const SUORIUTUMINEN = {
         99.84,
         99.54,
         99.29,
-        99.83
+        99.83,
+        99.78
       ],
       "Pohjolan Liikenne": [
-        99.74,
         99.78,
         99.78,
         99.78,
@@ -192,7 +191,8 @@ const SUORIUTUMINEN = {
         99.69,
         97.84,
         97.1,
-        99.16
+        99.16,
+        99.63
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -239,16 +239,16 @@ const SUORIUTUMINEN = {
     },
     "hero": {
       "Koiviston Auto": {
-        "arvo": 99.83,
-        "kk": "3/2026"
+        "arvo": 99.85,
+        "kk": "4/2026"
       },
       "Nobina Finland": {
-        "arvo": 99.83,
-        "kk": "3/2026"
+        "arvo": 99.78,
+        "kk": "4/2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": 99.16,
-        "kk": "3/2026"
+        "arvo": 99.63,
+        "kk": "4/2026"
       },
       "Pohjolan kaupunkiliikenne": {
         "arvo": 99.9,
@@ -259,8 +259,8 @@ const SUORIUTUMINEN = {
         "kk": "12/2019"
       }
     },
-    "hsl_viimeisin": 99.61,
-    "hsl_kk": "3/2026"
+    "hsl_viimeisin": 99.75,
+    "hsl_kk": "4/2026"
   },
   "asty": {
     "vuodet": [
