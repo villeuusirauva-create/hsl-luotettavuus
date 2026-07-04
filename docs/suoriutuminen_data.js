@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 04.07.2026 11:03
+// Generoitu automaattisesti: 04.07.2026 11:47
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "04.07.2026 11:03",
+  "paivitetty": "04.07.2026 11:47",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -281,8 +281,8 @@ const SUORIUTUMINEN = {
       3.984,
       4.029,
       3.993,
-      4.002,
-      3.977,
+      3.994,
+      3.972,
       3.984
     ],
     "vuosi_oper": {
@@ -293,8 +293,8 @@ const SUORIUTUMINEN = {
         3.994,
         4.026,
         3.94,
-        3.951,
-        3.917,
+        3.949,
+        3.929,
         3.944
       ],
       "Nobina Finland": [
@@ -363,8 +363,8 @@ const SUORIUTUMINEN = {
     ],
     "kk_kaikki": [
       4.001,
-      4.002,
-      3.979,
+      3.987,
+      3.969,
       3.975,
       4.001,
       3.966
@@ -372,8 +372,8 @@ const SUORIUTUMINEN = {
     "kk_oper": {
       "Koiviston Auto": [
         3.951,
-        null,
-        null,
+        3.946,
+        3.94,
         3.917,
         3.97,
         3.92
