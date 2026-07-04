@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Täsmällisyys (LUKA)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="suoriutuminen_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --yellow:    #d97706;
+            --red:       #dc2626;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .hero-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        /* Indikaattorikortit */
+        .indik-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .indik-grid { grid-template-columns: repeat(2,1fr); } }
+        .indik-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px 18px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); border-top: 3px solid var(--hsl-blue); }
+        .indik-nimi { font-size: 12px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 2px; }
+        .indik-kuvaus { font-size: 11px; color: var(--muted); margin-bottom: 8px; line-height: 1.4; }
+        .indik-arvo { font-size: 24px; font-weight: 700; font-family: 'DM Mono', monospace; }
+
+        .osio-otsikko { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 16px 0; display: flex; align-items: center; gap: 10px; }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+        canvas { max-height: 300px; }
+
+        /* Toggle */
+        .toggle-rivi { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .toggle-nappi { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: white; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: 'Figtree', sans-serif; }
+        .toggle-nappi.aktiivinen { background: var(--hsl-dark); color: white; border-color: var(--hsl-dark); }
+
+        .hajonta-scroll { max-height: 420px; overflow-y: auto; }
+        .hajonta-grid { display: grid; gap: 6px; }
+        .hajonta-rivi { display: flex; align-items: center; gap: 8px; }
+        .hajonta-label { width: 120px; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+        .hajonta-bar-bg { flex: 1; height: 18px; background: #e8f4fd; border-radius: 4px; overflow: hidden; }
+        .hajonta-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 10px; font-weight: 600; color: white; white-space: nowrap; }
+        .hajonta-arvo { width: 48px; text-align: right; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; }
+
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Täsmällisyys (LUKA)</h1>
+                <div class="header-sub">Luotettavuuskannusteen indikaattorit sopimuksittain 2023–nykyhetki</div>
+            </div>
+        </div>
+        <div class="paivitys" id="paivitys-aika"></div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <!-- Hero: K2 pääindikaattori per operaattori -->
+    <div class="hero-grid" id="hero-grid"></div>
+
+    <!-- Indikaattoriyhteenveto viimeisimmältä kuukaudelta -->
+    <div class="osio-otsikko">Indikaattorit – viimeisin kuukausi</div>
+    <div class="indik-grid" id="indik-grid"></div>
+
+    <!-- K2 historia -->
+    <div class="osio-otsikko">K2-täsmällisyys – kehitys</div>
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Koko HSL – vuositaso</div>
+            <div class="kortti-alateksti">K2 ehdollinen täsmällisyys, kaikkien sopimusten keskiarvo</div>
+            <canvas id="chart-vuosi-k2"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Koko HSL – kuukausitaso</div>
+            <div class="kortti-alateksti">K2 viimeiset 12 kuukautta</div>
+            <canvas id="chart-12kk-k2"></canvas>
+        </div>
+    </div>
+
+    <!-- K1/K2/K3 vertailu -->
+    <div class="osio-otsikko">Indikaattorivertailu – viimeiset 12 kuukautta</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">K1, K2 ja K3 rinnakkain</div>
+        <div class="kortti-alateksti">Kaikki kolme täsmällisyysindikaattoria samassa kuvaajassa</div>
+        <canvas id="chart-indikaaattorit"></canvas>
+    </div>
+
+    <!-- Operaattorivertailu K2 -->
+    <div class="osio-otsikko">Operaattorikohtainen K2 – viimeiset 12 kuukautta</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">K2 per operaattori</div>
+        <div class="kortti-alateksti">Sopimusten keskiarvo per operaattori kuukausittain</div>
+        <canvas id="chart-oper-k2"></canvas>
+    </div>
+
+    <!-- Sopimuskohtainen hajonta -->
+    <div class="osio-otsikko">Viimeisin kuukausi – sopimuskohtainen hajonta</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko" id="hajonta-otsikko"></div>
+        <div class="kortti-alateksti">Jokainen sopimus erikseen, järjestetty parhaimmasta heikoimpaan</div>
+        <div class="toggle-rivi">
+            <button class="toggle-nappi aktiivinen" onclick="naytaHajonta('K2_pct',this)">K2</button>
+            <button class="toggle-nappi" onclick="naytaHajonta('K1_pct',this)">K1</button>
+            <button class="toggle-nappi" onclick="naytaHajonta('K3_pct',this)">K3</button>
+            <button class="toggle-nappi" onclick="naytaHajonta('A_kattavuus',this)">A – Datakattavuus</button>
+        </div>
+        <div class="hajonta-scroll">
+            <div class="hajonta-grid" id="hajonta-grid"></div>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Indikaattoreista:</strong>
+        <strong>K2</strong> (ehdollinen täsmällisyys) = lähtöjen osuus jotka lähtivät enintään 3 min myöhässä tai 1 min etuajassa, pääindikaattori.
+        <strong>K1</strong> = lähtöketjujen ensimmäisten lähtöjen täsmällisyys.
+        <strong>K3</strong> = ajantasauksen jälkeen täsmällisesti lähteneiden osuus.
+        <strong>A</strong> = datakattavuus, kuinka suuri osuus lähdöistä on mukana laskennassa.
+        Data saatavilla 01/2023 alkaen kuukausittain sopimustasolla.
+    </div>
+</main>
+<script>
+const D = SUORIUTUMINEN.luka;
+const VARIT = SUORIUTUMINEN.varit;
+const AKTIIVISET = SUORIUTUMINEN.aktiiviset;
+
+document.getElementById('paivitys-aika').textContent =
+    'Päivitetty ' + SUORIUTUMINEN.paivitetty;
+
+function arvoVari(v) {
+    if (v >= 0.90) return '#16a34a';
+    if (v >= 0.80) return '#d97706';
+    return '#dc2626';
+}
+
+function pct(v) { return v !== null ? (v * 100).toFixed(1) + ' %' : '–'; }
+
+function luoOptions(yMin, yMax) {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font:{size:11}, padding:12, boxWidth:16 } },
+            tooltip: { callbacks: { label: ctx => ctx.parsed.y !== null
+                ? `${ctx.dataset.label}: ${(ctx.parsed.y*100).toFixed(1)} %` : null } }
+        },
+        scales: {
+            x: { ticks: { color:'#6b8caa', font:{size:10} }, grid:{display:false} },
+            y: {
+                min: yMin, max: yMax,
+                ticks: { color:'#6b8caa', font:{size:11}, callback: v => (v*100).toFixed(0)+' %' },
+                grid: { color:'rgba(0,113,188,0.08)' }
+            }
+        }
+    };
+}
+
+// ── HERO ─────────────────────────────────────────────────────
+const heroGrid = document.getElementById('hero-grid');
+heroGrid.innerHTML = `
+    <div class="hero-kortti">
+        <div class="hero-label">Koko HSL – K2 viimeisin</div>
+        <div class="hero-arvo" style="color:${arvoVari(D.hsl_viimeisin)}">${pct(D.hsl_viimeisin)}</div>
+        <div class="hero-sub">${D.hsl_kk}</div>
+    </div>`;
+
+AKTIIVISET.forEach(op => {
+    if (!D.hero[op] || !D.hero[op].arvo) return;
+    const h = D.hero[op];
+    heroGrid.innerHTML += `
+        <div class="hero-kortti">
+            <div class="hero-label">
+                <span class="hero-dot" style="background:${VARIT[op]}"></span>${op}
+            </div>
+            <div class="hero-arvo" style="color:${arvoVari(h.arvo)}">${pct(h.arvo)}</div>
+            <div class="hero-sub">K2 · ${h.kk}</div>
+        </div>`;
+});
+
+// ── INDIKAATTORIYHTEENVETO ────────────────────────────────────
+const indikGrid = document.getElementById('indik-grid');
+const indikData = [
+    { id: 'K2_pct', nimi: 'K2', kuvaus: 'Ehdollinen täsmällisyys', vari: '#0071bc' },
+    { id: 'K1_pct', nimi: 'K1', kuvaus: 'Lähtöketjujen ensimmäiset lähdöt', vari: '#7b2d8b' },
+    { id: 'K3_pct', nimi: 'K3', kuvaus: 'Ajantasauksen jälkeen täsmällisesti lähteneet', vari: '#00a650' },
+    { id: 'A_kattavuus', nimi: 'A', kuvaus: 'Datakattavuus (lähdöt laskennassa)', vari: '#ff6600' },
+];
+
+// Lasketaan viimeisimmän kuukauden kaikki indikaattorit D:stä
+const viimKk = D.kk_labels[D.kk_labels.length - 1];
+indikData.forEach(ind => {
+    const data = D[`kk_${ind.id}`];
+    const arvo = data ? data[data.length - 1] : null;
+    indikGrid.innerHTML += `
+        <div class="indik-kortti" style="border-top-color:${ind.vari}">
+            <div class="indik-nimi">${ind.nimi}</div>
+            <div class="indik-kuvaus">${ind.kuvaus}</div>
+            <div class="indik-arvo" style="color:${arvo ? arvoVari(arvo) : 'var(--muted)'}">${arvo ? pct(arvo) : '–'}</div>
+        </div>`;
+});
+
+// ── KUVAAJA 1: K2 vuositaso ───────────────────────────────────
+new Chart(document.getElementById('chart-vuosi-k2'), {
+    type: 'line',
+    data: {
+        labels: D.vuodet,
+        datasets: [{
+            label: 'K2 – Koko HSL',
+            data: D.vuosi_kaikki,
+            borderColor: '#0071bc',
+            backgroundColor: 'rgba(0,113,188,0.08)',
+            borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true,
+        }]
+    },
+    options: luoOptions(0.75, 1.0),
+});
+
+// ── KUVAAJA 2: K2 12kk ───────────────────────────────────────
+new Chart(document.getElementById('chart-12kk-k2'), {
+    type: 'line',
+    data: {
+        labels: D.kk_labels,
+        datasets: [{
+            label: 'K2 – Koko HSL',
+            data: D.kk_K2_pct,
+            borderColor: '#0071bc',
+            backgroundColor: 'rgba(0,113,188,0.08)',
+            borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true,
+        }]
+    },
+    options: luoOptions(0.75, 1.0),
+});
+
+// ── KUVAAJA 3: K1/K2/K3 rinnakkain ───────────────────────────
+new Chart(document.getElementById('chart-indikaaattorit'), {
+    type: 'line',
+    data: {
+        labels: D.kk_labels,
+        datasets: [
+            { label: 'K1', data: D.kk_K1_pct, borderColor: '#7b2d8b', borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false },
+            { label: 'K2', data: D.kk_K2_pct, borderColor: '#0071bc', borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false },
+            { label: 'K3', data: D.kk_K3_pct, borderColor: '#00a650', borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false },
+        ]
+    },
+    options: luoOptions(0.75, 1.0),
+});
+
+// ── KUVAAJA 4: K2 operaattoreittain ──────────────────────────
+new Chart(document.getElementById('chart-oper-k2'), {
+    type: 'line',
+    data: {
+        labels: D.kk_labels,
+        datasets: AKTIIVISET.filter(op => D.kk_oper_K2[op]).map(op => ({
+            label: op,
+            data: D.kk_oper_K2[op],
+            borderColor: VARIT[op],
+            borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false, spanGaps: false,
+        }))
+    },
+    options: luoOptions(0.75, 1.0),
+});
+
+// ── SOPIMUSKOHTAINEN HAJONTA ──────────────────────────────────
+document.getElementById('hajonta-otsikko').textContent =
+    `Sopimuskohtainen täsmällisyys – ${D.viimeisin_kk_label}`;
+
+function naytaHajonta(indik, nappi) {
+    document.querySelectorAll('.toggle-nappi').forEach(n => n.classList.remove('aktiivinen'));
+    nappi.classList.add('aktiivinen');
+
+    const grid = document.getElementById('hajonta-grid');
+    grid.innerHTML = '';
+
+    const sopimukset = [...D.sopimukset]
+        .filter(s => s[indik] !== null && s[indik] !== undefined)
+        .sort((a,b) => b[indik] - a[indik]);
+
+    sopimukset.forEach(s => {
+        const arvo = s[indik];
+        const op = s.operaattori;
+        const vari = VARIT[op] || '#94a3b8';
+        const pctVal = (arvo * 100).toFixed(1);
+        grid.innerHTML += `
+            <div class="hajonta-rivi">
+                <div class="hajonta-label" title="${s.sopimus_id}">${s.sopimus_id}</div>
+                <div class="hajonta-bar-bg">
+                    <div class="hajonta-bar" style="width:${pctVal}%;background:${vari}">${pctVal}%</div>
+                </div>
+                <div class="hajonta-arvo" style="color:${arvoVari(arvo)}">${pctVal}%</div>
+            </div>`;
+    });
+}
+
+// Näytetään K2 oletuksena
+naytaHajonta('K2_pct', document.querySelector('.toggle-nappi'));
+</script>
+</body>
+</html>
