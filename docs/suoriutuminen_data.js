@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 04.07.2026 11:47
+// Generoitu automaattisesti: 04.07.2026 17:02
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "04.07.2026 11:47",
+  "paivitetty": "04.07.2026 17:02",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -276,8 +276,8 @@ const SUORIUTUMINEN = {
     ],
     "vuosi_kaikki": [
       3.935,
-      3.937,
-      3.954,
+      3.935,
+      3.947,
       3.984,
       4.029,
       3.993,
@@ -299,8 +299,8 @@ const SUORIUTUMINEN = {
       ],
       "Nobina Finland": [
         3.93,
-        3.914,
-        null,
+        3.921,
+        3.938,
         3.969,
         4.04,
         4.01,
