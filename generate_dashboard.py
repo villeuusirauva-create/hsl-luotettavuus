@@ -685,15 +685,13 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
     </div>
 
     <!-- Kuvaajat -->
-    <div class="grid-2">
-        <div class="kortti">
-            <div class="kortti-otsikko">Kokonaistrendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
-            <canvas id="kokonaisChart"></canvas>
-        </div>
-        <div class="kortti">
-            <div class="kortti-otsikko">Operaattorikohtainen trendi <span>3 kk</span> <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
-            <canvas id="operChart"></canvas>
-        </div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Kokonaistrendi <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
+        <canvas id="kokonaisChart"></canvas>
+    </div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Operaattorikohtainen trendi <i style="font-size:11px;font-weight:400;">alkaen {alkupaiva_data}</i></div>
+        <canvas id="operChart"></canvas>
     </div>
 
     <!-- Kuukausihistoria -->
