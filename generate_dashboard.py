@@ -194,6 +194,53 @@ def laske_viikonpaivat(trendi_df):
 
     return kokonais, oper_data
 
+def laske_vuodenaika(trendi_df):
+    """Laskee kausikohtaisen luotettavuuden per operaattori. Kaudet 2026 alkaen."""
+    if trendi_df.empty:
+        return {}
+
+    KAUDET = [
+        ("Kevät",  "2026-03-01", "2026-06-14"),
+        ("Kesä",   "2026-06-15", "2026-08-09"),
+        ("Syksy",  "2026-08-10", "2026-11-30"),
+    ]
+    OPERAATTORIT = ["Nobina Finland", "Koiviston Auto", "Pohjolan Liikenne", "Tammelundin Liikenne"]
+
+    tulos = {}
+    tanaan = trendi_df["paiva"].max()
+
+    for kausi_nimi, alku, loppu in KAUDET:
+        alku_pvm = pd.Timestamp(alku)
+        loppu_pvm = min(pd.Timestamp(loppu), tanaan)  # ei mennä tulevaisuuteen
+
+        if alku_pvm > tanaan:
+            continue  # kausi ei ole vielä alkanut
+
+        data = trendi_df[
+            (trendi_df["paiva"] >= alku_pvm) &
+            (trendi_df["paiva"] <= loppu_pvm)
+        ].copy()
+
+        if len(data) == 0:
+            continue
+
+        kausi_data = {
+            "paivat": len(data),
+            "alku": alku_pvm.strftime("%-d.%-m."),
+            "loppu": loppu_pvm.strftime("%-d.%-m.%Y"),
+            "operaattorit": {}
+        }
+
+        for oper in OPERAATTORIT:
+            if oper in data.columns:
+                ka = data[oper].dropna()
+                if len(ka) > 0:
+                    kausi_data["operaattorit"][oper] = round(ka.mean(), 2)
+
+        tulos[kausi_nimi] = kausi_data
+
+    return tulos
+
 def laske_kuukausihistoria(trendi_df):
     """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
     if trendi_df.empty:
@@ -252,7 +299,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}, vuodenaika={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -268,6 +315,7 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
 
     viikonpaiva_labels = json.dumps(list(viikonpaivat.keys()))
     viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
+    vuodenaika_json = json.dumps(vuodenaika, ensure_ascii=False)
     
     kellonaika_labels  = json.dumps(list(kellonajat.keys()))
     kellonaika_arvot   = json.dumps(list(kellonajat.values()))
@@ -690,6 +738,12 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
         <canvas id="kellonaikaChart"></canvas>
     </div>
 
+    <!-- Vuodenaikaluotettavuus -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Luotettavuus vuodenajoittain <span>2026</span> <i style="font-size:11px;font-weight:400;">kertyy kauden edetessä</i></div>
+        <canvas id="vuodenaika-chart"></canvas>
+    </div> 
+
     <!-- Metodiikka -->
     <div class="metodiikka">
         <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
@@ -855,6 +909,67 @@ new Chart(ctxKlo, {{
     }}
 }});
 
+// Vuodenaikaluotettavuus
+const vuodenaika = {vuodenaika_json};
+const vuodenaika_varit = {{
+    "Nobina Finland":   "#00a650",
+    "Koiviston Auto":   "#ff6600",
+    "Pohjolan Liikenne": "#7b2d8b",
+    "Tammelundin Liikenne": "#0071bc",
+}};
+
+if (Object.keys(vuodenaika).length > 0) {{
+    const kaudet = Object.keys(vuodenaika);
+    const operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"];
+
+    const ctxVa = document.getElementById('vuodenaika-chart').getContext('2d');
+    new Chart(ctxVa, {{
+        type: 'bar',
+        data: {{
+            labels: kaudet.map(k => `${{k}} (${{vuodenaika[k].alku}}–${{vuodenaika[k].loppu}})`),
+            datasets: operaattorit
+                .filter(op => kaudet.some(k => vuodenaika[k].operaattorit[op] !== undefined))
+                .map(op => ({{
+                    label: op,
+                    data: kaudet.map(k => vuodenaika[k].operaattorit[op] || null),
+                    backgroundColor: vuodenaika_varit[op],
+                    borderRadius: 4,
+                }}))
+        }},
+        options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ display: true, position: 'bottom', labels: {{ font: {{ size: 11 }}, padding: 12, boxWidth: 16 }} }},
+                tooltip: {{
+                    callbacks: {{
+                        label: ctx => ctx.parsed.y !== null ? `${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(2)}} %` : null,
+                        afterBody: (items) => {{
+                            const k = kaudet[items[0].dataIndex];
+                            return [`Päiviä datassa: ${{vuodenaika[k].paivat}}`];
+                        }}
+                    }}
+                }}
+            }},
+            scales: {{
+                y: {{
+                    min: 97,
+                    max: 100,
+                    ticks: {{
+                        callback: v => v + ' %',
+                        color: '#6b8caa',
+                        font: {{ size: 11 }}
+                    }},
+                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
+                }},
+                x: {{
+                    ticks: {{ color: '#6b8caa', font: {{ size: 10 }} }},
+                    grid: {{ display: false }}
+                }}
+            }}
+        }}
+    }});
+}}
+
 // Operaattoritrendi
 const ctx2 = document.getElementById('operChart').getContext('2d');
 const datasets = Object.entries(operData.operaattorit).map(([oper, arvot]) => ({{
@@ -987,9 +1102,11 @@ def main():
     print(f"  ✓ {len(reittinimet)} reittinimeä haettu")
     viikonpaivat, viikonpaivat_oper = laske_viikonpaivat(trendi)
     print(f"  ✓ Viikonpäiväkeskiarvot laskettu")
+    vuodenaika = laske_vuodenaika(trendi)
+    print(f"  ✓ Vuodenaikaluotettavuus laskettu")
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
-    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper)
+    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
