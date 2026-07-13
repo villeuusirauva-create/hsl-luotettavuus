@@ -228,6 +228,7 @@ def laske_vuodenaika(trendi_df):
             "paivat": len(data),
             "alku": alku_pvm.strftime("%-d.%-m."),
             "loppu": loppu_pvm.strftime("%-d.%-m.%Y"),
+            "koko_hsl": round(data["luotettavuus"].mean(), 2),
             "operaattorit": {}
         }
 
@@ -927,14 +928,22 @@ if (Object.keys(vuodenaika).length > 0) {{
         type: 'bar',
         data: {{
             labels: kaudet.map(k => `${{k}} (${{vuodenaika[k].alku}}–${{vuodenaika[k].loppu}})`),
-            datasets: operaattorit
-                .filter(op => kaudet.some(k => vuodenaika[k].operaattorit[op] !== undefined))
-                .map(op => ({{
-                    label: op,
-                    data: kaudet.map(k => vuodenaika[k].operaattorit[op] || null),
-                    backgroundColor: vuodenaika_varit[op],
+            datasets: [
+                {{
+                    label: 'Koko HSL',
+                    data: kaudet.map(k => vuodenaika[k].koko_hsl || null),
+                    backgroundColor: '#93c5fd',
                     borderRadius: 4,
-                }}))
+                }},
+                ...operaattorit
+                    .filter(op => kaudet.some(k => vuodenaika[k].operaattorit[op] !== undefined))
+                    .map(op => ({{
+                        label: op,
+                        data: kaudet.map(k => vuodenaika[k].operaattorit[op] || null),
+                        backgroundColor: vuodenaika_varit[op],
+                        borderRadius: 4,
+                    }}))
+            ]
         }},
         options: {{
             responsive: true,
