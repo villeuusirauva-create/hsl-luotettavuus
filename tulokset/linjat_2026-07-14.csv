@@ -1,10 +1,10 @@
 ﻿linja,operaattori,suunnitellut,ajettu,luotettavuus
-719K,Bus Travel Reissu Ruoti,12,1,8.33
-719,Bus Travel Reissu Ruoti,24,16,66.67
+719K,Bus Travel Reissu Ruoti,12,2,16.67
+719,Bus Travel Reissu Ruoti,24,17,70.83
 227,Pohjolan Liikenne,71,61,85.92
 203,Pohjolan Liikenne,47,41,87.23
 215,Pohjolan Liikenne,63,55,87.3
-214,Pohjolan Liikenne,62,55,88.71
+214,Pohjolan Liikenne,62,56,90.32
 718A,Koiviston Auto,12,11,91.67
 95,Koiviston Auto,135,127,94.07
 587,Koiviston Auto,53,50,94.34
@@ -13,9 +13,9 @@
 92,Koiviston Auto,132,126,95.45
 16,Nobina Finland,92,88,95.65
 97V,Koiviston Auto,92,88,95.65
-731,Koiviston Auto,93,89,95.7
 98,Koiviston Auto,103,99,96.12
 500,Pohjolan Liikenne,185,178,96.22
+731,Koiviston Auto,93,90,96.77
 975,Pohjolan Liikenne,63,61,96.83
 711,Koiviston Auto,95,92,96.84
 978K,Pohjolan Liikenne,32,31,96.88
@@ -27,22 +27,22 @@
 721,Koiviston Auto,101,98,97.03
 736,Koiviston Auto,34,33,97.06
 977,Pohjolan Liikenne,34,33,97.06
-77,Pohjolan Liikenne,104,101,97.12
 97,Koiviston Auto,72,70,97.22
 978,Pohjolan Liikenne,39,38,97.44
 739,Koiviston Auto,42,41,97.62
 65,Pohjolan Liikenne,138,135,97.83
-631,Koiviston Auto,100,98,98.0
 561,Koiviston Auto,102,100,98.04
+77,Pohjolan Liikenne,104,102,98.08
 562,Koiviston Auto,111,109,98.2
 611,Pohjolan Liikenne,124,122,98.39
 75,Pohjolan Liikenne,131,129,98.47
 66,Pohjolan Liikenne,133,131,98.5
-400,Koiviston Auto,278,274,98.56
 520,Pohjolan Liikenne,215,212,98.6
+400,Koiviston Auto,278,275,98.92
 624,Koiviston Auto,99,98,98.99
+631,Koiviston Auto,100,99,99.0
 717,Koiviston Auto,106,105,99.06
-40,Nobina Finland,286,284,99.3
+40,Nobina Finland,286,285,99.65
 975N,Pohjolan Liikenne,3,3,100.0
 973,Pohjolan Liikenne,72,72,100.0
 972,Pohjolan Liikenne,16,16,100.0
