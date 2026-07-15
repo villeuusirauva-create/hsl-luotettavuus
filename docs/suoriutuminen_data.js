@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 15.07.2026 10:01
+// Generoitu automaattisesti: 15.07.2026 10:14
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "15.07.2026 10:01",
+  "paivitetty": "15.07.2026 10:14",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -13,8 +13,7 @@ const SUORIUTUMINEN = {
   "aktiiviset": [
     "Koiviston Auto",
     "Nobina Finland",
-    "Pohjolan Liikenne",
-    "Tammelundin Liikenne"
+    "Pohjolan Liikenne"
   ],
   "kaikki_oper": [
     "Koiviston Auto",
@@ -1398,7 +1397,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Taksikuljetus Harri Vuolle",
         "sopimus_id": "57K284HVU",
+        "K1_pct": 0.97183,
         "K2_pct": 0.96356,
+        "K3_pct": 0.94615,
         "A_kattavuus": 0.99839,
         "kannuste_pct": 0.0154,
         "korvaus_eur": 33200.21
@@ -1406,7 +1407,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Korsisaari",
         "sopimus_id": "58K286KOR",
+        "K1_pct": 0.97619,
         "K2_pct": 0.95627,
+        "K3_pct": 0.99789,
         "A_kattavuus": 0.98831,
         "kannuste_pct": 0.0168,
         "korvaus_eur": 37010.65
@@ -1414,7 +1417,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "59K293KAH",
+        "K1_pct": 0.96875,
         "K2_pct": 0.95153,
+        "K3_pct": NaN,
         "A_kattavuus": 0.98381,
         "kannuste_pct": 0.0165,
         "korvaus_eur": 124504.96
@@ -1422,7 +1427,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "V-S Bussipalvelut",
         "sopimus_id": "25_62K317VSB",
+        "K1_pct": 0.97581,
         "K2_pct": 0.94244,
+        "K3_pct": 0.99421,
         "A_kattavuus": 0.99888,
         "kannuste_pct": 0.0165,
         "korvaus_eur": 82750.93
@@ -1430,7 +1437,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Tammelundin Liikenne",
         "sopimus_id": "58K290TAM",
+        "K1_pct": 0.97135,
         "K2_pct": 0.93474,
+        "K3_pct": 0.99655,
         "A_kattavuus": 0.99971,
         "kannuste_pct": 0.0146,
         "korvaus_eur": 407911.64
@@ -1438,7 +1447,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "52K266PL",
+        "K1_pct": 0.96282,
         "K2_pct": 0.92822,
+        "K3_pct": 0.99791,
         "A_kattavuus": 0.99597,
         "kannuste_pct": 0.0152,
         "korvaus_eur": 433354.42
@@ -1446,7 +1457,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Tammelundin Liikenne",
         "sopimus_id": "53K273TAM",
+        "K1_pct": 0.95609,
         "K2_pct": 0.92027,
+        "K3_pct": 0.99594,
         "A_kattavuus": 0.9977,
         "kannuste_pct": 0.0144,
         "korvaus_eur": 455074.18
@@ -1454,7 +1467,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "55K281PL",
+        "K1_pct": 0.91781,
         "K2_pct": 0.91865,
+        "K3_pct": 0.98898,
         "A_kattavuus": 0.97552,
         "kannuste_pct": 0.0102,
         "korvaus_eur": 257847.94
@@ -1462,7 +1477,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "59K294KAH",
+        "K1_pct": 0.94626,
         "K2_pct": 0.89672,
+        "K3_pct": 0.99098,
         "A_kattavuus": 0.97968,
         "kannuste_pct": 0.0115,
         "korvaus_eur": 550697.94
@@ -1470,7 +1487,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "V-S Bussipalvelut",
         "sopimus_id": "25_62K316VSB",
+        "K1_pct": 0.98925,
         "K2_pct": 0.89286,
+        "K3_pct": 1.0,
         "A_kattavuus": 1.0,
         "kannuste_pct": 0.0157,
         "korvaus_eur": 38051.53
@@ -1478,7 +1497,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Korsisaari",
         "sopimus_id": "58K288KOR",
+        "K1_pct": 0.91935,
         "K2_pct": 0.88199,
+        "K3_pct": 0.98734,
         "A_kattavuus": 0.97306,
         "kannuste_pct": 0.01,
         "korvaus_eur": 80055.64
@@ -1486,7 +1507,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "58K291PL",
+        "K1_pct": 0.93506,
         "K2_pct": 0.88133,
+        "K3_pct": 0.98872,
         "A_kattavuus": 0.97633,
         "kannuste_pct": 0.0103,
         "korvaus_eur": 230250.18
@@ -1494,7 +1517,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "53K270NOB",
+        "K1_pct": 0.96382,
         "K2_pct": 0.88064,
+        "K3_pct": 0.99875,
         "A_kattavuus": 0.99281,
         "kannuste_pct": 0.0131,
         "korvaus_eur": 338653.0
@@ -1502,7 +1527,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "58K289PL",
+        "K1_pct": 0.92708,
         "K2_pct": 0.87145,
+        "K3_pct": 0.99614,
         "A_kattavuus": 0.98936,
         "kannuste_pct": 0.0098,
         "korvaus_eur": 1321737.52
@@ -1510,7 +1537,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nurmijärven Linja",
         "sopimus_id": "52K265NL",
+        "K1_pct": 0.87037,
         "K2_pct": 0.86979,
+        "K3_pct": 0.98798,
         "A_kattavuus": 0.98857,
         "kannuste_pct": 0.0061,
         "korvaus_eur": 70416.88
@@ -1518,7 +1547,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "59K292KAH",
+        "K1_pct": 0.91532,
         "K2_pct": 0.86361,
+        "K3_pct": 0.99466,
         "A_kattavuus": 0.97725,
         "kannuste_pct": 0.0088,
         "korvaus_eur": 507938.55
@@ -1526,7 +1557,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "54K278PL",
+        "K1_pct": 0.94763,
         "K2_pct": 0.85787,
+        "K3_pct": 0.99494,
         "A_kattavuus": 0.98964,
         "kannuste_pct": 0.0101,
         "korvaus_eur": 364744.74
@@ -1534,7 +1567,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "50K262+HE",
+        "K1_pct": 0.9805,
         "K2_pct": 0.85383,
+        "K3_pct": 0.99079,
         "A_kattavuus": 0.99187,
         "kannuste_pct": 0.0131,
         "korvaus_eur": 549894.19
@@ -1542,7 +1577,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "57K285HEL",
+        "K1_pct": 0.97351,
         "K2_pct": 0.85258,
+        "K3_pct": 0.99547,
         "A_kattavuus": 0.99319,
         "kannuste_pct": 0.0115,
         "korvaus_eur": 578861.93
@@ -1550,7 +1587,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "54K279PL",
+        "K1_pct": 0.9,
         "K2_pct": 0.84682,
+        "K3_pct": 0.97669,
         "A_kattavuus": 0.98817,
         "kannuste_pct": 0.0071,
         "korvaus_eur": 381475.65
@@ -1558,7 +1597,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "53K269NOB",
+        "K1_pct": 0.93379,
         "K2_pct": 0.84195,
+        "K3_pct": 0.99876,
         "A_kattavuus": 0.99456,
         "kannuste_pct": 0.0104,
         "korvaus_eur": 1047942.91
@@ -1566,7 +1607,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "59K295PL",
+        "K1_pct": 0.89548,
         "K2_pct": 0.8319,
+        "K3_pct": 0.98896,
         "A_kattavuus": 0.99107,
         "kannuste_pct": 0.0068,
         "korvaus_eur": 363009.65
@@ -1574,7 +1617,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "53K272NOB",
+        "K1_pct": 0.87313,
         "K2_pct": 0.80966,
+        "K3_pct": 0.98271,
         "A_kattavuus": 0.98395,
         "kannuste_pct": 0.0016,
         "korvaus_eur": 357356.01
@@ -1582,7 +1627,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "51K263NOB",
+        "K1_pct": 0.9087,
         "K2_pct": 0.79951,
+        "K3_pct": 0.99807,
         "A_kattavuus": 0.98721,
         "kannuste_pct": 0.0018,
         "korvaus_eur": 1180276.85
@@ -1590,7 +1637,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "53K271NOB",
+        "K1_pct": 0.89908,
         "K2_pct": 0.7985,
+        "K3_pct": 0.99771,
         "A_kattavuus": 0.97756,
         "kannuste_pct": 0.0042,
         "korvaus_eur": 1050378.2
@@ -1598,7 +1647,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "54K277PL",
+        "K1_pct": 0.94534,
         "K2_pct": 0.78709,
+        "K3_pct": 0.99701,
         "A_kattavuus": 0.96521,
         "kannuste_pct": 0.0071,
         "korvaus_eur": 376491.41
@@ -1606,7 +1657,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "55K282PL",
+        "K1_pct": 0.90401,
         "K2_pct": 0.78147,
+        "K3_pct": 0.99292,
         "A_kattavuus": 0.99285,
         "kannuste_pct": 0.0071,
         "korvaus_eur": 984826.28
@@ -1614,7 +1667,9 @@ const SUORIUTUMINEN = {
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "51K264NOB",
+        "K1_pct": 0.83742,
         "K2_pct": 0.76553,
+        "K3_pct": 0.99898,
         "A_kattavuus": 0.98047,
         "kannuste_pct": -0.0004,
         "korvaus_eur": 680583.96
@@ -1638,7 +1693,7 @@ const SUORIUTUMINEN = {
         "kk": "06/2026"
       }
     },
-    "hsl_viimeisin": 0.8579,
+    "hsl_viimeisin": 0.8509,
     "hsl_kk": "06/2026"
   }
 };
