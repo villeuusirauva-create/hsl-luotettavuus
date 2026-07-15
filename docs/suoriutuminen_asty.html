@@ -137,9 +137,9 @@ document.getElementById('paivitys-aika').textContent =
     'Päivitetty ' + SUORIUTUMINEN.paivitetty;
 
 function arvoVari(v) {
-    if (v >= 4.0) return '#16a34a';
-    if (v >= 3.8) return '#d97706';
-    return '#dc2626';
+    if (v >= 4.2) return '#15803d';   // tummanvihreä – todella hyvä
+    if (v >= 3.8) return '#16a34a';   // vihreä – hyvä
+    return '#dc2626';                  // punainen – heikohko
 }
 
 function luoOptions(yMin, yMax) {
@@ -204,7 +204,7 @@ new Chart(document.getElementById('chart-historia-hsl'), {
             borderWidth: 2.5, pointRadius: 4, tension: 0.3, fill: true,
         }]
     },
-    options: luoOptions(3.7, 4.3),
+    options: luoOptions(3.8, 4.1),
 });
 
 // ── KUVAAJA 2: Historia operaattoreittain ─────────────────────
@@ -219,7 +219,7 @@ new Chart(document.getElementById('chart-historia-oper'), {
             borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false, spanGaps: false,
         }))
     },
-    options: luoOptions(3.7, 4.3),
+    options: luoOptions(3.8, 4.1),
 });
 
 // ── KUVAAJA 3: 6 kautta HSL ───────────────────────────────────
@@ -235,7 +235,7 @@ new Chart(document.getElementById('chart-6kk-hsl'), {
             borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true,
         }]
     },
-    options: luoOptions(3.7, 4.3),
+    options: luoOptions(3.8, 4.1),
 });
 
 // ── KUVAAJA 4: 6 kautta operaattoreittain ─────────────────────
@@ -250,7 +250,7 @@ new Chart(document.getElementById('chart-6kk-oper'), {
             borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: false, spanGaps: false,
         }))
     },
-    options: luoOptions(3.7, 4.3),
+    options: luoOptions(3.8, 4.1),
 });
 
 // ── SOPIMUSHAJONTA ────────────────────────────────────────────
