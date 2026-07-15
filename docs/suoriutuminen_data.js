@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 04.07.2026 21:54
+// Generoitu automaattisesti: 15.07.2026 09:20
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "04.07.2026 21:54",
+  "paivitetty": "15.07.2026 09:20",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -47,7 +47,7 @@ const SUORIUTUMINEN = {
       99.653,
       99.483,
       99.752,
-      99.255
+      99.089
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
@@ -60,7 +60,7 @@ const SUORIUTUMINEN = {
         99.822,
         99.783,
         99.806,
-        99.722
+        99.68
       ],
       "Nobina Finland": [
         99.888,
@@ -72,24 +72,24 @@ const SUORIUTUMINEN = {
         99.458,
         99.388,
         99.759,
-        99.61
+        99.553
       ],
       "Pohjolan Liikenne": [
-        99.737,
-        99.771,
-        99.869,
+        99.795,
+        99.818,
+        99.855,
         99.919,
         99.816,
         99.443,
         99.678,
         99.278,
         99.691,
-        98.433
+        98.033
       ],
       "Pohjolan kaupunkiliikenne": [
-        99.852,
-        99.865,
-        99.84,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -149,7 +149,7 @@ const SUORIUTUMINEN = {
       98.977,
       98.683,
       99.607,
-      99.753
+      null
     ],
     "kk_oper": {
       "Koiviston Auto": [
@@ -164,7 +164,7 @@ const SUORIUTUMINEN = {
         99.55,
         99.66,
         99.83,
-        99.85
+        null
       ],
       "Nobina Finland": [
         99.85,
@@ -178,7 +178,7 @@ const SUORIUTUMINEN = {
         99.54,
         99.29,
         99.83,
-        99.78
+        null
       ],
       "Pohjolan Liikenne": [
         99.78,
@@ -192,7 +192,7 @@ const SUORIUTUMINEN = {
         97.84,
         97.1,
         99.16,
-        99.63
+        null
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -239,27 +239,23 @@ const SUORIUTUMINEN = {
     },
     "hero": {
       "Koiviston Auto": {
-        "arvo": 99.85,
+        "arvo": null,
         "kk": "4/2026"
       },
       "Nobina Finland": {
-        "arvo": 99.78,
+        "arvo": null,
         "kk": "4/2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": 99.63,
+        "arvo": null,
         "kk": "4/2026"
-      },
-      "Pohjolan kaupunkiliikenne": {
-        "arvo": 99.9,
-        "kk": "12/2019"
       },
       "Transdev": {
         "arvo": 99.84,
         "kk": "12/2019"
       }
     },
-    "hsl_viimeisin": 99.75,
+    "hsl_viimeisin": null,
     "hsl_kk": "4/2026"
   },
   "asty": {
@@ -272,7 +268,8 @@ const SUORIUTUMINEN = {
       2022,
       2023,
       2024,
-      2025
+      2025,
+      2026
     ],
     "vuosi_kaikki": [
       3.935,
@@ -283,7 +280,8 @@ const SUORIUTUMINEN = {
       3.993,
       3.994,
       3.972,
-      3.984
+      3.984,
+      3.93
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
@@ -295,7 +293,8 @@ const SUORIUTUMINEN = {
         3.94,
         3.949,
         3.929,
-        3.944
+        3.944,
+        3.889
       ],
       "Nobina Finland": [
         3.93,
@@ -306,24 +305,27 @@ const SUORIUTUMINEN = {
         4.01,
         4.001,
         3.985,
-        3.995
+        3.995,
+        3.951
       ],
       "Pohjolan Liikenne": [
-        null,
-        4.235,
-        4.22,
-        3.996,
+        3.897,
+        3.948,
+        3.945,
+        3.991,
         4.019,
         4.021,
         4.022,
         3.984,
-        3.992
+        3.992,
+        3.942
       ],
       "Pohjolan kaupunkiliikenne": [
-        3.897,
-        3.943,
-        3.938,
-        3.93,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -339,7 +341,8 @@ const SUORIUTUMINEN = {
         3.99,
         4.028,
         3.995,
-        4.039
+        4.039,
+        null
       ],
       "Transdev": [
         3.907,
@@ -350,49 +353,50 @@ const SUORIUTUMINEN = {
         null,
         null,
         null,
+        null,
         null
       ]
     },
     "kk_labels": [
-      "kevät 2023",
       "syksy 2023",
       "kevät 2024",
       "syksy 2024",
       "kevät 2025",
-      "syksy 2025"
+      "syksy 2025",
+      "kevät 2026"
     ],
     "kk_kaikki": [
-      4.001,
       3.987,
       3.969,
       3.975,
       4.001,
-      3.966
+      3.966,
+      3.93
     ],
     "kk_oper": {
       "Koiviston Auto": [
-        3.951,
         3.946,
         3.94,
         3.917,
         3.97,
-        3.92
+        3.92,
+        3.889
       ],
       "Nobina Finland": [
-        4.012,
         3.991,
         3.966,
         4.003,
         4.014,
-        3.974
+        3.974,
+        3.951
       ],
       "Pohjolan Liikenne": [
-        4.03,
         4.014,
         3.989,
         3.98,
         4.003,
-        3.983
+        3.983,
+        3.942
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -403,12 +407,12 @@ const SUORIUTUMINEN = {
         null
       ],
       "Tammelundin Liikenne": [
-        4.035,
         4.023,
         4.009,
         3.984,
         4.036,
-        4.043
+        4.043,
+        null
       ],
       "Transdev": [
         null,
@@ -419,289 +423,267 @@ const SUORIUTUMINEN = {
         null
       ]
     },
-    "viimeisin_kausi_label": "syksy 2025",
+    "viimeisin_kausi_label": "kevät 2026",
     "sopimukset": [
-      {
-        "operaattori": "Nurmijärven Linja",
-        "sopimus_id": "18/47K254NL",
-        "asty_arvo": 4.493,
-        "euroarvo_puolivuosi": 222965.34
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "22/55K281PL",
-        "asty_arvo": 4.216,
-        "euroarvo_puolivuosi": 1623827.42
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K242PKL",
-        "asty_arvo": 4.18,
-        "euroarvo_puolivuosi": 1106260.13
-      },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "20/52K266PL",
-        "asty_arvo": 4.143,
-        "euroarvo_puolivuosi": 3285301.28
+        "asty_arvo": 4.121,
+        "euroarvo_puolivuosi": 3197043.49
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "23/59K293KAH",
-        "asty_arvo": 4.106,
-        "euroarvo_puolivuosi": 607521.26
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "21/53K273TAM",
-        "asty_arvo": 4.093,
-        "euroarvo_puolivuosi": 3052000.05
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K213NOF",
-        "asty_arvo": 4.089,
-        "euroarvo_puolivuosi": 2265674.57
+        "asty_arvo": 4.111,
+        "euroarvo_puolivuosi": 772083.02
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "18/48K258NOF",
-        "asty_arvo": 4.077,
-        "euroarvo_puolivuosi": 4520789.39
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "19/49K261PL",
-        "asty_arvo": 4.069,
-        "euroarvo_puolivuosi": 1084890.93
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "23/58K291PL",
-        "asty_arvo": 4.059,
-        "euroarvo_puolivuosi": 1526821.13
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "21/54K277PL",
-        "asty_arvo": 4.057,
-        "euroarvo_puolivuosi": 2389848.58
+        "asty_arvo": 4.094,
+        "euroarvo_puolivuosi": 4654024.78
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "21/53K270NOB",
-        "asty_arvo": 4.047,
-        "euroarvo_puolivuosi": 2253263.32
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K208NOF",
-        "asty_arvo": 4.044,
-        "euroarvo_puolivuosi": 3306342.73
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "18/47K241HEL",
-        "asty_arvo": 4.04,
-        "euroarvo_puolivuosi": 4451130.02
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "18/48K259HEL",
-        "asty_arvo": 4.036,
-        "euroarvo_puolivuosi": 4846343.79
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "15/37K214TL",
-        "asty_arvo": 4.03,
-        "euroarvo_puolivuosi": 2195779.96
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "17/42K229HEL",
-        "asty_arvo": 4.027,
-        "euroarvo_puolivuosi": 4386577.78
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K211NOF",
-        "asty_arvo": 4.025,
-        "euroarvo_puolivuosi": 2768490.06
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "21/53K272NOB",
-        "asty_arvo": 4.013,
-        "euroarvo_puolivuosi": 2338125.76
+        "sopimus_id": "15/37K213NOF",
+        "asty_arvo": 4.051,
+        "euroarvo_puolivuosi": 2336505.61
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "23/58K289PL",
-        "asty_arvo": 4.009,
-        "euroarvo_puolivuosi": 8191946.88
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K207NOF",
-        "asty_arvo": 4.0,
-        "euroarvo_puolivuosi": 3367646.85
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K292KAH",
-        "asty_arvo": 3.998,
-        "euroarvo_puolivuosi": 2362907.49
+        "asty_arvo": 4.039,
+        "euroarvo_puolivuosi": 8084942.95
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "20/51K264NOB",
-        "asty_arvo": 3.994,
-        "euroarvo_puolivuosi": 4266784.9
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "23/58K290TAM",
-        "asty_arvo": 3.992,
-        "euroarvo_puolivuosi": 2503065.99
+        "asty_arvo": 4.037,
+        "euroarvo_puolivuosi": 4273665.19
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "18/47K256PKL",
-        "asty_arvo": 3.989,
-        "euroarvo_puolivuosi": 5026817.84
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "21/53K271NOB",
-        "asty_arvo": 3.981,
-        "euroarvo_puolivuosi": 6776706.09
+        "asty_arvo": 4.023,
+        "euroarvo_puolivuosi": 4967606.88
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "19/49K260PL",
-        "asty_arvo": 3.979,
-        "euroarvo_puolivuosi": 3071935.12
+        "asty_arvo": 4.023,
+        "euroarvo_puolivuosi": 2913749.72
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K242PKL",
+        "asty_arvo": 4.0,
+        "euroarvo_puolivuosi": 1088918.39
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "15/37K211NOF",
+        "asty_arvo": 3.993,
+        "euroarvo_puolivuosi": 2816413.53
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "17/42K229HEL",
+        "asty_arvo": 3.987,
+        "euroarvo_puolivuosi": 4678601.92
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "18/47K241HEL",
+        "asty_arvo": 3.985,
+        "euroarvo_puolivuosi": 4461479.39
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "21/53K269NOB",
-        "asty_arvo": 3.978,
-        "euroarvo_puolivuosi": 6841273.13
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "23/59K295PL",
-        "asty_arvo": 3.97,
-        "euroarvo_puolivuosi": 1795112.75
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "21/54K279PL",
-        "asty_arvo": 3.97,
-        "euroarvo_puolivuosi": 3074086.18
+        "asty_arvo": 3.984,
+        "euroarvo_puolivuosi": 6896894.43
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "17/42K228NOF",
-        "asty_arvo": 3.934,
-        "euroarvo_puolivuosi": 6114234.75
+        "sopimus_id": "21/53K271NOB",
+        "asty_arvo": 3.984,
+        "euroarvo_puolivuosi": 6782567.41
       },
       {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "17/42K232HEL",
-        "asty_arvo": 3.934,
-        "euroarvo_puolivuosi": 3511995.29
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "22/55K282PL",
-        "asty_arvo": 3.927,
-        "euroarvo_puolivuosi": 5936937.74
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K246PKL",
-        "asty_arvo": 3.924,
-        "euroarvo_puolivuosi": 6839100.3
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K294KAH",
-        "asty_arvo": 3.923,
-        "euroarvo_puolivuosi": 2465991.51
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K255PKL",
-        "asty_arvo": 3.923,
-        "euroarvo_puolivuosi": 1050986.92
+        "operaattori": "Nurmijärven Linja",
+        "sopimus_id": "18/47K254NL",
+        "asty_arvo": 3.98,
+        "euroarvo_puolivuosi": 223288.6
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "18/47K245NOF",
-        "asty_arvo": 3.916,
-        "euroarvo_puolivuosi": 2185618.57
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "17/37K209PKL",
-        "asty_arvo": 3.901,
-        "euroarvo_puolivuosi": 2923655.86
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "18/47K244NOF",
-        "asty_arvo": 3.886,
-        "euroarvo_puolivuosi": 6770307.11
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "20/51K263NOB",
-        "asty_arvo": 3.885,
-        "euroarvo_puolivuosi": 6989661.3
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "17/37K210PKL",
-        "asty_arvo": 3.873,
-        "euroarvo_puolivuosi": 3425321.64
+        "sopimus_id": "21/53K270NOB",
+        "asty_arvo": 3.976,
+        "euroarvo_puolivuosi": 2288714.29
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "21/54K278PL",
-        "asty_arvo": 3.866,
-        "euroarvo_puolivuosi": 2355602.4
+        "asty_arvo": 3.965,
+        "euroarvo_puolivuosi": 2341837.36
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "23/58K291PL",
+        "asty_arvo": 3.953,
+        "euroarvo_puolivuosi": 1492248.89
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "22/55K281PL",
+        "asty_arvo": 3.947,
+        "euroarvo_puolivuosi": 1523133.65
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "18/47K245NOF",
+        "asty_arvo": 3.941,
+        "euroarvo_puolivuosi": 2183227.65
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "21/54K277PL",
+        "asty_arvo": 3.939,
+        "euroarvo_puolivuosi": 2320997.79
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "17/42K228NOF",
+        "asty_arvo": 3.933,
+        "euroarvo_puolivuosi": 6274176.68
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K292KAH",
+        "asty_arvo": 3.929,
+        "euroarvo_puolivuosi": 3024009.77
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "18/48K259HEL",
+        "asty_arvo": 3.929,
+        "euroarvo_puolivuosi": 4987930.46
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "21/53K272NOB",
+        "asty_arvo": 3.924,
+        "euroarvo_puolivuosi": 2330236.08
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K246PKL",
+        "asty_arvo": 3.92,
+        "euroarvo_puolivuosi": 6484456.27
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "18/47K244NOF",
+        "asty_arvo": 3.917,
+        "euroarvo_puolivuosi": 6912443.19
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "17/42K232HEL",
+        "asty_arvo": 3.905,
+        "euroarvo_puolivuosi": 3590038.19
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "19/49K261PL",
+        "asty_arvo": 3.888,
+        "euroarvo_puolivuosi": 1062750.35
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "22/55K282PL",
+        "asty_arvo": 3.879,
+        "euroarvo_puolivuosi": 5881894.6
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K255PKL",
+        "asty_arvo": 3.878,
+        "euroarvo_puolivuosi": 1099648.68
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "20/50K262+HE",
-        "asty_arvo": 3.851,
-        "euroarvo_puolivuosi": 18782765.24
+        "asty_arvo": 3.866,
+        "euroarvo_puolivuosi": 18913491.65
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "15/37K207NOF",
+        "asty_arvo": 3.85,
+        "euroarvo_puolivuosi": 3427263.47
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "20/51K263NOB",
+        "asty_arvo": 3.846,
+        "euroarvo_puolivuosi": 7106413.65
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "17/37K210PKL",
+        "asty_arvo": 3.842,
+        "euroarvo_puolivuosi": 3457880.4
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "15/37K208NOF",
+        "asty_arvo": 3.832,
+        "euroarvo_puolivuosi": 3287008.1
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "17/37K209PKL",
+        "asty_arvo": 3.822,
+        "euroarvo_puolivuosi": 2924910.91
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K294KAH",
+        "asty_arvo": 3.819,
+        "euroarvo_puolivuosi": 3164641.85
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "21/54K279PL",
+        "asty_arvo": 3.789,
+        "euroarvo_puolivuosi": 2988334.16
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "23/59K295PL",
+        "asty_arvo": 3.787,
+        "euroarvo_puolivuosi": 2303492.66
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "22/57K285HEL",
-        "asty_arvo": 3.742,
-        "euroarvo_puolivuosi": 3446631.47
+        "asty_arvo": 3.665,
+        "euroarvo_puolivuosi": 3560459.32
       }
     ],
     "hero": {
       "Koiviston Auto": {
-        "arvo": 3.92,
-        "kk": "syksy 2025"
+        "arvo": 3.889,
+        "kk": "kevät 2026"
       },
       "Nobina Finland": {
-        "arvo": 3.974,
-        "kk": "syksy 2025"
+        "arvo": 3.951,
+        "kk": "kevät 2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": 3.983,
-        "kk": "syksy 2025"
-      },
-      "Pohjolan kaupunkiliikenne": {
-        "arvo": 3.93,
-        "kk": "syksy 2020"
+        "arvo": 3.942,
+        "kk": "kevät 2026"
       },
       "Tammelundin Liikenne": {
         "arvo": 4.043,
@@ -712,8 +694,8 @@ const SUORIUTUMINEN = {
         "kk": "syksy 2019"
       }
     },
-    "hsl_viimeisin": 3.966,
-    "hsl_kk": "syksy 2025"
+    "hsl_viimeisin": 3.93,
+    "hsl_kk": "kevät 2026"
   },
   "jola": {
     "vuodet": [
@@ -725,7 +707,8 @@ const SUORIUTUMINEN = {
       2022,
       2023,
       2024,
-      2025
+      2025,
+      2026
     ],
     "vuosi_kaikki": [
       25.34,
@@ -736,7 +719,8 @@ const SUORIUTUMINEN = {
       15.41,
       14.41,
       11.3,
-      7.21
+      7.21,
+      9.83
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
@@ -748,7 +732,8 @@ const SUORIUTUMINEN = {
         20.61,
         26.67,
         18.07,
-        11.47
+        11.47,
+        9.54
       ],
       "Nobina Finland": [
         34.91,
@@ -759,24 +744,27 @@ const SUORIUTUMINEN = {
         16.02,
         14.28,
         9.0,
-        5.23
+        5.23,
+        9.2
       ],
       "Pohjolan Liikenne": [
-        null,
-        10.0,
-        51.0,
-        15.17,
+        21.89,
+        15.9,
+        29.21,
+        13.61,
         9.13,
         10.81,
         5.67,
         8.47,
-        6.13
+        6.13,
+        10.77
       ],
       "Pohjolan kaupunkiliikenne": [
-        21.89,
-        16.01,
-        28.84,
-        6.37,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -792,7 +780,8 @@ const SUORIUTUMINEN = {
         5.61,
         7.01,
         11.46,
-        6.49
+        6.49,
+        10.25
       ],
       "Transdev": [
         25.85,
@@ -803,49 +792,50 @@ const SUORIUTUMINEN = {
         null,
         null,
         null,
+        null,
         null
       ]
     },
     "kk_labels": [
-      "kevät 2023",
       "syksy 2023",
       "kevät 2024",
       "syksy 2024",
       "kevät 2025",
-      "syksy 2025"
+      "syksy 2025",
+      "kevät 2026"
     ],
     "kk_kaikki": [
-      13.11,
       15.55,
       13.7,
       9.02,
       7.45,
-      6.98
+      6.98,
+      9.83
     ],
     "kk_oper": {
       "Koiviston Auto": [
-        26.75,
         26.61,
         22.75,
         13.46,
         11.04,
-        11.86
+        11.86,
+        9.54
       ],
       "Nobina Finland": [
-        12.96,
         15.58,
         9.96,
         8.07,
         5.54,
-        4.92
+        4.92,
+        9.2
       ],
       "Pohjolan Liikenne": [
-        5.29,
         6.02,
         9.91,
         7.14,
         6.71,
-        5.6
+        5.6,
+        10.77
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -856,12 +846,12 @@ const SUORIUTUMINEN = {
         null
       ],
       "Tammelundin Liikenne": [
-        6.27,
         7.62,
         17.82,
         6.43,
         8.02,
-        4.39
+        4.39,
+        10.25
       ],
       "Transdev": [
         null,
@@ -872,301 +862,297 @@ const SUORIUTUMINEN = {
         null
       ]
     },
-    "viimeisin_kausi_label": "syksy 2025",
+    "viimeisin_kausi_label": "kevät 2026",
     "sopimukset": [
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "21/53K273TAM",
-        "jola_arvo": 1.0,
-        "euroarvo_puolivuosi": 3052000.05
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "21/54K278PL",
-        "jola_arvo": 1.0,
-        "euroarvo_puolivuosi": 2355602.4
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "22/57K285HEL",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 3446631.47
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "19/49K261PL",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 1084890.93
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "20/52K266PL",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 3285301.28
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "21/54K277PL",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 2389848.58
-      },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "21/53K269NOB",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 6841273.13
+        "jola_arvo": 1.0,
+        "euroarvo_puolivuosi": 6896894.43
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "20/51K263NOB",
+        "sopimus_id": "15/37K211NOF",
         "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 6989661.3
+        "euroarvo_puolivuosi": 2816413.53
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K292KAH",
+        "jola_arvo": 2.0,
+        "euroarvo_puolivuosi": 3024009.77
       },
       {
         "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "23/58K291PL",
+        "sopimus_id": "22/55K282PL",
         "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 1526821.13
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "23/59K295PL",
-        "jola_arvo": 2.0,
-        "euroarvo_puolivuosi": 1795112.75
+        "euroarvo_puolivuosi": 5881894.6
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "21/53K272NOB",
         "jola_arvo": 3.0,
-        "euroarvo_puolivuosi": 2338125.76
+        "euroarvo_puolivuosi": 2330236.08
       },
       {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K208NOF",
+        "operaattori": "Nurmijärven Linja",
+        "sopimus_id": "18/47K254NL",
         "jola_arvo": 3.0,
-        "euroarvo_puolivuosi": 3306342.73
+        "euroarvo_puolivuosi": 223288.6
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "19/49K261PL",
+        "jola_arvo": 3.0,
+        "euroarvo_puolivuosi": 1062750.35
+      },
+      {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "21/53K273TAM",
+        "jola_arvo": 3.0,
+        "euroarvo_puolivuosi": 3149818.68
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "22/55K281PL",
+        "jola_arvo": 3.0,
+        "euroarvo_puolivuosi": 1523133.65
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "20/51K264NOB",
-        "jola_arvo": 3.0,
-        "euroarvo_puolivuosi": 4266784.9
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K294KAH",
-        "jola_arvo": 3.0,
-        "euroarvo_puolivuosi": 2465991.51
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K207NOF",
-        "jola_arvo": 3.0,
-        "euroarvo_puolivuosi": 3367646.85
+        "jola_arvo": 4.0,
+        "euroarvo_puolivuosi": 4273665.19
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "18/47K241HEL",
         "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 4451130.02
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "22/55K281PL",
-        "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 1623827.42
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "21/54K279PL",
-        "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 3074086.18
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K256PKL",
-        "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 5026817.84
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "19/49K260PL",
-        "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 3071935.12
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "17/42K232HEL",
-        "jola_arvo": 4.0,
-        "euroarvo_puolivuosi": 3511995.29
+        "euroarvo_puolivuosi": 4461479.39
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "21/53K270NOB",
         "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 2253263.32
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "23/58K289PL",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 8191946.88
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "15/37K214TL",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 2195779.96
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K255PKL",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 1050986.92
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "18/47K242PKL",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 1106260.13
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K211NOF",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 2768490.06
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K292KAH",
-        "jola_arvo": 5.0,
-        "euroarvo_puolivuosi": 2362907.49
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "15/37K213NOF",
-        "jola_arvo": 6.0,
-        "euroarvo_puolivuosi": 2265674.57
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "21/53K271NOB",
-        "jola_arvo": 6.0,
-        "euroarvo_puolivuosi": 6776706.09
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "18/48K258NOF",
-        "jola_arvo": 6.0,
-        "euroarvo_puolivuosi": 4520789.39
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "17/37K209PKL",
-        "jola_arvo": 7.0,
-        "euroarvo_puolivuosi": 2923655.86
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K293KAH",
-        "jola_arvo": 7.0,
-        "euroarvo_puolivuosi": 607521.26
+        "euroarvo_puolivuosi": 2288714.29
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "18/47K245NOF",
+        "jola_arvo": 5.0,
+        "euroarvo_puolivuosi": 2183227.65
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "21/54K278PL",
+        "jola_arvo": 5.0,
+        "euroarvo_puolivuosi": 2341837.36
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "23/59K295PL",
+        "jola_arvo": 5.0,
+        "euroarvo_puolivuosi": 2303492.66
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "20/52K266PL",
+        "jola_arvo": 6.0,
+        "euroarvo_puolivuosi": 3197043.49
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "23/58K291PL",
+        "jola_arvo": 6.0,
+        "euroarvo_puolivuosi": 1492248.89
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "22/57K285HEL",
         "jola_arvo": 7.0,
-        "euroarvo_puolivuosi": 2185618.57
+        "euroarvo_puolivuosi": 3560459.32
       },
       {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "22/55K282PL",
-        "jola_arvo": 8.0,
-        "euroarvo_puolivuosi": 5936937.74
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "23/58K290TAM",
-        "jola_arvo": 8.0,
-        "euroarvo_puolivuosi": 2503065.99
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K294KAH",
+        "jola_arvo": 7.0,
+        "euroarvo_puolivuosi": 3164641.85
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "17/42K228NOF",
-        "jola_arvo": 8.0,
-        "euroarvo_puolivuosi": 6114234.75
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "17/37K210PKL",
-        "jola_arvo": 9.0,
-        "euroarvo_puolivuosi": 3425321.64
+        "sopimus_id": "15/37K208NOF",
+        "jola_arvo": 7.0,
+        "euroarvo_puolivuosi": 3287008.1
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "18/47K244NOF",
+        "sopimus_id": "18/48K258NOF",
+        "jola_arvo": 8.0,
+        "euroarvo_puolivuosi": 4654024.78
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "15/37K207NOF",
+        "jola_arvo": 8.0,
+        "euroarvo_puolivuosi": 3427263.47
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "19/49K260PL",
+        "jola_arvo": 8.0,
+        "euroarvo_puolivuosi": 2913749.72
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K293KAH",
+        "jola_arvo": 8.0,
+        "euroarvo_puolivuosi": 772083.02
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "21/54K277PL",
         "jola_arvo": 9.0,
-        "euroarvo_puolivuosi": 6770307.11
+        "euroarvo_puolivuosi": 2320997.79
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "18/48K259HEL",
         "jola_arvo": 10.0,
-        "euroarvo_puolivuosi": 4846343.79
+        "euroarvo_puolivuosi": 4987930.46
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "21/53K271NOB",
+        "jola_arvo": 11.0,
+        "euroarvo_puolivuosi": 6782567.41
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "20/51K263NOB",
+        "jola_arvo": 11.0,
+        "euroarvo_puolivuosi": 7106413.65
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "17/42K232HEL",
+        "jola_arvo": 11.0,
+        "euroarvo_puolivuosi": 3590038.19
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "17/42K229HEL",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 4678601.92
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K242PKL",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 1088918.39
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "17/42K228NOF",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 6274176.68
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "20/50K262+HE",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 18913491.65
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "21/54K279PL",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 2988334.16
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K255PKL",
+        "jola_arvo": 12.0,
+        "euroarvo_puolivuosi": 1099648.68
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "18/47K246PKL",
         "jola_arvo": 12.0,
-        "euroarvo_puolivuosi": 6839100.3
+        "euroarvo_puolivuosi": 6484456.27
       },
       {
-        "operaattori": "Nurmijärven Linja",
-        "sopimus_id": "18/47K254NL",
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "18/47K256PKL",
         "jola_arvo": 13.0,
-        "euroarvo_puolivuosi": 222965.34
+        "euroarvo_puolivuosi": 4967606.88
       },
       {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "20/50K262+HE",
-        "jola_arvo": 18.0,
-        "euroarvo_puolivuosi": 18782765.24
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "15/37K213NOF",
+        "jola_arvo": 14.0,
+        "euroarvo_puolivuosi": 2336505.61
       },
       {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "17/42K229HEL",
-        "jola_arvo": 19.0,
-        "euroarvo_puolivuosi": 4386577.78
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "23/58K290TAM",
+        "jola_arvo": 14.0,
+        "euroarvo_puolivuosi": 2593605.41
+      },
+      {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "15/37K214TL",
+        "jola_arvo": 16.0,
+        "euroarvo_puolivuosi": 2278393.82
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "17/37K209PKL",
+        "jola_arvo": 17.0,
+        "euroarvo_puolivuosi": 2924910.91
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "23/58K289PL",
+        "jola_arvo": 17.0,
+        "euroarvo_puolivuosi": 8084942.95
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "17/37K210PKL",
+        "jola_arvo": 22.0,
+        "euroarvo_puolivuosi": 3457880.4
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "18/47K244NOF",
+        "jola_arvo": 23.0,
+        "euroarvo_puolivuosi": 6912443.19
       }
     ],
     "hero": {
       "Koiviston Auto": {
-        "arvo": 11.86,
-        "kk": "syksy 2025"
+        "arvo": 9.54,
+        "kk": "kevät 2026"
       },
       "Nobina Finland": {
-        "arvo": 4.92,
-        "kk": "syksy 2025"
+        "arvo": 9.2,
+        "kk": "kevät 2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": 5.6,
-        "kk": "syksy 2025"
-      },
-      "Pohjolan kaupunkiliikenne": {
-        "arvo": 6.37,
-        "kk": "syksy 2020"
+        "arvo": 10.77,
+        "kk": "kevät 2026"
       },
       "Tammelundin Liikenne": {
-        "arvo": 4.39,
-        "kk": "syksy 2025"
+        "arvo": 10.25,
+        "kk": "kevät 2026"
       },
       "Transdev": {
         "arvo": 55.15,
         "kk": "syksy 2019"
       }
     },
-    "hsl_viimeisin": 6.98,
-    "hsl_kk": "syksy 2025"
+    "hsl_viimeisin": 9.83,
+    "hsl_kk": "kevät 2026"
   },
   "luka": {
     "vuodet": [
@@ -1179,26 +1165,26 @@ const SUORIUTUMINEN = {
       0.863,
       0.8508,
       0.8748,
-      0.8847
+      0.8842
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
         0.8276,
         0.8054,
         0.8574,
-        0.8722
+        0.8794
       ],
       "Nobina Finland": [
         0.8482,
         0.8465,
         0.8664,
-        0.8412
+        0.837
       ],
       "Pohjolan Liikenne": [
         0.871,
         0.8602,
         0.8805,
-        0.8772
+        0.876
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -1210,7 +1196,7 @@ const SUORIUTUMINEN = {
         0.944,
         0.9099,
         0.9226,
-        0.924
+        0.9248
       ],
       "Transdev": [
         null,
@@ -1220,8 +1206,6 @@ const SUORIUTUMINEN = {
       ]
     },
     "kk_labels": [
-      "05/25",
-      "06/25",
       "07/25",
       "08/25",
       "09/25",
@@ -1231,11 +1215,11 @@ const SUORIUTUMINEN = {
       "01/26",
       "02/26",
       "03/26",
-      "04/26"
+      "04/26",
+      "05/26",
+      "06/26"
     ],
     "kk_K1_pct": [
-      0.9448,
-      0.9289,
       0.9345,
       0.9409,
       0.9382,
@@ -1245,11 +1229,11 @@ const SUORIUTUMINEN = {
       0.9128,
       0.932,
       0.9496,
-      0.9457
+      0.9457,
+      0.943,
+      0.9345
     ],
     "kk_K2_pct": [
-      0.8706,
-      0.8725,
       0.8617,
       0.8798,
       0.8938,
@@ -1259,11 +1243,11 @@ const SUORIUTUMINEN = {
       0.8629,
       0.8759,
       0.9,
-      0.9
+      0.9,
+      0.8954,
+      0.8707
     ],
     "kk_K3_pct": [
-      0.9908,
-      0.9915,
       0.9805,
       0.9903,
       0.9902,
@@ -1273,11 +1257,11 @@ const SUORIUTUMINEN = {
       0.9913,
       0.9915,
       0.992,
-      0.9904
+      0.9904,
+      0.9912,
+      0.9917
     ],
     "kk_A_kattavuus": [
-      0.99,
-      0.9898,
       0.9898,
       0.9912,
       0.9907,
@@ -1287,11 +1271,11 @@ const SUORIUTUMINEN = {
       0.9765,
       0.9748,
       0.9884,
-      0.9832
+      0.9832,
+      0.9921,
+      0.9875
     ],
     "kk_kannuste_pct": [
-      0.0107,
-      0.0099,
       0.0092,
       0.011,
       0.0114,
@@ -1301,26 +1285,26 @@ const SUORIUTUMINEN = {
       0.0085,
       0.0104,
       0.0123,
-      0.012
+      0.012,
+      0.0118,
+      0.0102
     ],
     "kk_oper_K2": {
       "Koiviston Auto": [
-        0.8542,
-        0.8366,
         0.7859,
         0.87,
         0.887,
         0.8696,
-        0.8567,
+        0.8568,
         0.8846,
         0.8346,
         0.8423,
         0.9053,
-        0.9068
+        0.9068,
+        0.9039,
+        0.8837
       ],
       "Nobina Finland": [
-        0.8689,
-        0.867,
         0.8698,
         0.8688,
         0.8775,
@@ -1330,11 +1314,11 @@ const SUORIUTUMINEN = {
         0.8325,
         0.8315,
         0.8517,
-        0.8489
+        0.8489,
+        0.8412,
+        0.816
       ],
       "Pohjolan Liikenne": [
-        0.8826,
-        0.8861,
         0.887,
         0.8826,
         0.8901,
@@ -1344,7 +1328,9 @@ const SUORIUTUMINEN = {
         0.8494,
         0.8721,
         0.8921,
-        0.8952
+        0.8952,
+        0.891,
+        0.8561
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -1361,8 +1347,6 @@ const SUORIUTUMINEN = {
         null
       ],
       "Tammelundin Liikenne": [
-        0.9265,
-        0.9281,
         0.9218,
         0.9289,
         0.9325,
@@ -1372,7 +1356,9 @@ const SUORIUTUMINEN = {
         0.9181,
         0.9227,
         0.9285,
-        0.9268
+        0.9268,
+        0.925,
+        0.9275
       ],
       "Transdev": [
         null,
@@ -1389,260 +1375,252 @@ const SUORIUTUMINEN = {
         null
       ]
     },
-    "viimeisin_kk_label": "04/2026",
+    "viimeisin_kk_label": "06/2026",
     "sopimukset": [
-      {
-        "operaattori": "Bus Travel Reissu Ruoti",
-        "sopimus_id": "54K276BTR",
-        "K2_pct": 0.98202,
-        "A_kattavuus": 0.98696,
-        "kannuste_pct": 0.019,
-        "korvaus_eur": 17391.1
-      },
       {
         "operaattori": "Taksikuljetus Harri Vuolle",
         "sopimus_id": "57K284HVU",
-        "K2_pct": 0.97786,
-        "A_kattavuus": 0.99911,
-        "kannuste_pct": 0.016,
-        "korvaus_eur": 86173.86
+        "K2_pct": 0.96356,
+        "A_kattavuus": 0.99839,
+        "kannuste_pct": 0.0154,
+        "korvaus_eur": 33200.21
       },
       {
         "operaattori": "Korsisaari",
         "sopimus_id": "58K286KOR",
-        "K2_pct": 0.96162,
-        "A_kattavuus": 0.99068,
-        "kannuste_pct": 0.0186,
-        "korvaus_eur": 35881.29
+        "K2_pct": 0.95627,
+        "A_kattavuus": 0.98831,
+        "kannuste_pct": 0.0168,
+        "korvaus_eur": 37010.65
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "59K293KAH",
-        "K2_pct": 0.95458,
-        "A_kattavuus": 0.98179,
-        "kannuste_pct": 0.017,
-        "korvaus_eur": 127373.35
+        "K2_pct": 0.95153,
+        "A_kattavuus": 0.98381,
+        "kannuste_pct": 0.0165,
+        "korvaus_eur": 124504.96
       },
       {
         "operaattori": "V-S Bussipalvelut",
-        "sopimus_id": "62K317VSB",
-        "K2_pct": 0.94841,
-        "A_kattavuus": 0.93622,
-        "kannuste_pct": 0.0161,
-        "korvaus_eur": 77799.11
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "59K292KAH",
-        "K2_pct": 0.93061,
-        "A_kattavuus": 0.98715,
-        "kannuste_pct": 0.014,
-        "korvaus_eur": 499876.05
-      },
-      {
-        "operaattori": "Tammelundin Liikenne",
-        "sopimus_id": "53K273TAM",
-        "K2_pct": 0.92899,
-        "A_kattavuus": 0.98745,
-        "kannuste_pct": 0.0142,
-        "korvaus_eur": 529739.37
+        "sopimus_id": "25_62K317VSB",
+        "K2_pct": 0.94244,
+        "A_kattavuus": 0.99888,
+        "kannuste_pct": 0.0165,
+        "korvaus_eur": 82750.93
       },
       {
         "operaattori": "Tammelundin Liikenne",
         "sopimus_id": "58K290TAM",
-        "K2_pct": 0.92469,
-        "A_kattavuus": 0.983,
-        "kannuste_pct": 0.0133,
-        "korvaus_eur": 431501.36
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "55K281PL",
-        "K2_pct": 0.92276,
-        "A_kattavuus": 0.97709,
-        "kannuste_pct": 0.0101,
-        "korvaus_eur": 275281.8
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "54K279PL",
-        "K2_pct": 0.92256,
-        "A_kattavuus": 0.97656,
-        "kannuste_pct": 0.0142,
-        "korvaus_eur": 550187.46
-      },
-      {
-        "operaattori": "Koiviston Auto",
-        "sopimus_id": "59K294KAH",
-        "K2_pct": 0.91767,
-        "A_kattavuus": 0.99579,
-        "kannuste_pct": 0.0127,
-        "korvaus_eur": 518696.33
-      },
-      {
-        "operaattori": "V-S Bussipalvelut",
-        "sopimus_id": "62K316VSB",
-        "K2_pct": 0.91339,
-        "A_kattavuus": 0.95556,
-        "kannuste_pct": 0.0148,
-        "korvaus_eur": 35800.6
+        "K2_pct": 0.93474,
+        "A_kattavuus": 0.99971,
+        "kannuste_pct": 0.0146,
+        "korvaus_eur": 407911.64
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "52K266PL",
-        "K2_pct": 0.91002,
-        "A_kattavuus": 0.9957,
-        "kannuste_pct": 0.0136,
-        "korvaus_eur": 543806.6
+        "K2_pct": 0.92822,
+        "A_kattavuus": 0.99597,
+        "kannuste_pct": 0.0152,
+        "korvaus_eur": 433354.42
+      },
+      {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "53K273TAM",
+        "K2_pct": 0.92027,
+        "A_kattavuus": 0.9977,
+        "kannuste_pct": 0.0144,
+        "korvaus_eur": 455074.18
       },
       {
         "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "58K289PL",
-        "K2_pct": 0.90406,
-        "A_kattavuus": 0.98646,
-        "kannuste_pct": 0.0101,
-        "korvaus_eur": 1411899.59
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "58K291PL",
-        "K2_pct": 0.9031,
-        "A_kattavuus": 0.95853,
-        "kannuste_pct": 0.0115,
-        "korvaus_eur": 266389.41
-      },
-      {
-        "operaattori": "Nurmijärven Linja",
-        "sopimus_id": "52K265NL",
-        "K2_pct": 0.90146,
-        "A_kattavuus": 0.9815,
-        "kannuste_pct": 0.0104,
-        "korvaus_eur": 67105.97
+        "sopimus_id": "55K281PL",
+        "K2_pct": 0.91865,
+        "A_kattavuus": 0.97552,
+        "kannuste_pct": 0.0102,
+        "korvaus_eur": 257847.94
       },
       {
         "operaattori": "Koiviston Auto",
-        "sopimus_id": "50K262+HE",
-        "K2_pct": 0.89168,
-        "A_kattavuus": 0.98653,
-        "kannuste_pct": 0.0135,
-        "korvaus_eur": 561576.83
+        "sopimus_id": "59K294KAH",
+        "K2_pct": 0.89672,
+        "A_kattavuus": 0.97968,
+        "kannuste_pct": 0.0115,
+        "korvaus_eur": 550697.94
       },
       {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "59K295PL",
-        "K2_pct": 0.88884,
-        "A_kattavuus": 0.97908,
-        "kannuste_pct": 0.0098,
-        "korvaus_eur": 395847.44
-      },
-      {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "54K277PL",
-        "K2_pct": 0.88859,
-        "A_kattavuus": 0.99215,
-        "kannuste_pct": 0.0118,
-        "korvaus_eur": 407685.81
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "53K270NOB",
-        "K2_pct": 0.8795,
-        "A_kattavuus": 0.9917,
-        "kannuste_pct": 0.0092,
-        "korvaus_eur": 384362.4
+        "operaattori": "V-S Bussipalvelut",
+        "sopimus_id": "25_62K316VSB",
+        "K2_pct": 0.89286,
+        "A_kattavuus": 1.0,
+        "kannuste_pct": 0.0157,
+        "korvaus_eur": 38051.53
       },
       {
         "operaattori": "Korsisaari",
         "sopimus_id": "58K288KOR",
-        "K2_pct": 0.87566,
-        "A_kattavuus": 0.97287,
-        "kannuste_pct": 0.0122,
-        "korvaus_eur": 77182.51
+        "K2_pct": 0.88199,
+        "A_kattavuus": 0.97306,
+        "kannuste_pct": 0.01,
+        "korvaus_eur": 80055.64
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "58K291PL",
+        "K2_pct": 0.88133,
+        "A_kattavuus": 0.97633,
+        "kannuste_pct": 0.0103,
+        "korvaus_eur": 230250.18
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "53K272NOB",
-        "K2_pct": 0.87313,
-        "A_kattavuus": 0.99306,
-        "kannuste_pct": 0.0062,
-        "korvaus_eur": 392107.54
+        "sopimus_id": "53K270NOB",
+        "K2_pct": 0.88064,
+        "A_kattavuus": 0.99281,
+        "kannuste_pct": 0.0131,
+        "korvaus_eur": 338653.0
       },
       {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "53K269NOB",
-        "K2_pct": 0.86959,
-        "A_kattavuus": 0.99109,
-        "kannuste_pct": 0.0108,
-        "korvaus_eur": 1152126.04
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "58K289PL",
+        "K2_pct": 0.87145,
+        "A_kattavuus": 0.98936,
+        "kannuste_pct": 0.0098,
+        "korvaus_eur": 1321737.52
+      },
+      {
+        "operaattori": "Nurmijärven Linja",
+        "sopimus_id": "52K265NL",
+        "K2_pct": 0.86979,
+        "A_kattavuus": 0.98857,
+        "kannuste_pct": 0.0061,
+        "korvaus_eur": 70416.88
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "59K292KAH",
+        "K2_pct": 0.86361,
+        "A_kattavuus": 0.97725,
+        "kannuste_pct": 0.0088,
+        "korvaus_eur": 507938.55
       },
       {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "54K278PL",
-        "K2_pct": 0.86947,
-        "A_kattavuus": 0.99271,
-        "kannuste_pct": 0.0104,
-        "korvaus_eur": 403756.5
+        "K2_pct": 0.85787,
+        "A_kattavuus": 0.98964,
+        "kannuste_pct": 0.0101,
+        "korvaus_eur": 364744.74
       },
       {
-        "operaattori": "Pohjolan Liikenne",
-        "sopimus_id": "55K282PL",
-        "K2_pct": 0.84767,
-        "A_kattavuus": 0.98599,
-        "kannuste_pct": 0.0098,
-        "korvaus_eur": 987009.24
-      },
-      {
-        "operaattori": "Nobina Finland",
-        "sopimus_id": "51K264NOB",
-        "K2_pct": 0.84456,
-        "A_kattavuus": 0.9721,
-        "kannuste_pct": 0.0089,
-        "korvaus_eur": 710317.6
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "50K262+HE",
+        "K2_pct": 0.85383,
+        "A_kattavuus": 0.99187,
+        "kannuste_pct": 0.0131,
+        "korvaus_eur": 549894.19
       },
       {
         "operaattori": "Koiviston Auto",
         "sopimus_id": "57K285HEL",
-        "K2_pct": 0.83924,
-        "A_kattavuus": 0.98549,
-        "kannuste_pct": 0.0114,
-        "korvaus_eur": 596830.22
+        "K2_pct": 0.85258,
+        "A_kattavuus": 0.99319,
+        "kannuste_pct": 0.0115,
+        "korvaus_eur": 578861.93
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "54K279PL",
+        "K2_pct": 0.84682,
+        "A_kattavuus": 0.98817,
+        "kannuste_pct": 0.0071,
+        "korvaus_eur": 381475.65
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "53K271NOB",
-        "K2_pct": 0.81641,
-        "A_kattavuus": 0.99528,
-        "kannuste_pct": 0.0066,
-        "korvaus_eur": 1133540.97
+        "sopimus_id": "53K269NOB",
+        "K2_pct": 0.84195,
+        "A_kattavuus": 0.99456,
+        "kannuste_pct": 0.0104,
+        "korvaus_eur": 1047942.91
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "59K295PL",
+        "K2_pct": 0.8319,
+        "A_kattavuus": 0.99107,
+        "kannuste_pct": 0.0068,
+        "korvaus_eur": 363009.65
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "53K272NOB",
+        "K2_pct": 0.80966,
+        "A_kattavuus": 0.98395,
+        "kannuste_pct": 0.0016,
+        "korvaus_eur": 357356.01
       },
       {
         "operaattori": "Nobina Finland",
         "sopimus_id": "51K263NOB",
-        "K2_pct": 0.81051,
-        "A_kattavuus": 0.99481,
-        "kannuste_pct": 0.0023,
-        "korvaus_eur": 1182711.55
+        "K2_pct": 0.79951,
+        "A_kattavuus": 0.98721,
+        "kannuste_pct": 0.0018,
+        "korvaus_eur": 1180276.85
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "53K271NOB",
+        "K2_pct": 0.7985,
+        "A_kattavuus": 0.97756,
+        "kannuste_pct": 0.0042,
+        "korvaus_eur": 1050378.2
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "54K277PL",
+        "K2_pct": 0.78709,
+        "A_kattavuus": 0.96521,
+        "kannuste_pct": 0.0071,
+        "korvaus_eur": 376491.41
+      },
+      {
+        "operaattori": "Pohjolan Liikenne",
+        "sopimus_id": "55K282PL",
+        "K2_pct": 0.78147,
+        "A_kattavuus": 0.99285,
+        "kannuste_pct": 0.0071,
+        "korvaus_eur": 984826.28
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "51K264NOB",
+        "K2_pct": 0.76553,
+        "A_kattavuus": 0.98047,
+        "kannuste_pct": -0.0004,
+        "korvaus_eur": 680583.96
       }
     ],
     "hero": {
       "Koiviston Auto": {
-        "arvo": 0.9068,
-        "kk": "04/2026"
+        "arvo": 0.8837,
+        "kk": "06/2026"
       },
       "Nobina Finland": {
-        "arvo": 0.8489,
-        "kk": "04/2026"
+        "arvo": 0.816,
+        "kk": "06/2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": 0.8952,
-        "kk": "04/2026"
+        "arvo": 0.8561,
+        "kk": "06/2026"
       },
       "Tammelundin Liikenne": {
-        "arvo": 0.9268,
-        "kk": "04/2026"
+        "arvo": 0.9275,
+        "kk": "06/2026"
       }
     },
-    "hsl_viimeisin": 0.8881,
-    "hsl_kk": "04/2026"
+    "hsl_viimeisin": 0.8579,
+    "hsl_kk": "06/2026"
   }
 };
