@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 15.07.2026 10:14
+// Generoitu automaattisesti: 15.07.2026 15:16
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "15.07.2026 10:14",
+  "paivitetty": "15.07.2026 15:16",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -729,7 +729,7 @@ const SUORIUTUMINEN = {
     ],
     "vuosi_kaikki": [
       25.34,
-      13.7,
+      18.45,
       31.73,
       20.05,
       13.04,
@@ -742,7 +742,7 @@ const SUORIUTUMINEN = {
     "vuosi_oper": {
       "Koiviston Auto": [
         14.64,
-        12.56,
+        10.77,
         13.67,
         15.81,
         16.98,
@@ -754,7 +754,7 @@ const SUORIUTUMINEN = {
       ],
       "Nobina Finland": [
         34.91,
-        28.63,
+        33.25,
         44.58,
         28.25,
         13.62,
@@ -766,7 +766,7 @@ const SUORIUTUMINEN = {
       ],
       "Pohjolan Liikenne": [
         21.89,
-        15.9,
+        15.1,
         30.29,
         13.61,
         9.13,
@@ -790,7 +790,7 @@ const SUORIUTUMINEN = {
       ],
       "Tammelundin Liikenne": [
         19.92,
-        4.84,
+        6.18,
         15.18,
         8.89,
         12.97,
@@ -802,7 +802,7 @@ const SUORIUTUMINEN = {
       ],
       "Transdev": [
         25.85,
-        21.55,
+        21.92,
         39.94,
         null,
         null,
