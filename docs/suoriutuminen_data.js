@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 15.07.2026 09:51
+// Generoitu automaattisesti: 15.07.2026 10:01
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "15.07.2026 09:51",
+  "paivitetty": "15.07.2026 10:01",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -124,6 +124,7 @@ const SUORIUTUMINEN = {
       ]
     },
     "kk_labels": [
+      "04/25",
       "05/25",
       "06/25",
       "07/25",
@@ -134,10 +135,10 @@ const SUORIUTUMINEN = {
       "12/25",
       "01/26",
       "02/26",
-      "03/26",
-      "04/26"
+      "03/26"
     ],
     "kk_kaikki": [
+      99.79,
       99.817,
       99.81,
       99.78,
@@ -148,11 +149,11 @@ const SUORIUTUMINEN = {
       99.78,
       98.977,
       98.683,
-      99.607,
-      null
+      99.607
     ],
     "kk_oper": {
       "Koiviston Auto": [
+        99.84,
         99.82,
         99.79,
         99.73,
@@ -163,10 +164,10 @@ const SUORIUTUMINEN = {
         99.81,
         99.55,
         99.66,
-        99.83,
-        null
+        99.83
       ],
       "Nobina Finland": [
+        99.79,
         99.85,
         99.86,
         99.83,
@@ -177,10 +178,10 @@ const SUORIUTUMINEN = {
         99.84,
         99.54,
         99.29,
-        99.83,
-        null
+        99.83
       ],
       "Pohjolan Liikenne": [
+        99.74,
         99.78,
         99.78,
         99.78,
@@ -191,8 +192,7 @@ const SUORIUTUMINEN = {
         99.69,
         97.84,
         97.1,
-        99.16,
-        null
+        99.16
       ],
       "Pohjolan kaupunkiliikenne": [
         null,
@@ -239,24 +239,24 @@ const SUORIUTUMINEN = {
     },
     "hero": {
       "Koiviston Auto": {
-        "arvo": null,
-        "kk": "4/2026"
+        "arvo": 99.83,
+        "kk": "3/2026"
       },
       "Nobina Finland": {
-        "arvo": null,
-        "kk": "4/2026"
+        "arvo": 99.83,
+        "kk": "3/2026"
       },
       "Pohjolan Liikenne": {
-        "arvo": null,
-        "kk": "4/2026"
+        "arvo": 99.16,
+        "kk": "3/2026"
       },
       "Transdev": {
         "arvo": 99.84,
         "kk": "12/2019"
       }
     },
-    "hsl_viimeisin": null,
-    "hsl_kk": "4/2026"
+    "hsl_viimeisin": 99.61,
+    "hsl_kk": "3/2026"
   },
   "asty": {
     "vuodet": [
