@@ -1,7 +1,7 @@
-// Generoitu automaattisesti: 15.07.2026 09:20
+// Generoitu automaattisesti: 15.07.2026 09:51
 // Älä muokkaa käsin – aja generate_suoriutuminen.py uudelleen
 const SUORIUTUMINEN = {
-  "paivitetty": "15.07.2026 09:20",
+  "paivitetty": "15.07.2026 09:51",
   "varit": {
     "Koiviston Auto": "#ff6600",
     "Nobina Finland": "#00a650",
@@ -281,7 +281,7 @@ const SUORIUTUMINEN = {
       3.994,
       3.972,
       3.984,
-      3.93
+      3.929
     ],
     "vuosi_oper": {
       "Koiviston Auto": [
@@ -342,7 +342,7 @@ const SUORIUTUMINEN = {
         4.028,
         3.995,
         4.039,
-        null
+        3.921
       ],
       "Transdev": [
         3.907,
@@ -371,7 +371,7 @@ const SUORIUTUMINEN = {
       3.975,
       4.001,
       3.966,
-      3.93
+      3.929
     ],
     "kk_oper": {
       "Koiviston Auto": [
@@ -412,7 +412,7 @@ const SUORIUTUMINEN = {
         3.984,
         4.036,
         4.043,
-        null
+        3.921
       ],
       "Transdev": [
         null,
@@ -499,15 +499,15 @@ const SUORIUTUMINEN = {
       },
       {
         "operaattori": "Nobina Finland",
-        "sopimus_id": "21/53K269NOB",
-        "asty_arvo": 3.984,
-        "euroarvo_puolivuosi": 6896894.43
-      },
-      {
-        "operaattori": "Nobina Finland",
         "sopimus_id": "21/53K271NOB",
         "asty_arvo": 3.984,
         "euroarvo_puolivuosi": 6782567.41
+      },
+      {
+        "operaattori": "Nobina Finland",
+        "sopimus_id": "21/53K269NOB",
+        "asty_arvo": 3.984,
+        "euroarvo_puolivuosi": 6896894.43
       },
       {
         "operaattori": "Nurmijärven Linja",
@@ -520,6 +520,12 @@ const SUORIUTUMINEN = {
         "sopimus_id": "21/53K270NOB",
         "asty_arvo": 3.976,
         "euroarvo_puolivuosi": 2288714.29
+      },
+      {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "23/58K290TAM",
+        "asty_arvo": 3.966,
+        "euroarvo_puolivuosi": 2593605.41
       },
       {
         "operaattori": "Pohjolan Liikenne",
@@ -546,6 +552,12 @@ const SUORIUTUMINEN = {
         "euroarvo_puolivuosi": 2183227.65
       },
       {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "15/37K214TL",
+        "asty_arvo": 3.941,
+        "euroarvo_puolivuosi": 2278393.82
+      },
+      {
         "operaattori": "Pohjolan Liikenne",
         "sopimus_id": "21/54K277PL",
         "asty_arvo": 3.939,
@@ -559,15 +571,15 @@ const SUORIUTUMINEN = {
       },
       {
         "operaattori": "Koiviston Auto",
-        "sopimus_id": "23/59K292KAH",
-        "asty_arvo": 3.929,
-        "euroarvo_puolivuosi": 3024009.77
-      },
-      {
-        "operaattori": "Koiviston Auto",
         "sopimus_id": "18/48K259HEL",
         "asty_arvo": 3.929,
         "euroarvo_puolivuosi": 4987930.46
+      },
+      {
+        "operaattori": "Koiviston Auto",
+        "sopimus_id": "23/59K292KAH",
+        "asty_arvo": 3.929,
+        "euroarvo_puolivuosi": 3024009.77
       },
       {
         "operaattori": "Nobina Finland",
@@ -610,6 +622,12 @@ const SUORIUTUMINEN = {
         "sopimus_id": "18/47K255PKL",
         "asty_arvo": 3.878,
         "euroarvo_puolivuosi": 1099648.68
+      },
+      {
+        "operaattori": "Tammelundin Liikenne",
+        "sopimus_id": "21/53K273TAM",
+        "asty_arvo": 3.87,
+        "euroarvo_puolivuosi": 3149818.68
       },
       {
         "operaattori": "Koiviston Auto",
@@ -686,15 +704,15 @@ const SUORIUTUMINEN = {
         "kk": "kevät 2026"
       },
       "Tammelundin Liikenne": {
-        "arvo": 4.043,
-        "kk": "syksy 2025"
+        "arvo": 3.921,
+        "kk": "kevät 2026"
       },
       "Transdev": {
         "arvo": 3.879,
         "kk": "syksy 2019"
       }
     },
-    "hsl_viimeisin": 3.93,
+    "hsl_viimeisin": 3.929,
     "hsl_kk": "kevät 2026"
   },
   "jola": {
@@ -713,7 +731,7 @@ const SUORIUTUMINEN = {
     "vuosi_kaikki": [
       25.34,
       13.7,
-      26.45,
+      31.73,
       20.05,
       13.04,
       15.41,
@@ -726,7 +744,7 @@ const SUORIUTUMINEN = {
       "Koiviston Auto": [
         14.64,
         12.56,
-        15.27,
+        13.67,
         15.81,
         16.98,
         20.61,
@@ -738,7 +756,7 @@ const SUORIUTUMINEN = {
       "Nobina Finland": [
         34.91,
         28.63,
-        50.81,
+        44.58,
         28.25,
         13.62,
         16.02,
@@ -750,7 +768,7 @@ const SUORIUTUMINEN = {
       "Pohjolan Liikenne": [
         21.89,
         15.9,
-        29.21,
+        30.29,
         13.61,
         9.13,
         10.81,
@@ -774,7 +792,7 @@ const SUORIUTUMINEN = {
       "Tammelundin Liikenne": [
         19.92,
         4.84,
-        15.34,
+        15.18,
         8.89,
         12.97,
         5.61,
@@ -786,7 +804,7 @@ const SUORIUTUMINEN = {
       "Transdev": [
         25.85,
         21.55,
-        42.15,
+        39.94,
         null,
         null,
         null,
@@ -1147,7 +1165,7 @@ const SUORIUTUMINEN = {
         "kk": "kevät 2026"
       },
       "Transdev": {
-        "arvo": 55.15,
+        "arvo": 59.33,
         "kk": "syksy 2019"
       }
     },
