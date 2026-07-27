@@ -1,0 +1,172 @@
+{
+  "nextProgram": "C",
+  "programs": {
+    "A": [
+      {
+        "id": "a1",
+        "name": "Jalkaprässi (kelkka, makuuasento)",
+        "sets": "3×8-10",
+        "kg": 141,
+        "bonus": false
+      },
+      {
+        "id": "a2",
+        "name": "Ylätalja, leveä ote",
+        "sets": "3×8-10",
+        "kg": 100,
+        "bonus": false
+      },
+      {
+        "id": "a3",
+        "name": "Rintapunnerruslaite",
+        "sets": "3×8-10",
+        "kg": 100,
+        "bonus": false
+      },
+      {
+        "id": "a4",
+        "name": "Vaakatalja, kapea ote",
+        "sets": "3×10-12",
+        "kg": 75,
+        "bonus": false
+      },
+      {
+        "id": "a5",
+        "name": "Hauiskääntö käsipainoilla",
+        "sets": "2×10-12",
+        "kg": 17.5,
+        "bonus": false
+      },
+      {
+        "id": "a6",
+        "name": "Vatsarutistuslaite",
+        "sets": "2×12-15",
+        "kg": 95,
+        "bonus": false
+      },
+      {
+        "id": "a7",
+        "name": "Vatsakiertolaite",
+        "sets": "2×12-15",
+        "kg": 70,
+        "bonus": true
+      }
+    ],
+    "B": [
+      {
+        "id": "b1",
+        "name": "Jalkaprässi istuen",
+        "sets": "3×8-10",
+        "kg": 149,
+        "bonus": false
+      },
+      {
+        "id": "b2",
+        "name": "Olkapääpunnerrus laitteessa",
+        "sets": "3×8-10",
+        "kg": 55,
+        "bonus": false
+      },
+      {
+        "id": "b3",
+        "name": "Reiden koukistaja",
+        "sets": "3×10-12",
+        "kg": 50,
+        "bonus": false
+      },
+      {
+        "id": "b4",
+        "name": "Reiden ojentaja",
+        "sets": "3×10-12",
+        "kg": 60,
+        "bonus": false
+      },
+      {
+        "id": "b5",
+        "name": "Sivunosto käsipainoilla",
+        "sets": "2×12-15",
+        "kg": 10,
+        "bonus": false
+      },
+      {
+        "id": "b6",
+        "name": "Ojentajat-laite",
+        "sets": "2×10-12",
+        "kg": 70,
+        "bonus": false
+      },
+      {
+        "id": "b7",
+        "name": "Ylätalja, kapea vastaote",
+        "sets": "2×10-12",
+        "kg": 70,
+        "bonus": true
+      }
+    ],
+    "C": [
+      {
+        "id": "c1",
+        "name": "Pohkeen kohotus laitteessa",
+        "sets": "3×12-15",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c2",
+        "name": "Vaakatalja, leveä ote",
+        "sets": "3×8-10",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c3",
+        "name": "Selänojennuslaite / loitontaja-lähentäjä",
+        "sets": "2×12-15",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c4",
+        "name": "Rintapunnerrus kaltevalla laitteella",
+        "sets": "3×8-10",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c5",
+        "name": "Käsipainoveto yhdellä kädellä",
+        "sets": "2×10-12",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c6",
+        "name": "Vatsakierto laitteessa",
+        "sets": "2×12-15",
+        "kg": null,
+        "bonus": false
+      },
+      {
+        "id": "c7",
+        "name": "Jalkaprässi (kelkka, makuu, kevyt)",
+        "sets": "2×10-12",
+        "kg": null,
+        "bonus": true
+      }
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-07-27T09:00:00.000Z",
+      "program": "B",
+      "durationMin": 55,
+      "bonus": false
+    },
+    {
+      "date": "2026-07-26T09:00:00.000Z",
+      "program": "A",
+      "durationMin": 55,
+      "bonus": false
+    }
+  ]
+}
