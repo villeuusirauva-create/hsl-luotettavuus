@@ -135,6 +135,16 @@
             <div class="hero-arvo vihrea">-75 %</div>
             <div class="hero-sub">158 526 → 39 939 t</div>
         </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Bussit 2025 (ilman ymp.bonus)</div>
+            <div class="hero-arvo vihrea">39 224</div>
+            <div class="hero-sub">t CO₂</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Vähenemä 2010–2025 (ilman bonus)</div>
+            <div class="hero-arvo vihrea">-65 %</div>
+            <div class="hero-sub">112 795 → 39 224 t</div>
+        </div>
     </div>
 
     <!-- Toggle -->
@@ -160,6 +170,13 @@
         </div>
     </div>
 
+    <!-- Kolmas kuvaaja: ilman ympäristöbonusta -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Bussiliikenteen päästöt ilman ympäristöbonusta</div>
+        <div class="kortti-alateksti">CO₂-päästöt tonneina 2010–2025 · ei sisällä ympäristöbonuksen vaikutusta</div>
+        <canvas id="bonusChart"></canvas>
+    </div>
+    
     <div class="info-teksti">
         <strong>Laskentatavoista:</strong>
         <ul>
@@ -181,6 +198,7 @@ const data = {
     bussit_uusi:  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,53617,37041],
     hsl_lca:      [158526,148211,155480,137277,137564,122755,123608,109591,105239,113651,86163,85166,92701,68116,59619,39939],
     hsl_uusi:     [null,null,null,null,null,null,null,null,null,null,null,null,null,null,56244,39528],
+    bussit_ilman_bonus: [112795,115205,107102,97827,100020,92875,96218,89972,84312,84214,80571,73434,66692,57276,48137,39224],
 };
 
 // Lasketaan %-muutos (indeksi 2010=100%)
@@ -286,7 +304,8 @@ function rakennaPaastotChartit() {
 
     if (bussitChart) bussitChart.destroy();
     if (hslChart)    hslChart.destroy();
-
+    if (bonusChart) bonusChart.destroy();
+    
     bussitChart = new Chart(document.getElementById('bussitChart'), {
         type: 'line',
         data: { labels: VUODET, datasets: luoDatasetit('bussit') },
@@ -296,6 +315,20 @@ function rakennaPaastotChartit() {
     hslChart = new Chart(document.getElementById('hslChart'), {
         type: 'line',
         data: { labels: VUODET, datasets: luoDatasetit('hsl') },
+        options: luoOptions(yLabel),
+    });
+    bonusChart = new Chart(document.getElementById('bonusChart'), {
+        type: 'line',
+        data: {
+            labels: VUODET,
+            datasets: [{
+                label: 'Ilman ympäristöbonusta',
+                data: nakyma === 'tonnit' ? data.bussit_ilman_bonus : indeksoi(data.bussit_ilman_bonus),
+                borderColor: '#f59e0b',
+                backgroundColor: 'rgba(245,158,11,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: false,
+            }]
+        },
         options: luoOptions(yLabel),
     });
 }
