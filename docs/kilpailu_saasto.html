@@ -157,6 +157,11 @@ heroGrid.innerHTML = `
         <div class="hero-sub">per vuosi 2019–2026</div>
     </div>
     <div class="hero-kortti">
+        <div class="hero-label">Kertautuva säästö 2019–2026</div>
+        <div class="hero-arvo">${(TILASTOT.kertautuva_saasto / 1e6).toFixed(1)} M€</div>
+        <div class="hero-sub">normaalisopimukset · 7v sopimuskausi</div>
+    </div>
+    <div class="hero-kortti">
         <div class="hero-label">Kumulatiivinen säästö 2019–2026</div>
         <div class="hero-arvo">${(SAASTOT.reduce((sum, s) => sum + (s.saasto_eur || 0), 0) / 1e6).toFixed(1)} M€</div>
         <div class="hero-sub">${SAASTOT.length} kilpailukohdetta yhteensä</div>
