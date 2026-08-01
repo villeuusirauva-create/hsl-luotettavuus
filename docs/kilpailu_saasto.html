@@ -143,12 +143,23 @@ const positiiviset = SAASTOT.filter(s => s.saasto_eur > 0).length;
 const negatiiviset = SAASTOT.filter(s => s.saasto_eur < 0).length;
 const maxSaasto = Math.max(...SAASTOT.map(s => s.saasto_eur || 0));
 const maxKohde = SAASTOT.find(s => s.saasto_eur === maxSaasto);
-
+const painotettuPct = (() => {
+    const valid = SAASTOT.filter(s => s.saasto_pct !== null && s.edellinen_arvo !== null);
+    const paino = valid.reduce((sum, s) => sum + s.edellinen_arvo, 0);
+    const painotettu = valid.reduce((sum, s) => sum + s.saasto_pct * s.edellinen_arvo, 0);
+    return (painotettu / paino * 100).toFixed(1);
+})();
+    
 heroGrid.innerHTML = `
     <div class="hero-kortti">
         <div class="hero-label">Kokonaissäästö</div>
         <div class="hero-arvo">${Math.round(TILASTOT.kokonais_saasto / 1e6 * 10) / 10} M€</div>
-        <div class="hero-sub">2019–2026</div>
+        <div class="hero-sub">per vuosi 2019–2026</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Kumulatiivinen säästö 2019–2026</div>
+        <div class="hero-arvo">${Math.round(TILASTOT.kokonais_saasto / 1e6 * 10) / 10} M€</div>
+        <div class="hero-sub">${SAASTOT.length} kilpailukohdetta</div>
     </div>
     <div class="hero-kortti">
         <div class="hero-label">Kohteita yhteensä</div>
@@ -156,14 +167,14 @@ heroGrid.innerHTML = `
         <div class="hero-sub">${positiiviset} säästöä · ${negatiiviset} kustannusten kasvua</div>
     </div>
     <div class="hero-kortti">
-        <div class="hero-label">Suurin yksittäinen säästö</div>
-        <div class="hero-arvo">${Math.round(maxSaasto / 1000)} k€</div>
-        <div class="hero-sub">Kohde ${maxKohde ? maxKohde.kohde_id : ''} (${maxKohde ? maxKohde.vuosi : ''})</div>
+        <div class="hero-label">Painotettu säästö-% ka</div>
+        <div class="hero-arvo">${painotettuPct} %</div>
+        <div class="hero-sub">painotettu edellisellä sopimusarvolla</div>
     </div>`;
 
 // ── KUVAAJA 1: Vuosittainen säästö ───────────────────────────
 const vuodet = Object.keys(TILASTOT.vuosi_saasto).map(Number).sort();
-const vuosiArvot = vuodet.map(v => Math.round(TILASTOT.vuosi_saasto[v] / 1000));
+const vuosiArvot = vuodet.map(v => Math.round(TILASTOT.vuosi_saasto[v]));
 
 new Chart(document.getElementById('chart-vuosi'), {
     type: 'bar',
@@ -184,7 +195,7 @@ new Chart(document.getElementById('chart-vuosi'), {
         },
         scales: {
             y: {
-                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' k€' },
+                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => (v/1000).toFixed(0) + ' M€' },
                 grid: { color: 'rgba(0,113,188,0.08)' }
             },
             x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
@@ -193,7 +204,7 @@ new Chart(document.getElementById('chart-vuosi'), {
 });
 
 // ── KUVAAJA 2: Kumulatiivinen ─────────────────────────────────
-const kumData = SAASTOT.map(s => Math.round(s.kumulatiivinen / 1000));
+const kumData = SAASTOT.map(s => Math.round(s.kumulatiivinen));
 const kumLabels = SAASTOT.map(s => `${s.kohde_id}`);
 
 new Chart(document.getElementById('chart-kumulatiivinen'), {
@@ -219,7 +230,8 @@ new Chart(document.getElementById('chart-kumulatiivinen'), {
         },
         scales: {
             y: {
-                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' k€' },
+                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => (v/1e6).toFixed(0) + ' M€' },
+                min: 0,
                 grid: { color: 'rgba(0,113,188,0.08)' }
             },
             x: {
