@@ -152,11 +152,6 @@ const painotettuPct = (() => {
     
 heroGrid.innerHTML = `
     <div class="hero-kortti">
-        <div class="hero-label">Kokonaissäästö</div>
-        <div class="hero-arvo">${Math.round(TILASTOT.kokonais_saasto / 1e6 * 10) / 10} M€</div>
-        <div class="hero-sub">per vuosi 2019–2026</div>
-    </div>
-    <div class="hero-kortti">
         <div class="hero-label">Kertautuva säästö 2019–2026</div>
         <div class="hero-arvo">${(TILASTOT.kertautuva_saasto / 1e6).toFixed(1)} M€</div>
         <div class="hero-sub">normaalisopimukset · 7v sopimuskausi</div>
