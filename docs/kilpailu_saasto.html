@@ -158,8 +158,8 @@ heroGrid.innerHTML = `
     </div>
     <div class="hero-kortti">
         <div class="hero-label">Kumulatiivinen säästö 2019–2026</div>
-        <div class="hero-arvo">${Math.round(TILASTOT.kokonais_saasto / 1e6 * 10) / 10} M€</div>
-        <div class="hero-sub">${SAASTOT.length} kilpailukohdetta</div>
+        <div class="hero-arvo">${(SAASTOT.reduce((sum, s) => sum + (s.saasto_eur || 0), 0) / 1e6).toFixed(1)} M€</div>
+        <div class="hero-sub">${SAASTOT.length} kilpailukohdetta yhteensä</div>
     </div>
     <div class="hero-kortti">
         <div class="hero-label">Kohteita yhteensä</div>
@@ -195,7 +195,7 @@ new Chart(document.getElementById('chart-vuosi'), {
         },
         scales: {
             y: {
-                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => (v/1000).toFixed(0) + ' M€' },
+                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => (v/1e6).toFixed(1) + ' M€' },
                 grid: { color: 'rgba(0,113,188,0.08)' }
             },
             x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
@@ -225,7 +225,7 @@ new Chart(document.getElementById('chart-kumulatiivinen'), {
             legend: { display: false },
             tooltip: { callbacks: {
                 title: (items) => `Kohde ${SAASTOT[items[0].dataIndex].kohde_id}`,
-                label: ctx => `${ctx.parsed.y.toLocaleString('fi-FI')} k€`
+                label: ctx => `${(ctx.parsed.y/1e6).toFixed(2)} M€`
             }}
         },
         scales: {
