@@ -264,9 +264,10 @@ const maxTarjoajia = Math.max(...TARJOAJAT.map(t => t.tarjoajia));
 
 function rakennaTaulukko(suodatinTyyppi) {
     const tbody = document.getElementById('taulukko-body');
+    const kaikki = [...TARJOAJAT].reverse();
     const rivit = suodatinTyyppi === 'kaikki'
-        ? TARJOAJAT
-        : TARJOAJAT.filter(t => t.tyyppi === suodatinTyyppi);
+        ? kaikki
+        : kaikki.filter(t => t.tyyppi === suodatinTyyppi);
 
     tbody.innerHTML = rivit.map(t => {
         const vari = VARIT[t.tyyppi] || '#94a3b8';
