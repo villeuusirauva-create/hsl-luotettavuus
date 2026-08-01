@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Tarjoajien määrä</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="kilpailu_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --yellow:    #f59e0b;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+        .hero-arvo { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        /* Legenda */
+        .legenda { display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+        .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        .legenda-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+        .osio-otsikko { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 16px 0; display: flex; align-items: center; gap: 10px; }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+        canvas { max-height: 320px; }
+
+        /* Taulukko */
+        .taulukko-scroll { max-height: 500px; overflow-y: auto; margin-top: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: var(--hsl-dark); color: white; padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; position: sticky; top: 0; }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: var(--hsl-light); }
+        .tyyppi-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; color: white; }
+        .tarjoajia-bar { display: flex; align-items: center; gap: 8px; }
+        .bar-bg { flex: 1; height: 12px; background: #e8f4fd; border-radius: 3px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 3px; }
+        .bar-num { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; width: 20px; text-align: right; }
+
+        /* Suodatin */
+        .suodatin-rivi { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .suodatin-nappi { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: white; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Figtree', sans-serif; }
+        .suodatin-nappi.aktiivinen { background: var(--hsl-dark); color: white; border-color: var(--hsl-dark); }
+
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--muted); margin-top: 24px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <div>
+                <h1>Tarjoajien määrä per kilpailukohde</h1>
+                <div class="header-sub">Kilpailukierrokset 2019–2026</div>
+            </div>
+        </div>
+        <div class="paivitys" id="paivitys-aika"></div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <!-- Hero -->
+    <div class="hero-grid" id="hero-grid"></div>
+
+    <!-- Legenda -->
+    <div class="legenda" id="legenda"></div>
+
+    <!-- Kuvaajat -->
+    <div class="osio-otsikko">Kehitys vuosittain</div>
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Tarjoajia per kohde – vuosittainen keskiarvo</div>
+            <div class="kortti-alateksti">Kaikkien kilpailukohteiden keskiarvo vuosittain</div>
+            <canvas id="chart-vuosi"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Tarjoajamäärien jakauma</div>
+            <div class="kortti-alateksti">Kuinka monta kohdetta per tarjoajamäärä</div>
+            <canvas id="chart-jakauma"></canvas>
+        </div>
+    </div>
+
+    <!-- Taulukko -->
+    <div class="osio-otsikko">Kaikki kilpailukohteet</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Kohteet listattuna</div>
+        <div class="kortti-alateksti">Järjestetty vuoden mukaan. Suodata kilpailukohteen tyypin perusteella.</div>
+        <div class="suodatin-rivi">
+            <button class="suodatin-nappi aktiivinen" onclick="suodata('kaikki', this)">Kaikki</button>
+            <button class="suodatin-nappi" onclick="suodata('Normaali', this)">Normaali</button>
+            <button class="suodatin-nappi" onclick="suodata('Lyhyt', this)">Lyhyt</button>
+            <button class="suodatin-nappi" onclick="suodata('MiniB', this)">Minibussi</button>
+        </div>
+        <div class="taulukko-scroll">
+            <table id="kohde-taulukko">
+                <thead>
+                    <tr>
+                        <th>Kierros</th>
+                        <th>Kohde</th>
+                        <th>Nimi</th>
+                        <th>Operaattori</th>
+                        <th>Vuosi</th>
+                        <th>Tyyppi</th>
+                        <th>Tarjoajia</th>
+                        <th>Huomio</th>
+                    </tr>
+                </thead>
+                <tbody id="taulukko-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Värikoodaus:</strong>
+        <strong style="color:#0071bc">Normaali</strong> = tavallinen kilpailukohde ·
+        <strong style="color:#f59e0b">Lyhyt</strong> = lyhyt sopimus ·
+        <strong style="color:#16a34a">Minibussi (MiniB)</strong> = minibussikohde.
+        Huomio-sarakkeessa mainitaan jos tarjouksia on hylätty.
+    </div>
+</main>
+<script>
+const D = KILPAILU;
+const VARIT = D.tyyppi_varit;
+const TARJOAJAT = D.tarjoajat;
+const TILASTOT = D.tilastot;
+
+document.getElementById('paivitys-aika').textContent = 'Päivitetty ' + D.paivitetty;
+
+// ── HERO ─────────────────────────────────────────────────────
+const heroGrid = document.getElementById('hero-grid');
+heroGrid.innerHTML = `
+    <div class="hero-kortti">
+        <div class="hero-label">Kohteita yhteensä</div>
+        <div class="hero-arvo">${TILASTOT.kohteiden_lkm}</div>
+        <div class="hero-sub">kilpailukohdetta</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Tarjoajia keskimäärin</div>
+        <div class="hero-arvo">${TILASTOT.ka_tarjoajia}</div>
+        <div class="hero-sub">per kohde</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Enimmillään</div>
+        <div class="hero-arvo">${TILASTOT.max_tarjoajia}</div>
+        <div class="hero-sub">tarjoajaa</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Vähimmillään</div>
+        <div class="hero-arvo">${TILASTOT.min_tarjoajia}</div>
+        <div class="hero-sub">tarjoajaa</div>
+    </div>`;
+
+// ── LEGENDA ───────────────────────────────────────────────────
+const legenda = document.getElementById('legenda');
+Object.entries(VARIT).forEach(([tyyppi, vari]) => {
+    const nimi = tyyppi === 'MiniB' ? 'Minibussi' : tyyppi;
+    legenda.innerHTML += `
+        <div class="legenda-item">
+            <div class="legenda-dot" style="background:${vari}"></div>
+            <span>${nimi}</span>
+        </div>`;
+});
+
+// ── KUVAAJA 1: Vuosittainen ka ────────────────────────────────
+const vuodet = Object.keys(TILASTOT.vuosi_ka).map(Number).sort();
+const vuosiArvot = vuodet.map(v => TILASTOT.vuosi_ka[v]);
+
+new Chart(document.getElementById('chart-vuosi'), {
+    type: 'bar',
+    data: {
+        labels: vuodet,
+        datasets: [{
+            label: 'Tarjoajia ka',
+            data: vuosiArvot,
+            backgroundColor: '#0071bc',
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toFixed(1)} tarjoajaa` } }
+        },
+        scales: {
+            y: {
+                min: 0, max: 7,
+                ticks: { color: '#6b8caa', font: { size: 11 }, stepSize: 1 },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
+        }
+    }
+});
+
+// ── KUVAAJA 2: Jakauma ────────────────────────────────────────
+const jakauma = {};
+TARJOAJAT.forEach(t => { jakauma[t.tarjoajia] = (jakauma[t.tarjoajia] || 0) + 1; });
+const jakaumaLabels = Object.keys(jakauma).map(Number).sort();
+
+new Chart(document.getElementById('chart-jakauma'), {
+    type: 'bar',
+    data: {
+        labels: jakaumaLabels.map(n => `${n} tarjoajaa`),
+        datasets: [{
+            label: 'Kohteiden lkm',
+            data: jakaumaLabels.map(n => jakauma[n]),
+            backgroundColor: '#0071bc',
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} kohdetta` } }
+        },
+        scales: {
+            y: {
+                min: 0,
+                ticks: { color: '#6b8caa', font: { size: 11 }, stepSize: 1 },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
+        }
+    }
+});
+
+// ── TAULUKKO ──────────────────────────────────────────────────
+const maxTarjoajia = Math.max(...TARJOAJAT.map(t => t.tarjoajia));
+
+function rakennaTaulukko(suodatinTyyppi) {
+    const tbody = document.getElementById('taulukko-body');
+    const rivit = suodatinTyyppi === 'kaikki'
+        ? TARJOAJAT
+        : TARJOAJAT.filter(t => t.tyyppi === suodatinTyyppi);
+
+    tbody.innerHTML = rivit.map(t => {
+        const vari = VARIT[t.tyyppi] || '#94a3b8';
+        const tyyppiNimi = t.tyyppi === 'MiniB' ? 'Minibussi' : t.tyyppi;
+        const pct = (t.tarjoajia / maxTarjoajia * 100).toFixed(0);
+        return `
+            <tr>
+                <td>${t.kierros}</td>
+                <td style="font-family:'DM Mono',monospace">${t.kohde_id}</td>
+                <td>${t.kohde_nimi || '–'}</td>
+                <td>${t.operaattori || '–'}</td>
+                <td>${t.vuosi}</td>
+                <td><span class="tyyppi-badge" style="background:${vari}">${tyyppiNimi}</span></td>
+                <td>
+                    <div class="tarjoajia-bar">
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:${pct}%;background:${vari}"></div>
+                        </div>
+                        <div class="bar-num" style="color:${vari}">${t.tarjoajia}</div>
+                    </div>
+                </td>
+                <td style="color:#6b8caa;font-size:12px">${t.huomio || ''}</td>
+            </tr>`;
+    }).join('');
+}
+
+function suodata(tyyppi, nappi) {
+    document.querySelectorAll('.suodatin-nappi').forEach(n => n.classList.remove('aktiivinen'));
+    nappi.classList.add('aktiivinen');
+    rakennaTaulukko(tyyppi);
+}
+
+rakennaTaulukko('kaikki');
+</script>
+</body>
+</html>
