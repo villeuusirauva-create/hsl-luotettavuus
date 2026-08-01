@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Kustannussäästö</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="kilpailu_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --red:       #dc2626;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        .paivitys { font-size: 12px; opacity: 0.6; font-family: 'DM Mono', monospace; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+        .nav-linkki:hover { text-decoration: underline; }
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+        .hero-arvo { font-size: 26px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--green); }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .osio-otsikko { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 16px 0; display: flex; align-items: center; gap: 10px; }
+        .osio-otsikko::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+        canvas { max-height: 320px; }
+        .taulukko-scroll { max-height: 500px; overflow-y: auto; margin-top: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: var(--hsl-dark); color: white; padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; position: sticky; top: 0; }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: var(--hsl-light); }
+        .positiivinen { color: var(--green); font-weight: 600; }
+        .negatiivinen { color: var(--red); font-weight: 600; }
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--muted); margin-top: 24px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <div>
+                <h1>Kustannussäästö kilpailuttamisella</h1>
+                <div class="header-sub">Säästö per kilpailukohde sekä kumulatiivinen kertymä 2019–2026</div>
+            </div>
+        </div>
+        <div class="paivitys" id="paivitys-aika"></div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <div class="hero-grid" id="hero-grid"></div>
+
+    <div class="osio-otsikko">Kehitys vuosittain</div>
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Vuosittainen säästö</div>
+            <div class="kortti-alateksti">Kaikkien kohteiden säästöt yhteensä per vuosi (€)</div>
+            <canvas id="chart-vuosi"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Kumulatiivinen säästö</div>
+            <div class="kortti-alateksti">Kertynyt kokonaissäästö 2019–2026 (€)</div>
+            <canvas id="chart-kumulatiivinen"></canvas>
+        </div>
+    </div>
+
+    <div class="osio-otsikko">Kaikki kilpailukohteet</div>
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Kohteet listattuna</div>
+        <div class="kortti-alateksti">Uusimmat ensin. Negatiivinen säästö = kustannusten kasvu.</div>
+        <div class="taulukko-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kierros</th>
+                        <th>Kohde</th>
+                        <th>Nimi</th>
+                        <th>Operaattori</th>
+                        <th>Vuosi</th>
+                        <th>Uusi arvo €/v</th>
+                        <th>Edellinen €/v</th>
+                        <th>Säästö €</th>
+                        <th>Säästö %</th>
+                    </tr>
+                </thead>
+                <tbody id="taulukko-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Laskentaperiaate:</strong> Säästö lasketaan vertaamalla uuden sopimuksen vuosittaista arvoa
+        edellisen sopimuksen vuosittaiseen arvoon. Negatiivinen luku tarkoittaa kustannusten kasvua –
+        tämä voi johtua esim. kalusto- tai suoritevaatimusten kiristymisestä, markkinatilanteesta tai
+        kohteen erityispiirteistä. Kumulatiivinen säästö kertoo kilpailuttamisella saavutetun
+        kokonaissäästön tarkastelujaksolla.
+    </div>
+</main>
+<script>
+const D = KILPAILU;
+const SAASTOT = D.saastot;
+const TILASTOT = D.saasto_tilastot;
+
+document.getElementById('paivitys-aika').textContent = 'Päivitetty ' + D.paivitetty;
+
+function eurFormat(v) {
+    if (v === null || v === undefined) return '–';
+    return Math.round(v).toLocaleString('fi-FI') + ' €';
+}
+function pctFormat(v) {
+    if (v === null || v === undefined) return '–';
+    return (v * 100).toFixed(1) + ' %';
+}
+
+// ── HERO ─────────────────────────────────────────────────────
+const heroGrid = document.getElementById('hero-grid');
+const positiiviset = SAASTOT.filter(s => s.saasto_eur > 0).length;
+const negatiiviset = SAASTOT.filter(s => s.saasto_eur < 0).length;
+const maxSaasto = Math.max(...SAASTOT.map(s => s.saasto_eur || 0));
+const maxKohde = SAASTOT.find(s => s.saasto_eur === maxSaasto);
+
+heroGrid.innerHTML = `
+    <div class="hero-kortti">
+        <div class="hero-label">Kokonaissäästö</div>
+        <div class="hero-arvo">${Math.round(TILASTOT.kokonais_saasto / 1e6 * 10) / 10} M€</div>
+        <div class="hero-sub">2019–2026</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Kohteita yhteensä</div>
+        <div class="hero-arvo" style="color:var(--hsl-dark)">${SAASTOT.length}</div>
+        <div class="hero-sub">${positiiviset} säästöä · ${negatiiviset} kustannusten kasvua</div>
+    </div>
+    <div class="hero-kortti">
+        <div class="hero-label">Suurin yksittäinen säästö</div>
+        <div class="hero-arvo">${Math.round(maxSaasto / 1000)} k€</div>
+        <div class="hero-sub">Kohde ${maxKohde ? maxKohde.kohde_id : ''} (${maxKohde ? maxKohde.vuosi : ''})</div>
+    </div>`;
+
+// ── KUVAAJA 1: Vuosittainen säästö ───────────────────────────
+const vuodet = Object.keys(TILASTOT.vuosi_saasto).map(Number).sort();
+const vuosiArvot = vuodet.map(v => Math.round(TILASTOT.vuosi_saasto[v] / 1000));
+
+new Chart(document.getElementById('chart-vuosi'), {
+    type: 'bar',
+    data: {
+        labels: vuodet,
+        datasets: [{
+            label: 'Säästö (k€)',
+            data: vuosiArvot,
+            backgroundColor: vuosiArvot.map(v => v >= 0 ? '#16a34a' : '#dc2626'),
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toLocaleString('fi-FI')} k€` } }
+        },
+        scales: {
+            y: {
+                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' k€' },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
+        }
+    }
+});
+
+// ── KUVAAJA 2: Kumulatiivinen ─────────────────────────────────
+const kumData = SAASTOT.map(s => Math.round(s.kumulatiivinen / 1000));
+const kumLabels = SAASTOT.map(s => `${s.kohde_id}`);
+
+new Chart(document.getElementById('chart-kumulatiivinen'), {
+    type: 'line',
+    data: {
+        labels: kumLabels,
+        datasets: [{
+            label: 'Kumulatiivinen säästö (k€)',
+            data: kumData,
+            borderColor: '#16a34a',
+            backgroundColor: 'rgba(22,163,74,0.08)',
+            borderWidth: 2.5, pointRadius: 2, tension: 0.3, fill: true,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: {
+                title: (items) => `Kohde ${SAASTOT[items[0].dataIndex].kohde_id}`,
+                label: ctx => `${ctx.parsed.y.toLocaleString('fi-FI')} k€`
+            }}
+        },
+        scales: {
+            y: {
+                ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' k€' },
+                grid: { color: 'rgba(0,113,188,0.08)' }
+            },
+            x: {
+                ticks: { color: '#6b8caa', font: { size: 9 }, maxTicksLimit: 12 },
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+// ── TAULUKKO ──────────────────────────────────────────────────
+const tbody = document.getElementById('taulukko-body');
+const kaannetty = [...SAASTOT].reverse();
+tbody.innerHTML = kaannetty.map(s => {
+    const pos = s.saasto_eur >= 0;
+    return `
+        <tr>
+            <td>${s.kierros}</td>
+            <td style="font-family:'DM Mono',monospace">${s.kohde_id}</td>
+            <td>${s.kohde_nimi || '–'}</td>
+            <td>${s.operaattori || '–'}</td>
+            <td>${s.vuosi}</td>
+            <td style="font-family:'DM Mono',monospace;text-align:right">${eurFormat(s.sopimusarvo)}</td>
+            <td style="font-family:'DM Mono',monospace;text-align:right">${eurFormat(s.edellinen_arvo)}</td>
+            <td style="font-family:'DM Mono',monospace;text-align:right" class="${pos ? 'positiivinen' : 'negatiivinen'}">${eurFormat(s.saasto_eur)}</td>
+            <td style="text-align:right" class="${pos ? 'positiivinen' : 'negatiivinen'}">${pctFormat(s.saasto_pct)}</td>
+        </tr>`;
+}).join('');
+</script>
+</body>
+</html>
