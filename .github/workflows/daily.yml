@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 4 * * *'
   workflow_dispatch:
+    inputs:
+      paiva:
+        description: 'Analysoitava päivä (YYYY-MM-DD), tyhjä = eilen'
+        required: false
+        default: ''
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -27,9 +32,11 @@ jobs:
 
       - name: Asenna kirjastot
         run: pip install pandas requests zstandard matplotlib
-
+        
       - name: Aja analyysi
         timeout-minutes: 30
+        env:
+          ANALYSOITAVA_PAIVA: ${{ github.event.inputs.paiva }}
         run: python hsl_luotettavuus.py
 
       - name: Generoi dashboard
