@@ -29,7 +29,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 #  ASETUKSET
 # ============================================================
  
-ANALYSOITAVA_PAIVA     = None
+ANALYSOITAVA_PAIVA = os.environ.get("ANALYSOITAVA_PAIVA") or None
 RINNAKKAISET_LATAUKSET = 3
 TULOSKANSIO            = "tulokset"
  
