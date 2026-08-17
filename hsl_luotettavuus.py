@@ -599,7 +599,7 @@ def main():
     SUOD_ALKU = pd.Timestamp("2026-08-10")
     SUOD_LOPPU = pd.Timestamp("2026-09-30")
     SUOD_LINJAT = ["2158","2159","2112N","2531","2533","2146N","2147N","2164","2165N","2542","2544"]
-    if SUOD_ALKU <= paiva <= SUOD_LOPPU:
+    if SUOD_ALKU.date() <= paiva <= SUOD_LOPPU.date():
         ennen = len(suunnitellut)
         suunnitellut = suunnitellut[
             ~suunnitellut["route_short_name"].astype(str).str.strip().isin(SUOD_LINJAT)
