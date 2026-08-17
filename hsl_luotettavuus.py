@@ -594,17 +594,17 @@ def main():
     ajetut = hae_ajetut_trip_id(paiva)
     print()
  
-    # Suodatetaan pois sopimukset 296, 298, 299 (Koiviston Auto, laiterikko)
+    # Suodatetaan pois linjat joilla laiterikko (Koiviston Auto, sopimukset 296/298/299)
     # 10.8.2026–30.9.2026 väliseltä ajalta
     SUOD_ALKU = pd.Timestamp("2026-08-10")
     SUOD_LOPPU = pd.Timestamp("2026-09-30")
-    SUOD_SOPIMUKSET = ["4296", "4298", "4299"]
+    SUOD_LINJAT = ["2158","2159","2112N","2531","2533","2146N","2147N","2164","2165N","2542","2544"]
     if SUOD_ALKU <= paiva <= SUOD_LOPPU:
         ennen = len(suunnitellut)
         suunnitellut = suunnitellut[
-            ~suunnitellut["route_id"].astype(str).str.split(" ").str[0].str.strip().isin(SUOD_SOPIMUKSET)
+            ~suunnitellut["route_short_name"].astype(str).str.strip().isin(SUOD_LINJAT)
         ].copy()
-        print(f"⚠️  Suodatettu sopimukset 296/298/299: {ennen - len(suunnitellut)} vuoroa poistettu")
+        print(f"⚠️  Suodatettu linjat (laiterikko): {ennen - len(suunnitellut)} vuoroa poistettu")
 
     tulos  = laske_luotettavuus(suunnitellut, ajetut)
     tulosta_raportti(paiva, tulos)
