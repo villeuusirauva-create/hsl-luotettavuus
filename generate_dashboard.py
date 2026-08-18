@@ -38,6 +38,7 @@ def lataa_trendi():
         return pd.DataFrame()
     df = pd.read_csv(polku)
     df["paiva"] = pd.to_datetime(df["paiva"])
+    df = df.drop_duplicates(subset=["paiva"], keep="last")
     return df.sort_values("paiva").reset_index(drop=True)
 
 def laske_kellonaika():
