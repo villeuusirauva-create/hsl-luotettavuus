@@ -594,21 +594,32 @@ def main():
     ajetut = hae_ajetut_trip_id(paiva)
     print()
  
-    # Suodatetaan pois linjat joilla laiterikko (Koiviston Auto, sopimukset 296/298/299)
-    # 10.8.2026–30.9.2026 väliseltä ajalta
-    SUOD_ALKU = pd.Timestamp("2026-08-10")
-    SUOD_LOPPU = pd.Timestamp("2026-09-30")
-    SUOD_LINJAT = ["158","159","112N","531","533","146N","147N","164","165N","542","544",
-                   "713","719","839"]
-    SUOD_ALKU = datetime.date(2026, 8, 10)
-    SUOD_LOPPU = datetime.date(2026, 9, 30)
-    SUOD_LINJAT = ["158","159","112N","531","533","146N","147N","164","165N","542","544"]
-    if SUOD_ALKU.date() <= paiva <= SUOD_LOPPU.date():
+    # Koiviston Auto laiterikko 10.8.–30.9.2026
+    SUOD_KAH_ALKU  = datetime.date(2026, 8, 10)
+    SUOD_KAH_LOPPU = datetime.date(2026, 9, 30)
+    SUOD_KAH_LINJAT = ["158","159","112N","531","533","146N","147N","164","165N","542","544"]
+
+    # Korsisaari laiterikko 1.8.2026 alkaen toistaiseksi
+    SUOD_KOR_ALKU  = datetime.date(2026, 8, 1)
+    SUOD_KOR_LINJAT = ["713","719","839"]
+
+    suodatettu = 0
+    if SUOD_KAH_ALKU <= paiva <= SUOD_KAH_LOPPU:
         ennen = len(suunnitellut)
         suunnitellut = suunnitellut[
-            ~suunnitellut["route_short_name"].astype(str).str.strip().isin(SUOD_LINJAT)
+            ~suunnitellut["route_short_name"].astype(str).str.strip().isin(SUOD_KAH_LINJAT)
         ].copy()
-        print(f"⚠️  Suodatettu linjat (laiterikko): {ennen - len(suunnitellut)} vuoroa poistettu")
+        suodatettu += ennen - len(suunnitellut)
+
+    if paiva >= SUOD_KOR_ALKU:
+        ennen = len(suunnitellut)
+        suunnitellut = suunnitellut[
+            ~suunnitellut["route_short_name"].astype(str).str.strip().isin(SUOD_KOR_LINJAT)
+        ].copy()
+        suodatettu += ennen - len(suunnitellut)
+
+    if suodatettu > 0:
+        print(f"⚠️  Suodatettu linjat (laiterikko): {suodatettu} vuoroa poistettu")
 
     tulos  = laske_luotettavuus(suunnitellut, ajetut)
     tulosta_raportti(paiva, tulos)
