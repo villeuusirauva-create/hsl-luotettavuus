@@ -598,6 +598,10 @@ def main():
     # 10.8.2026–30.9.2026 väliseltä ajalta
     SUOD_ALKU = pd.Timestamp("2026-08-10")
     SUOD_LOPPU = pd.Timestamp("2026-09-30")
+    SUOD_LINJAT = ["158","159","112N","531","533","146N","147N","164","165N","542","544",
+                   "713","719","839"]
+    SUOD_ALKU = datetime.date(2026, 8, 10)
+    SUOD_LOPPU = datetime.date(2026, 9, 30)
     SUOD_LINJAT = ["158","159","112N","531","533","146N","147N","164","165N","542","544"]
     if SUOD_ALKU.date() <= paiva <= SUOD_LOPPU.date():
         ennen = len(suunnitellut)
