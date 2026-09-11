@@ -244,6 +244,152 @@ def laske_vuodenaika(trendi_df):
 
     return tulos
 
+def laske_saavaikutus(trendi_df):
+    """Laskee säävaikutusanalyysin (Kaisaniemi 1.1.–14.3.2026)."""
+    if trendi_df.empty:
+        return {}
+
+    SAA = {
+        "2026-01-01":{"keski":-8.0,"min":-13.4,"sade":0.8},
+        "2026-01-02":{"keski":-3.9,"min":-5.8,"sade":3.2},
+        "2026-01-03":{"keski":-7.1,"min":-8.7,"sade":0.0},
+        "2026-01-04":{"keski":-12.0,"min":-13.3,"sade":1.9},
+        "2026-01-05":{"keski":-15.4,"min":-18.7,"sade":0.0},
+        "2026-01-06":{"keski":-7.2,"min":-16.1,"sade":6.1},
+        "2026-01-07":{"keski":-6.5,"min":-10.2,"sade":0.7},
+        "2026-01-08":{"keski":-13.1,"min":-15.9,"sade":0.0},
+        "2026-01-09":{"keski":-12.8,"min":-16.9,"sade":0.0},
+        "2026-01-10":{"keski":-9.9,"min":-13.5,"sade":1.2},
+        "2026-01-11":{"keski":-5.5,"min":-10.4,"sade":0.0},
+        "2026-01-12":{"keski":-2.7,"min":-6.2,"sade":0.0},
+        "2026-01-13":{"keski":-3.1,"min":-5.5,"sade":0.3},
+        "2026-01-14":{"keski":-6.6,"min":-10.0,"sade":0.0},
+        "2026-01-15":{"keski":-16.8,"min":-20.2,"sade":0.0},
+        "2026-01-16":{"keski":-14.3,"min":-18.5,"sade":0.1},
+        "2026-01-17":{"keski":-10.8,"min":-15.1,"sade":0.0},
+        "2026-01-18":{"keski":-11.7,"min":-16.2,"sade":0.0},
+        "2026-01-19":{"keski":-14.9,"min":-17.4,"sade":0.0},
+        "2026-01-20":{"keski":-7.1,"min":-16.0,"sade":0.3},
+        "2026-01-21":{"keski":-4.3,"min":-8.3,"sade":0.0},
+        "2026-01-22":{"keski":-6.5,"min":-9.1,"sade":0.0},
+        "2026-01-23":{"keski":-11.2,"min":-15.5,"sade":0.0},
+        "2026-01-24":{"keski":-10.5,"min":-14.2,"sade":0.0},
+        "2026-01-25":{"keski":-5.1,"min":-11.0,"sade":3.4},
+        "2026-01-26":{"keski":-7.8,"min":-11.0,"sade":0.5},
+        "2026-01-27":{"keski":-12.1,"min":-15.4,"sade":0.0},
+        "2026-01-28":{"keski":-11.0,"min":-14.9,"sade":0.0},
+        "2026-01-29":{"keski":-5.8,"min":-12.6,"sade":0.0},
+        "2026-01-30":{"keski":-4.8,"min":-8.3,"sade":4.1},
+        "2026-01-31":{"keski":-7.3,"min":-10.6,"sade":0.7},
+        "2026-02-01":{"keski":-9.5,"min":-13.1,"sade":0.0},
+        "2026-02-02":{"keski":-11.1,"min":-14.8,"sade":0.0},
+        "2026-02-03":{"keski":-7.6,"min":-12.4,"sade":0.0},
+        "2026-02-04":{"keski":-3.6,"min":-8.0,"sade":0.0},
+        "2026-02-05":{"keski":-2.4,"min":-5.1,"sade":2.5},
+        "2026-02-06":{"keski":-5.8,"min":-8.9,"sade":0.3},
+        "2026-02-07":{"keski":-10.1,"min":-13.9,"sade":0.0},
+        "2026-02-08":{"keski":-8.3,"min":-12.5,"sade":0.0},
+        "2026-02-09":{"keski":-6.2,"min":-10.0,"sade":0.5},
+        "2026-02-10":{"keski":-4.1,"min":-7.8,"sade":3.1},
+        "2026-02-11":{"keski":-6.9,"min":-10.3,"sade":0.2},
+        "2026-02-12":{"keski":-10.7,"min":-14.1,"sade":0.0},
+        "2026-02-13":{"keski":-13.2,"min":-16.5,"sade":0.0},
+        "2026-02-14":{"keski":-15.1,"min":-18.3,"sade":0.0},
+        "2026-02-15":{"keski":-12.4,"min":-16.8,"sade":0.0},
+        "2026-02-16":{"keski":-8.1,"min":-13.5,"sade":0.4},
+        "2026-02-17":{"keski":-5.3,"min":-9.2,"sade":0.8},
+        "2026-02-18":{"keski":-3.8,"min":-6.4,"sade":3.8},
+        "2026-02-19":{"keski":-7.2,"min":-10.9,"sade":0.2},
+        "2026-02-20":{"keski":-9.4,"min":-13.1,"sade":0.0},
+        "2026-02-21":{"keski":-6.1,"min":-10.8,"sade":0.0},
+        "2026-02-22":{"keski":-4.2,"min":-7.5,"sade":1.1},
+        "2026-02-23":{"keski":-2.8,"min":-5.3,"sade":0.6},
+        "2026-02-24":{"keski":-1.5,"min":-4.1,"sade":0.4},
+        "2026-02-25":{"keski":-0.8,"min":-3.2,"sade":0.0},
+        "2026-02-26":{"keski":0.2,"min":-2.1,"sade":1.2},
+        "2026-02-27":{"keski":-1.1,"min":-3.8,"sade":0.3},
+        "2026-02-28":{"keski":-3.5,"min":-6.2,"sade":0.0},
+        "2026-03-01":{"keski":-5.2,"min":-8.4,"sade":0.0},
+        "2026-03-02":{"keski":-2.1,"min":-5.9,"sade":0.2},
+        "2026-03-03":{"keski":0.8,"min":-2.3,"sade":3.5},
+        "2026-03-04":{"keski":-1.4,"min":-4.8,"sade":0.5},
+        "2026-03-05":{"keski":-3.8,"min":-7.2,"sade":0.0},
+        "2026-03-06":{"keski":-6.1,"min":-9.5,"sade":0.0},
+        "2026-03-07":{"keski":-4.3,"min":-8.1,"sade":0.3},
+        "2026-03-08":{"keski":-2.2,"min":-5.6,"sade":1.8},
+        "2026-03-09":{"keski":0.4,"min":-2.8,"sade":0.7},
+        "2026-03-10":{"keski":1.2,"min":-1.5,"sade":0.0},
+        "2026-03-11":{"keski":-0.8,"min":-3.4,"sade":0.2},
+        "2026-03-12":{"keski":-2.5,"min":-5.8,"sade":0.0},
+        "2026-03-13":{"keski":-4.1,"min":-7.3,"sade":0.0},
+        "2026-03-14":{"keski":-1.8,"min":-4.9,"sade":3.2},
+    }
+
+    OPERAATTORIT = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"]
+    LUOKAT = ["Normaali","Lumisade","Kylmä","Erittäin kylmä"]
+
+    def luokittele(keski, min_t, sade):
+        if min_t <= -15:
+            return "Erittäin kylmä"
+        elif min_t <= -10:
+            return "Kylmä"
+        elif sade >= 3 and keski <= 2:
+            return "Lumisade"
+        else:
+            return "Normaali"
+
+    paiva_data = []
+    for _, row in trendi_df.iterrows():
+        p = row["paiva"].strftime("%Y-%m-%d")
+        if p not in SAA:
+            continue
+        saa = SAA[p]
+        luokka = luokittele(saa["keski"], saa["min"], saa["sade"])
+        entry = {
+            "paiva": p,
+            "luotettavuus": row["luotettavuus"],
+            "luokka": luokka,
+            "min_lampotila": saa["min"],
+            "sade_mm": saa["sade"],
+        }
+        for op in OPERAATTORIT:
+            if op in trendi_df.columns and not pd.isna(row.get(op)):
+                entry[op] = row[op]
+        paiva_data.append(entry)
+
+    if not paiva_data:
+        return {}
+
+    pylvas = {}
+    for luokka in LUOKAT:
+        ryh = [d for d in paiva_data if d["luokka"] == luokka]
+        if ryh:
+            pylvas[luokka] = {
+                "n": len(ryh),
+                "ka": round(sum(d["luotettavuus"] for d in ryh) / len(ryh), 2),
+                "min": round(min(d["luotettavuus"] for d in ryh), 2),
+            }
+
+    oper = {}
+    for op in OPERAATTORIT:
+        oper[op] = {}
+        for luokka in ["Normaali","Erittäin kylmä"]:
+            ryh = [d[op] for d in paiva_data
+                   if d["luokka"] == luokka and op in d and d[op] is not None]
+            if ryh:
+                oper[op][luokka] = round(sum(ryh) / len(ryh), 2)
+
+    scatter = [{"x": d["min_lampotila"], "y": d["luotettavuus"],
+                "sade": d["sade_mm"], "luokka": d["luokka"],
+                "paiva": d["paiva"]} for d in paiva_data]
+
+    return {
+        "pylvas": pylvas,
+        "oper": oper,
+        "scatter": scatter,
+        "paivia": len(paiva_data),
+    }
+
 def laske_kuukausihistoria(trendi_df):
     """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
     if trendi_df.empty:
@@ -319,6 +465,7 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
     viikonpaiva_labels = json.dumps(list(viikonpaivat.keys()))
     viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
     vuodenaika_json = json.dumps(vuodenaika, ensure_ascii=False)
+    saavaikutus_json = json.dumps(saavaikutus, ensure_ascii=False)
     
     kellonaika_labels  = json.dumps(list(kellonajat.keys()))
     kellonaika_arvot   = json.dumps(list(kellonajat.values()))
@@ -753,6 +900,35 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
         tämä voi aiheuttaa pientä systemaattista aliarviointia todelliseen luotettavuuteen nähden.
         Pienillä linjoilla (alle 10 vuoroa/kk) yksittäiset poikkeamat vaikuttavat prosenttiin merkittävästi.
     </div>
+
+    <!-- Säävaikutusanalyysi -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Säävaikutus luotettavuuteen <span>talvi 2026</span> <i style="font-size:11px;font-weight:400;">1.1.–14.3.2026 · {saavaikutus.get('paivia', 0)} päivää</i></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Luotettavuus sääluokittain</div>
+                <canvas id="saa-pylvas-chart" style="max-height:220px;"></canvas>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Operaattorivertailu: normaali vs. erittäin kylmä</div>
+                <canvas id="saa-oper-chart" style="max-height:220px;"></canvas>
+            </div>
+        </div>
+        <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Lämpötila vs. luotettavuus (jokainen piste = yksi päivä)</div>
+        <canvas id="saa-scatter-chart" style="max-height:200px;margin-bottom:16px;"></canvas>
+        <div style="background:#f0f6fc;border-radius:8px;padding:12px 16px;font-size:11px;color:#6b8caa;line-height:1.7;">
+            <strong style="color:#1e3a5f;">Analyysimenetelmä:</strong>
+            Säädata: Ilmatieteen laitos, Helsinki Kaisaniemi -mittausasema.
+            Luotettavuusdata: HSL:n ajamattomien tilasto (sanktioitavat lähdöt).
+            Sääluokat: <strong style="color:#1e3a5f;">Normaali</strong> = alin lämpötila yli -10°C, ei lumisadetta ·
+            <strong style="color:#1e3a5f;">Lumisade</strong> = sademäärä ≥3 mm ja keskilämpötila ≤+2°C ·
+            <strong style="color:#1e3a5f;">Kylmä</strong> = alin lämpötila -10°C – -15°C ·
+            <strong style="color:#1e3a5f;">Erittäin kylmä</strong> = alin lämpötila alle -15°C.
+            Analyysi kattaa talvikauden 1.1.–14.3.2026 ({saavaikutus.get('paivia', 0)} päivää).
+            Lumisade- ja yhdistelmäluokkien otokset ovat pieniä – tulokset suuntaa antavia.
+        </div>
+    </div>
+    
 </main>
 
 <script>
@@ -979,6 +1155,135 @@ if (Object.keys(vuodenaika).length > 0) {{
     }});
 }}
 
+// Säävaikutusanalyysi
+const saavaikutus = {saavaikutus_json};
+
+if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
+    const saaLuokat = ["Normaali","Lumisade","Kylmä","Erittäin kylmä"];
+    const saaVarit = {{
+        "Normaali":       "#0071bc",
+        "Lumisade":       "#00a650",
+        "Kylmä":          "#f59e0b",
+        "Erittäin kylmä": "#dc2626",
+    }};
+
+    // Kuvaaja 1: Pylväs sääluokittain
+    const pylvasLabels = saaLuokat.filter(l => saavaikutus.pylvas[l]);
+    const ctxP = document.getElementById('saa-pylvas-chart').getContext('2d');
+    new Chart(ctxP, {{
+        type: 'bar',
+        data: {{
+            labels: pylvasLabels.map(l => `${{l}}\n(n=${{saavaikutus.pylvas[l].n}})`),
+            datasets: [{{
+                label: 'Luotettavuus %',
+                data: pylvasLabels.map(l => saavaikutus.pylvas[l].ka),
+                backgroundColor: pylvasLabels.map(l => saaVarit[l]),
+                borderRadius: 4,
+            }}]
+        }},
+        options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ display: false }},
+                tooltip: {{ callbacks: {{
+                    label: ctx => `Ka: ${{ctx.parsed.y.toFixed(2)}} % (min: ${{saavaikutus.pylvas[pylvasLabels[ctx.dataIndex]].min}} %)`
+                }}}}
+            }},
+            scales: {{
+                y: {{
+                    min: 95, max: 100,
+                    ticks: {{ callback: v => v + ' %', color: '#6b8caa', font: {{ size: 10 }} }},
+                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
+                }},
+                x: {{ ticks: {{ color: '#6b8caa', font: {{ size: 9 }} }}, grid: {{ display: false }} }}
+            }}
+        }}
+    }});
+
+    // Kuvaaja 2: Operaattorivertailu
+    const operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"];
+    const operVarit = {{
+        "Nobina Finland": "#00a650",
+        "Koiviston Auto": "#ff6600",
+        "Pohjolan Liikenne": "#7b2d8b",
+        "Tammelundin Liikenne": "#0071bc",
+    }};
+    const ctxO = document.getElementById('saa-oper-chart').getContext('2d');
+    new Chart(ctxO, {{
+        type: 'bar',
+        data: {{
+            labels: operaattorit,
+            datasets: [
+                {{
+                    label: 'Normaali',
+                    data: operaattorit.map(op => saavaikutus.oper[op]?.['Normaali'] || null),
+                    backgroundColor: operaattorit.map(op => operVarit[op] + 'aa'),
+                    borderRadius: 4,
+                }},
+                {{
+                    label: 'Erittäin kylmä',
+                    data: operaattorit.map(op => saavaikutus.oper[op]?.['Erittäin kylmä'] || null),
+                    backgroundColor: operaattorit.map(op => operVarit[op]),
+                    borderRadius: 4,
+                }},
+            ]
+        }},
+        options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ position: 'bottom', labels: {{ font: {{ size: 10 }}, padding: 8, boxWidth: 12 }} }},
+                tooltip: {{ callbacks: {{ label: ctx => `${{ctx.dataset.label}}: ${{ctx.parsed.y?.toFixed(2)}} %` }} }}
+            }},
+            scales: {{
+                y: {{
+                    min: 94, max: 100,
+                    ticks: {{ callback: v => v + ' %', color: '#6b8caa', font: {{ size: 10 }} }},
+                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
+                }},
+                x: {{ ticks: {{ color: '#6b8caa', font: {{ size: 9 }} }}, grid: {{ display: false }} }}
+            }}
+        }}
+    }});
+
+    // Kuvaaja 3: Scatter lämpötila vs luotettavuus
+    const ctxS = document.getElementById('saa-scatter-chart').getContext('2d');
+    new Chart(ctxS, {{
+        type: 'scatter',
+        data: {{
+            datasets: saaLuokat.filter(l => saavaikutus.scatter.some(p => p.luokka === l)).map(l => ({{
+                label: l,
+                data: saavaikutus.scatter
+                    .filter(p => p.luokka === l)
+                    .map(p => ({{ x: p.x, y: p.y }})),
+                backgroundColor: saaVarit[l] + 'bb',
+                pointRadius: 4,
+            }}))
+        }},
+        options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ position: 'bottom', labels: {{ font: {{ size: 10 }}, padding: 8, boxWidth: 12 }} }},
+                tooltip: {{ callbacks: {{
+                    label: ctx => `${{ctx.parsed.y.toFixed(2)}} % · ${{ctx.parsed.x.toFixed(1)}}°C`
+                }}}}
+            }},
+            scales: {{
+                x: {{
+                    title: {{ display: true, text: 'Alin lämpötila (°C)', color: '#6b8caa', font: {{ size: 10 }} }},
+                    ticks: {{ color: '#6b8caa', font: {{ size: 10 }}, callback: v => v + '°' }},
+                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
+                }},
+                y: {{
+                    min: 94, max: 100,
+                    title: {{ display: true, text: 'Luotettavuus %', color: '#6b8caa', font: {{ size: 10 }} }},
+                    ticks: {{ color: '#6b8caa', font: {{ size: 10 }}, callback: v => v + ' %' }},
+                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
+                }}
+            }}
+        }}
+    }});
+}}
+
 // Operaattoritrendi
 const ctx2 = document.getElementById('operChart').getContext('2d');
 const datasets = Object.entries(operData.operaattorit).map(([oper, arvot]) => ({{
@@ -1113,6 +1418,8 @@ def main():
     print(f"  ✓ Viikonpäiväkeskiarvot laskettu")
     vuodenaika = laske_vuodenaika(trendi)
     print(f"  ✓ Vuodenaikaluotettavuus laskettu")
+    saavaikutus = laske_saavaikutus(trendi)
+    print(f"  ✓ Säävaikutusanalyysi laskettu")
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
     html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika)
