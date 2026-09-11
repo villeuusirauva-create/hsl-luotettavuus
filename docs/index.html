@@ -237,7 +237,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 11.09.2026 11:26</div>
+        <div class="paivitys">Päivitetty 11.09.2026 19:15</div>
     </div>
 </header>
 
@@ -555,6 +555,35 @@
         tämä voi aiheuttaa pientä systemaattista aliarviointia todelliseen luotettavuuteen nähden.
         Pienillä linjoilla (alle 10 vuoroa/kk) yksittäiset poikkeamat vaikuttavat prosenttiin merkittävästi.
     </div>
+
+    <!-- Säävaikutusanalyysi -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Säävaikutus luotettavuuteen <span>talvi 2026</span> <i style="font-size:11px;font-weight:400;">1.1.–14.3.2026 · 72 päivää</i></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Luotettavuus sääluokittain</div>
+                <canvas id="saa-pylvas-chart" style="max-height:220px;"></canvas>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Operaattorivertailu: normaali vs. erittäin kylmä</div>
+                <canvas id="saa-oper-chart" style="max-height:220px;"></canvas>
+            </div>
+        </div>
+        <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Lämpötila vs. luotettavuus (jokainen piste = yksi päivä)</div>
+        <canvas id="saa-scatter-chart" style="max-height:200px;margin-bottom:16px;"></canvas>
+        <div style="background:#f0f6fc;border-radius:8px;padding:12px 16px;font-size:11px;color:#6b8caa;line-height:1.7;">
+            <strong style="color:#1e3a5f;">Analyysimenetelmä:</strong>
+            Säädata: Ilmatieteen laitos, Helsinki Kaisaniemi -mittausasema.
+            Luotettavuusdata: HSL:n ajamattomien tilasto (sanktioitavat lähdöt).
+            Sääluokat: <strong style="color:#1e3a5f;">Normaali</strong> = alin lämpötila yli -10°C, ei lumisadetta ·
+            <strong style="color:#1e3a5f;">Lumisade</strong> = sademäärä ≥3 mm ja keskilämpötila ≤+2°C ·
+            <strong style="color:#1e3a5f;">Kylmä</strong> = alin lämpötila -10°C – -15°C ·
+            <strong style="color:#1e3a5f;">Erittäin kylmä</strong> = alin lämpötila alle -15°C.
+            Analyysi kattaa talvikauden 1.1.–14.3.2026 (72 päivää).
+            Lumisade- ja yhdistelmäluokkien otokset ovat pieniä – tulokset suuntaa antavia.
+        </div>
+    </div>
+    
 </main>
 
 <script>
@@ -775,6 +804,136 @@ if (Object.keys(vuodenaika).length > 0) {
                 x: {
                     ticks: { color: '#6b8caa', font: { size: 10 } },
                     grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+// Säävaikutusanalyysi
+const saavaikutus = {"pylvas": {"Normaali": {"n": 27, "ka": 98.77, "min": 97.14}, "Lumisade": {"n": 6, "ka": 98.58, "min": 97.79}, "Kylmä": {"n": 24, "ka": 98.31, "min": 95.43}, "Erittäin kylmä": {"n": 15, "ka": 98.65, "min": 96.95}}, "oper": {"Nobina Finland": {"Normaali": 98.98, "Erittäin kylmä": 98.85}, "Koiviston Auto": {"Normaali": 99.19, "Erittäin kylmä": 98.85}, "Pohjolan Liikenne": {"Normaali": 97.81, "Erittäin kylmä": 97.89}, "Tammelundin Liikenne": {"Normaali": 99.93, "Erittäin kylmä": 99.97}}, "scatter": [{"x": -13.4, "y": 98.66, "sade": 0.8, "luokka": "Kylmä", "paiva": "2026-01-01"}, {"x": -5.8, "y": 98.55, "sade": 3.2, "luokka": "Lumisade", "paiva": "2026-01-02"}, {"x": -8.7, "y": 99.04, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-01-03"}, {"x": -13.3, "y": 99.08, "sade": 1.9, "luokka": "Kylmä", "paiva": "2026-01-04"}, {"x": -18.7, "y": 97.77, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-05"}, {"x": -16.1, "y": 98.8, "sade": 6.1, "luokka": "Erittäin kylmä", "paiva": "2026-01-06"}, {"x": -10.2, "y": 96.8, "sade": 0.7, "luokka": "Kylmä", "paiva": "2026-01-07"}, {"x": -15.9, "y": 96.95, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-08"}, {"x": -16.9, "y": 97.55, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-09"}, {"x": -13.5, "y": 98.96, "sade": 1.2, "luokka": "Kylmä", "paiva": "2026-01-10"}, {"x": -10.4, "y": 98.73, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-01-11"}, {"x": -5.5, "y": 97.72, "sade": 0.3, "luokka": "Normaali", "paiva": "2026-01-13"}, {"x": -10.0, "y": 98.03, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-01-14"}, {"x": -20.2, "y": 98.77, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-15"}, {"x": -18.5, "y": 98.82, "sade": 0.1, "luokka": "Erittäin kylmä", "paiva": "2026-01-16"}, {"x": -15.1, "y": 99.47, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-17"}, {"x": -16.2, "y": 99.53, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-18"}, {"x": -17.4, "y": 98.95, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-19"}, {"x": -16.0, "y": 99.24, "sade": 0.3, "luokka": "Erittäin kylmä", "paiva": "2026-01-20"}, {"x": -8.3, "y": 99.23, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-01-21"}, {"x": -9.1, "y": 99.29, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-01-22"}, {"x": -15.5, "y": 98.48, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-23"}, {"x": -14.2, "y": 98.59, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-01-24"}, {"x": -11.0, "y": 98.47, "sade": 3.4, "luokka": "Kylmä", "paiva": "2026-01-25"}, {"x": -11.0, "y": 98.69, "sade": 0.5, "luokka": "Kylmä", "paiva": "2026-01-26"}, {"x": -15.4, "y": 98.85, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-01-27"}, {"x": -14.9, "y": 98.18, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-01-28"}, {"x": -12.6, "y": 98.63, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-01-29"}, {"x": -8.3, "y": 97.79, "sade": 4.1, "luokka": "Lumisade", "paiva": "2026-01-30"}, {"x": -10.6, "y": 98.82, "sade": 0.7, "luokka": "Kylmä", "paiva": "2026-01-31"}, {"x": -13.1, "y": 98.5, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-01"}, {"x": -14.8, "y": 95.43, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-02"}, {"x": -12.4, "y": 96.86, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-03"}, {"x": -8.0, "y": 97.14, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-02-04"}, {"x": -5.1, "y": 97.9, "sade": 2.5, "luokka": "Normaali", "paiva": "2026-02-05"}, {"x": -8.9, "y": 97.5, "sade": 0.3, "luokka": "Normaali", "paiva": "2026-02-06"}, {"x": -13.9, "y": 98.64, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-07"}, {"x": -12.5, "y": 98.75, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-08"}, {"x": -10.0, "y": 98.2, "sade": 0.5, "luokka": "Kylmä", "paiva": "2026-02-09"}, {"x": -7.8, "y": 98.49, "sade": 3.1, "luokka": "Lumisade", "paiva": "2026-02-10"}, {"x": -10.3, "y": 98.57, "sade": 0.2, "luokka": "Kylmä", "paiva": "2026-02-11"}, {"x": -14.1, "y": 97.54, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-12"}, {"x": -16.5, "y": 97.75, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-02-13"}, {"x": -18.3, "y": 99.52, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-02-14"}, {"x": -16.8, "y": 99.37, "sade": 0.0, "luokka": "Erittäin kylmä", "paiva": "2026-02-15"}, {"x": -13.5, "y": 98.17, "sade": 0.4, "luokka": "Kylmä", "paiva": "2026-02-16"}, {"x": -9.2, "y": 98.53, "sade": 0.8, "luokka": "Normaali", "paiva": "2026-02-17"}, {"x": -6.4, "y": 98.75, "sade": 3.8, "luokka": "Lumisade", "paiva": "2026-02-18"}, {"x": -10.9, "y": 98.91, "sade": 0.2, "luokka": "Kylmä", "paiva": "2026-02-19"}, {"x": -13.1, "y": 98.86, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-20"}, {"x": -10.8, "y": 99.48, "sade": 0.0, "luokka": "Kylmä", "paiva": "2026-02-21"}, {"x": -7.5, "y": 99.5, "sade": 1.1, "luokka": "Normaali", "paiva": "2026-02-22"}, {"x": -5.3, "y": 98.08, "sade": 0.6, "luokka": "Normaali", "paiva": "2026-02-23"}, {"x": -4.1, "y": 98.59, "sade": 0.4, "luokka": "Normaali", "paiva": "2026-02-24"}, {"x": -3.2, "y": 98.92, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-02-25"}, {"x": -2.1, "y": 98.35, "sade": 1.2, "luokka": "Normaali", "paiva": "2026-02-26"}, {"x": -3.8, "y": 98.82, "sade": 0.3, "luokka": "Normaali", "paiva": "2026-02-27"}, {"x": -6.2, "y": 99.35, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-02-28"}, {"x": -8.4, "y": 99.41, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-01"}, {"x": -5.9, "y": 98.91, "sade": 0.2, "luokka": "Normaali", "paiva": "2026-03-02"}, {"x": -2.3, "y": 98.09, "sade": 3.5, "luokka": "Lumisade", "paiva": "2026-03-03"}, {"x": -4.8, "y": 98.59, "sade": 0.5, "luokka": "Normaali", "paiva": "2026-03-04"}, {"x": -7.2, "y": 98.97, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-05"}, {"x": -9.5, "y": 98.8, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-06"}, {"x": -8.1, "y": 99.24, "sade": 0.3, "luokka": "Normaali", "paiva": "2026-03-07"}, {"x": -5.6, "y": 99.3, "sade": 1.8, "luokka": "Normaali", "paiva": "2026-03-08"}, {"x": -2.8, "y": 98.9, "sade": 0.7, "luokka": "Normaali", "paiva": "2026-03-09"}, {"x": -1.5, "y": 98.96, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-10"}, {"x": -3.4, "y": 99.24, "sade": 0.2, "luokka": "Normaali", "paiva": "2026-03-11"}, {"x": -5.8, "y": 99.39, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-12"}, {"x": -7.3, "y": 99.01, "sade": 0.0, "luokka": "Normaali", "paiva": "2026-03-13"}, {"x": -4.9, "y": 99.79, "sade": 3.2, "luokka": "Lumisade", "paiva": "2026-03-14"}], "paivia": 72};
+
+if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {
+    const saaLuokat = ["Normaali","Lumisade","Kylmä","Erittäin kylmä"];
+    const saaVarit = {
+        "Normaali":       "#0071bc",
+        "Lumisade":       "#00a650",
+        "Kylmä":          "#f59e0b",
+        "Erittäin kylmä": "#dc2626",
+    };
+
+    // Kuvaaja 1: Pylväs sääluokittain
+    const pylvasLabels = saaLuokat.filter(l => saavaikutus.pylvas[l]);
+    const ctxP = document.getElementById('saa-pylvas-chart').getContext('2d');
+    new Chart(ctxP, {
+        type: 'bar',
+        data: {
+            labels: pylvasLabels.map(l => `${l}
+(n=${saavaikutus.pylvas[l].n})`),
+            datasets: [{
+                label: 'Luotettavuus %',
+                data: pylvasLabels.map(l => saavaikutus.pylvas[l].ka),
+                backgroundColor: pylvasLabels.map(l => saaVarit[l]),
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: {
+                    label: ctx => `Ka: ${ctx.parsed.y.toFixed(2)} % (min: ${saavaikutus.pylvas[pylvasLabels[ctx.dataIndex]].min} %)`
+                }}
+            },
+            scales: {
+                y: {
+                    min: 95, max: 100,
+                    ticks: { callback: v => v + ' %', color: '#6b8caa', font: { size: 10 } },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                },
+                x: { ticks: { color: '#6b8caa', font: { size: 9 } }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Kuvaaja 2: Operaattorivertailu
+    const operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"];
+    const operVarit = {
+        "Nobina Finland": "#00a650",
+        "Koiviston Auto": "#ff6600",
+        "Pohjolan Liikenne": "#7b2d8b",
+        "Tammelundin Liikenne": "#0071bc",
+    };
+    const ctxO = document.getElementById('saa-oper-chart').getContext('2d');
+    new Chart(ctxO, {
+        type: 'bar',
+        data: {
+            labels: operaattorit,
+            datasets: [
+                {
+                    label: 'Normaali',
+                    data: operaattorit.map(op => saavaikutus.oper[op]?.['Normaali'] || null),
+                    backgroundColor: operaattorit.map(op => operVarit[op] + 'aa'),
+                    borderRadius: 4,
+                },
+                {
+                    label: 'Erittäin kylmä',
+                    data: operaattorit.map(op => saavaikutus.oper[op]?.['Erittäin kylmä'] || null),
+                    backgroundColor: operaattorit.map(op => operVarit[op]),
+                    borderRadius: 4,
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, boxWidth: 12 } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(2)} %` } }
+            },
+            scales: {
+                y: {
+                    min: 94, max: 100,
+                    ticks: { callback: v => v + ' %', color: '#6b8caa', font: { size: 10 } },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                },
+                x: { ticks: { color: '#6b8caa', font: { size: 9 } }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Kuvaaja 3: Scatter lämpötila vs luotettavuus
+    const ctxS = document.getElementById('saa-scatter-chart').getContext('2d');
+    new Chart(ctxS, {
+        type: 'scatter',
+        data: {
+            datasets: saaLuokat.filter(l => saavaikutus.scatter.some(p => p.luokka === l)).map(l => ({
+                label: l,
+                data: saavaikutus.scatter
+                    .filter(p => p.luokka === l)
+                    .map(p => ({ x: p.x, y: p.y })),
+                backgroundColor: saaVarit[l] + 'bb',
+                pointRadius: 4,
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, boxWidth: 12 } },
+                tooltip: { callbacks: {
+                    label: ctx => `${ctx.parsed.y.toFixed(2)} % · ${ctx.parsed.x.toFixed(1)}°C`
+                }}
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Alin lämpötila (°C)', color: '#6b8caa', font: { size: 10 } },
+                    ticks: { color: '#6b8caa', font: { size: 10 }, callback: v => v + '°' },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                },
+                y: {
+                    min: 94, max: 100,
+                    title: { display: true, text: 'Luotettavuus %', color: '#6b8caa', font: { size: 10 } },
+                    ticks: { color: '#6b8caa', font: { size: 10 }, callback: v => v + ' %' },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
                 }
             }
         }
