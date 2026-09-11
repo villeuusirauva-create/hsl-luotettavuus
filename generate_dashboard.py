@@ -919,7 +919,8 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
         <div style="background:#f0f6fc;border-radius:8px;padding:12px 16px;font-size:11px;color:#6b8caa;line-height:1.7;">
             <strong style="color:#1e3a5f;">Analyysimenetelmä:</strong>
             Säädata: Ilmatieteen laitos, Helsinki Kaisaniemi -mittausasema.
-            Luotettavuusdata: HSL:n ajamattomien tilasto (sanktioitavat lähdöt).
+            Luotettavuusdata: HSL:n HFP-data (toteutuneet lähdöt) verrattuna GTFS-aikatauluun –
+            sama päivittäinen data joka näkyy etusivun trendikuvaajassa.
             Sääluokat: <strong style="color:#1e3a5f;">Normaali</strong> = alin lämpötila yli -10°C, ei lumisadetta ·
             <strong style="color:#1e3a5f;">Lumisade</strong> = sademäärä ≥3 mm ja keskilämpötila ≤+2°C ·
             <strong style="color:#1e3a5f;">Kylmä</strong> = alin lämpötila -10°C – -15°C ·
