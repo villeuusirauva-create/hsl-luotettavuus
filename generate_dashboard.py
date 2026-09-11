@@ -448,7 +448,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}, vuodenaika={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}, vuodenaika={}, saavaikutus={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -1422,7 +1422,7 @@ def main():
     print(f"  ✓ Säävaikutusanalyysi laskettu")
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
-    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika)
+    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika, saavaikutus)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
