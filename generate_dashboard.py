@@ -1279,7 +1279,7 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
             plugins: {{
                 legend: {{ position: 'bottom', labels: {{ font: {{ size: 10 }}, padding: 8, boxWidth: 12 }} }},
                 tooltip: {{ callbacks: {{
-                    label: ctx => `${{ctx.parsed.y.toFixed(2)}} % · ${{ctx.parsed.x.toFixed(1)}}°C`
+                    label: ctx => `${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(2)}} % · ${{ctx.parsed.x.toFixed(1)}}°C · ${{ctx.raw.paiva?.split('-').reverse().join('.')}}`
                 }}}}
             }},
             scales: {{
