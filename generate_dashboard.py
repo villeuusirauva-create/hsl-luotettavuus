@@ -379,9 +379,23 @@ def laske_saavaikutus(trendi_df):
             if ryh:
                 oper[op][luokka] = round(sum(ryh) / len(ryh), 2)
 
-    scatter = [{"x": d["min_lampotila"], "y": d["luotettavuus"],
-                "sade": d["sade_mm"], "luokka": d["luokka"],
-                "paiva": d["paiva"]} for d in paiva_data]
+    OPER_VARIT_MAP = {
+        "Nobina Finland": "#00a650",
+        "Koiviston Auto": "#ff6600",
+        "Pohjolan Liikenne": "#7b2d8b",
+        "Tammelundin Liikenne": "#0071bc",
+    }
+    scatter = []
+    for d in paiva_data:
+        for op in OPERAATTORIT:
+            if op in d and d[op] is not None:
+                scatter.append({
+                    "x": d["min_lampotila"],
+                    "y": d[op],
+                    "luokka": d["luokka"],
+                    "paiva": d["paiva"],
+                    "operaattori": op,
+                })
 
     return {
         "pylvas": pylvas,
@@ -1187,7 +1201,7 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
             plugins: {{
                 legend: {{ display: false }},
                 tooltip: {{ callbacks: {{
-                    label: ctx => `Ka: ${{ctx.parsed.y.toFixed(2)}} % (min: ${{saavaikutus.pylvas[pylvasLabels[ctx.dataIndex]].min}} %)`
+                    label: ctx => `${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(2)}} % · ${{ctx.parsed.x.toFixed(1)}}°C · ${{ctx.raw.paiva}}`
                 }}}}
             }},
             scales: {{
@@ -1251,12 +1265,12 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
     new Chart(ctxS, {{
         type: 'scatter',
         data: {{
-            datasets: saaLuokat.filter(l => saavaikutus.scatter.some(p => p.luokka === l)).map(l => ({{
-                label: l,
+            datasets: Object.keys(operVarit).map(op => ({{
+                label: op,
                 data: saavaikutus.scatter
-                    .filter(p => p.luokka === l)
-                    .map(p => ({{ x: p.x, y: p.y }})),
-                backgroundColor: saaVarit[l] + 'bb',
+                    .filter(p => p.operaattori === op)
+                    .map(p => ({{ x: p.x, y: p.y, luokka: p.luokka, paiva: p.paiva }})),
+                backgroundColor: operVarit[op] + 'aa',
                 pointRadius: 4,
             }}))
         }},
@@ -1275,7 +1289,7 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
                     grid: {{ color: 'rgba(0,113,188,0.08)' }}
                 }},
                 y: {{
-                    min: 94, max: 100,
+                    min: 85, max: 100,
                     title: {{ display: true, text: 'Luotettavuus %', color: '#6b8caa', font: {{ size: 10 }} }},
                     ticks: {{ color: '#6b8caa', font: {{ size: 10 }}, callback: v => v + ' %' }},
                     grid: {{ color: 'rgba(0,113,188,0.08)' }}
