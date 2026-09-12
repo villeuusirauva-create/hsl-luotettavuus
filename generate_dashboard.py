@@ -929,7 +929,7 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
             </div>
         </div>
         <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Lämpötila vs. luotettavuus (jokainen piste = yksi päivä)</div>
-        <canvas id="saa-scatter-chart" style="max-height:200px;margin-bottom:16px;"></canvas>
+        <canvas id="saa-scatter-chart" style="max-height:300px;margin-bottom:16px;"></canvas>
         <div style="background:#f0f6fc;border-radius:8px;padding:12px 16px;font-size:11px;color:#6b8caa;line-height:1.7;">
             <strong style="color:#1e3a5f;">Analyysimenetelmä:</strong>
             Säädata: Ilmatieteen laitos, Helsinki Kaisaniemi -mittausasema.
@@ -1201,7 +1201,7 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
             plugins: {{
                 legend: {{ display: false }},
                 tooltip: {{ callbacks: {{
-                    label: ctx => `${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(2)}} % · ${{ctx.parsed.x.toFixed(1)}}°C · ${{ctx.raw.paiva}}`
+                    label: ctx => `Ka: ${{ctx.parsed.y.toFixed(2)}} % (min: ${{saavaikutus.pylvas[pylvasLabels[ctx.dataIndex]].min}} %)`
                 }}}}
             }},
             scales: {{
@@ -1289,7 +1289,7 @@ if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
                     grid: {{ color: 'rgba(0,113,188,0.08)' }}
                 }},
                 y: {{
-                    min: 85, max: 100,
+                    min: 88, max: 100,
                     title: {{ display: true, text: 'Luotettavuus %', color: '#6b8caa', font: {{ size: 10 }} }},
                     ticks: {{ color: '#6b8caa', font: {{ size: 10 }}, callback: v => v + ' %' }},
                     grid: {{ color: 'rgba(0,113,188,0.08)' }}
