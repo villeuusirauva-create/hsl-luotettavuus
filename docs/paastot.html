@@ -141,6 +141,16 @@
             <div class="hero-sub">t CO₂</div>
         </div>
         <div class="hero-kortti">
+            <div class="hero-label">NOx-vähenemä 2010–2025</div>
+            <div class="hero-arvo vihrea">-99,5 %</div>
+            <div class="hero-sub">879 → 4,7 t</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">PM-vähenemä 2010–2025</div>
+            <div class="hero-arvo vihrea">-96,4 %</div>
+            <div class="hero-sub">14,6 → 0,5 t</div>
+        </div>
+        <div class="hero-kortti">
             <div class="hero-label">Vähenemä 2010–2025 (ilman bonus)</div>
             <div class="hero-arvo vihrea">-65 %</div>
             <div class="hero-sub">112 795 → 39 224 t</div>
@@ -187,6 +197,22 @@
         <br>
         <strong>%-muutos</strong> on indeksoitu vuoteen 2010 (= 100 %). Uusi tapa ei ole mukana %-kuvaajassa.
     </div>
+
+    <!-- Lähipäästöt -->
+<div class="osio-otsikko">Lähipäästöt – NOx ja PM</div>
+<div class="grid-2">
+    <div class="kortti">
+        <div class="kortti-otsikko">Typenoksidit (NOx)</div>
+        <div class="kortti-alateksti">Tonnia vuodessa, bussiliikenne 2010–2025</div>
+        <canvas id="noxChart"></canvas>
+    </div>
+    <div class="kortti">
+        <div class="kortti-otsikko">Hiukkaset (PM)</div>
+        <div class="kortti-alateksti">Tonnia vuodessa, bussiliikenne 2010–2025</div>
+        <canvas id="pmChart"></canvas>
+    </div>
+</div>
+    
 </main>
 <script>
 const VUODET = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
@@ -333,11 +359,96 @@ function rakennaPaastotChartit() {
     });
 }
 
+// Lähipäästöt
+const VUODET_LP = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+const NOX = [879.42,749.05,686.6,623.51,610.03,531.92,455.58,304.67,240,207.51,159.05,118.51,75.98,23.93,17.13,4.69];
+const PM  = [14.6,11.79,10.12,8.26,7.94,6.64,6.11,3.34,2.67,2.21,1.68,1.565,1.34,0.77,0.62,0.53];
+
+function noxData() {
+    return nakyma === 'tonnit' ? NOX : NOX.map(v => Math.round(v / NOX[0] * 1000) / 10);
+}
+function pmData() {
+    return nakyma === 'tonnit' ? PM : PM.map(v => Math.round(v / PM[0] * 1000) / 10);
+}
+function lpYLabel() {
+    return nakyma === 'tonnit' ? 't' : '%';
+}
+
+let noxChart, pmChart;
+
+function rakennaNoxPmChartit() {
+    if (noxChart && typeof noxChart.destroy === 'function') noxChart.destroy();
+    if (pmChart && typeof pmChart.destroy === 'function') pmChart.destroy();
+
+    const yLabel = lpYLabel();
+
+    noxChart = new Chart(document.getElementById('noxChart'), {
+        type: 'line',
+        data: {
+            labels: VUODET_LP,
+            datasets: [{
+                label: 'NOx',
+                data: noxData(),
+                borderColor: '#dc2626',
+                backgroundColor: 'rgba(220,38,38,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toFixed(2)} ${yLabel}` } }
+            },
+            scales: {
+                x: { ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } },
+                y: {
+                    min: 0,
+                    ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' ' + yLabel },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                }
+            }
+        }
+    });
+
+    pmChart = new Chart(document.getElementById('pmChart'), {
+        type: 'line',
+        data: {
+            labels: VUODET_LP,
+            datasets: [{
+                label: 'PM',
+                data: pmData(),
+                borderColor: '#d97706',
+                backgroundColor: 'rgba(217,119,6,0.08)',
+                borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toFixed(2)} ${yLabel}` } }
+            },
+            scales: {
+                x: { ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } },
+                y: {
+                    min: 0,
+                    ticks: { color: '#6b8caa', font: { size: 11 }, callback: v => v + ' ' + yLabel },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                }
+            }
+        }
+    });
+}
+
+rakennaNoxPmChartit();
+
 function vaihdaNakyma(uusi) {
     nakyma = uusi;
     document.getElementById('btn-tonnit').classList.toggle('active', nakyma === 'tonnit');
     document.getElementById('btn-prosentti').classList.toggle('active', nakyma === 'prosentti');
     rakennaPaastotChartit();
+    rakennaNoxPmChartit();
 }
 
 rakennaPaastotChartit();
