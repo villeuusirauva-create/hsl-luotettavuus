@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Operaattoreiden markkinaosuus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --hsl-blue:  #0071bc;
+            --hsl-light: #e8f4fd;
+            --hsl-dark:  #1e3a5f;
+            --bg:        #f0f6fc;
+            --card:      #ffffff;
+            --border:    #c8dff0;
+            --text:      #1e3a5f;
+            --muted:     #6b8caa;
+            --green:     #16a34a;
+            --radius:    12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 24px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 24px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        /* Layout */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+        canvas { max-height: 380px; }
+
+        /* Taulukko */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+        th { background: var(--hsl-dark); color: white; padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: var(--hsl-light); }
+        .pct-bar { display: flex; align-items: center; gap: 8px; }
+        .bar-bg { flex: 1; height: 10px; background: #e8f4fd; border-radius: 3px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 3px; }
+        .bar-num { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; width: 42px; text-align: right; }
+
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--muted); margin-top: 24px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Operaattoreiden markkinaosuus</h1>
+                <div class="header-sub">Bussiliikenteen sopimuskannan jakauma · 2026</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <!-- Hero -->
+    <div class="hero-grid">
+        <div class="hero-kortti">
+            <div class="hero-label">Sopimuksia yhteensä</div>
+            <div class="hero-arvo">51</div>
+            <div class="hero-sub">voimassaolevaa sopimusta</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Suurin operaattori</div>
+            <div class="hero-arvo">32,2 %</div>
+            <div class="hero-sub">Nobina Finland</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Kolmen suuren osuus</div>
+            <div class="hero-arvo">94,7 %</div>
+            <div class="hero-sub">Nobina, Pohjola, Koivisto</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Pienin iso operaattori</div>
+            <div class="hero-arvo">3,3 %</div>
+            <div class="hero-sub">Tammelundin Liikenne</div>
+        </div>
+    </div>
+
+    <!-- Kuvaajat -->
+    <div class="grid-2">
+        <div class="kortti">
+            <div class="kortti-otsikko">Markkinaosuus – kaikki operaattorit</div>
+            <div class="kortti-alateksti">%-osuus sopimuskannan perusteella</div>
+            <canvas id="donitsiChart"></canvas>
+        </div>
+        <div class="kortti">
+            <div class="kortti-otsikko">Markkinaosuus – neljä suurinta</div>
+            <div class="kortti-alateksti">%-osuus sopimuskannan perusteella</div>
+            <canvas id="donitsiIsoChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Taulukko -->
+    <div class="kortti" style="margin-bottom:24px;">
+        <div class="kortti-otsikko">Operaattorit järjestyksessä</div>
+        <div class="kortti-alateksti">Markkinaosuus sopimuskannan perusteella</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Operaattori</th>
+                    <th>Osuus</th>
+                    <th style="width:200px">Jakauma</th>
+                </tr>
+            </thead>
+            <tbody id="taulukko-body"></tbody>
+        </table>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Laskentaperiaate:</strong> Markkinaosuus on laskettu voimassaolevien sopimusten
+        kilpailuttamisvaiheen vuosihinnoista (51 sopimusta). Luvut kuvaavat sopimuskannan rakennetta
+        kilpailutushetken hintatasossa – todelliset maksetut korvaukset ovat korkeampia johtuen
+        indeksitarkistuksista, suoritemuutoksista sopimuskauden aikana sekä laatu- ja
+        ympäristöbonuksista.
+    </div>
+</main>
+<script>
+const OPER_VARIT = {
+    "Nobina Finland":            "#00a650",
+    "Pohjolan Liikenne":         "#7b2d8b",
+    "Koiviston Auto":            "#ff6600",
+    "Tammelundin Liikenne":      "#0071bc",
+    "Taksikuljetus Harri Vuolle":"#94a3b8",
+    "Korsisaari":                "#64748b",
+    "V-S Bussipalvelut":         "#475569",
+    "Nurmijärven Linja":         "#334155",
+    "Koillisen Liikennepalvelut":"#1e293b",
+    "Bus Travel Reissu Ruoti":   "#0f172a",
+};
+
+const DATA = [
+    {nimi: "Nobina Finland",            pct: 32.2},
+    {nimi: "Pohjolan Liikenne",         pct: 32.0},
+    {nimi: "Koiviston Auto",            pct: 30.5},
+    {nimi: "Tammelundin Liikenne",      pct: 3.3},
+    {nimi: "Taksikuljetus Harri Vuolle",pct: 0.4},
+    {nimi: "Korsisaari",                pct: 0.4},
+    {nimi: "V-S Bussipalvelut",         pct: 0.4},
+    {nimi: "Nurmijärven Linja",         pct: 0.3},
+    {nimi: "Koillisen Liikennepalvelut",pct: 0.3},
+    {nimi: "Bus Travel Reissu Ruoti",   pct: 0.1},
+];
+
+const DOUGHNUT_OPTS = {
+    responsive: true,
+    plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12, boxWidth: 14 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)} %` } }
+    }
+};
+
+// Kuvaaja 1: Kaikki operaattorit
+new Chart(document.getElementById('donitsiChart'), {
+    type: 'doughnut',
+    data: {
+        labels: DATA.map(d => d.nimi),
+        datasets: [{
+            data: DATA.map(d => d.pct),
+            backgroundColor: DATA.map(d => OPER_VARIT[d.nimi] || '#94a3b8'),
+            borderWidth: 2, borderColor: '#fff',
+        }]
+    },
+    options: DOUGHNUT_OPTS,
+});
+
+// Kuvaaja 2: Neljä suurinta
+const ISO = DATA.slice(0, 4);
+const muut_pct = DATA.slice(4).reduce((s, d) => s + d.pct, 0);
+new Chart(document.getElementById('donitsiIsoChart'), {
+    type: 'doughnut',
+    data: {
+        labels: [...ISO.map(d => d.nimi), 'Muut'],
+        datasets: [{
+            data: [...ISO.map(d => d.pct), muut_pct],
+            backgroundColor: [...ISO.map(d => OPER_VARIT[d.nimi]), '#94a3b8'],
+            borderWidth: 2, borderColor: '#fff',
+        }]
+    },
+    options: DOUGHNUT_OPTS,
+});
+
+// Taulukko
+const tbody = document.getElementById('taulukko-body');
+tbody.innerHTML = DATA.map((d, i) => `
+    <tr>
+        <td style="color:var(--muted);font-size:12px">${i + 1}</td>
+        <td style="font-weight:600">${d.nimi}</td>
+        <td style="font-family:'DM Mono',monospace;font-weight:600">${d.pct.toFixed(1)} %</td>
+        <td>
+            <div class="pct-bar">
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width:${d.pct / DATA[0].pct * 100}%;background:${OPER_VARIT[d.nimi] || '#94a3b8'}"></div>
+                </div>
+            </div>
+        </td>
+    </tr>`).join('');
+</script>
+</body>
+</html>
