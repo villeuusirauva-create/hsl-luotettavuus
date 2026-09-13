@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Sopimuslistaus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="sopimus_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue: #0071bc; --hsl-light: #e8f4fd; --hsl-dark: #1e3a5f;
+            --bg: #f0f6fc; --card: #ffffff; --border: #c8dff0;
+            --text: #1e3a5f; --muted: #6b8caa; --green: #16a34a; --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1400px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-arvo.vihrea { color: var(--green); }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        /* Suodattimet */
+        .suodatin-paneeli { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px; }
+        .suodatin-otsikko { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px; }
+        .suodatin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+        .suodatin-group label { font-size: 11px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        select { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--text); background: white; cursor: pointer; }
+        select:focus { outline: none; border-color: var(--hsl-blue); }
+        .nollaa-btn { padding: 7px 16px; background: var(--hsl-dark); color: white; border: none; border-radius: 7px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; align-self: flex-end; }
+        .nollaa-btn:hover { background: var(--hsl-blue); }
+        .tulos-laskuri { font-size: 13px; color: var(--muted); margin-top: 10px; }
+        .tulos-laskuri strong { color: var(--text); }
+
+        /* Kuvaajat */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 16px; } }
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); margin-bottom: 20px; }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+        canvas { max-height: 280px; }
+
+        /* Toggle */
+        .toggle-rivi { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .toggle-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+        .toggle-btn { display: flex; border-radius: 7px; overflow: hidden; border: 1px solid var(--border); }
+        .toggle-btn button { padding: 5px 14px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; font-family: 'Figtree', sans-serif; background: white; color: var(--muted); }
+        .toggle-btn button.active { background: var(--hsl-blue); color: white; }
+
+        /* Taulukko */
+        .taulukko-wrap { overflow-x: auto; max-height: 520px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+        th { background: var(--hsl-dark); color: white; padding: 9px 10px; text-align: left; font-size: 11px; font-weight: 600; position: sticky; top: 0; cursor: pointer; white-space: nowrap; }
+        th:hover { background: var(--hsl-blue); }
+        td { padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        tr:hover td { background: var(--hsl-light); }
+        .badge { display: inline-block; padding: 2px 7px; border-radius: 8px; font-size: 10px; font-weight: 700; color: white; }
+        .badge-diesel { background: #94a3b8; }
+        .badge-sahko { background: #16a34a; }
+        .badge-runko { background: #dc2626; }
+        .badge-osittain { background: #f59e0b; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Sopimuslistaus</h1>
+                <div class="header-sub">Voimassaolevat ja tulevat bussiliikenteen sopimukset</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <!-- Hero -->
+    <div class="hero-grid" id="hero-grid"></div>
+
+    <!-- Suodattimet -->
+    <div class="suodatin-paneeli">
+        <div class="suodatin-otsikko">Suodata sopimuksia</div>
+        <div class="suodatin-grid">
+            <div class="suodatin-group">
+                <label>Operaattori</label>
+                <select id="f-oper" onchange="paivita()"><option value="">Kaikki</option></select>
+            </div>
+            <div class="suodatin-group">
+                <label>Liikennöintialue</label>
+                <select id="f-alue" onchange="paivita()"><option value="">Kaikki</option></select>
+            </div>
+            <div class="suodatin-group">
+                <label>Indeksi</label>
+                <select id="f-indeksi" onchange="paivita()">
+                    <option value="">Kaikki</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="sähkö">Sähkö</option>
+                </select>
+            </div>
+            <div class="suodatin-group">
+                <label>Runkolinja</label>
+                <select id="f-runko" onchange="paivita()">
+                    <option value="">Kaikki</option>
+                    <option value="kyllä">Kyllä</option>
+                    <option value="osittain">Osittain</option>
+                    <option value="ei">Ei</option>
+                </select>
+            </div>
+            <div class="suodatin-group">
+                <label>Päättyy vuonna</label>
+                <select id="f-loppu" onchange="paivita()"><option value="">Kaikki</option></select>
+            </div>
+            <div class="suodatin-group">
+                <label>Alkaa vuonna</label>
+                <select id="f-alku" onchange="paivita()"><option value="">Kaikki</option></select>
+            </div>
+            <div class="suodatin-group" style="display:flex;align-items:flex-end;">
+                <button class="nollaa-btn" onclick="nollaaFilters()">Nollaa</button>
+            </div>
+        </div>
+        <div class="tulos-laskuri" id="tulos-laskuri"></div>
+    </div>
+
+    <!-- Kuvaajat -->
+    <div class="grid-2">
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Sopimukset päättymisvuosittain</div>
+            <div class="kortti-alateksti">Suodatettu näkymä · väri = operaattori</div>
+            <div class="toggle-rivi">
+                <span class="toggle-label">Näytä:</span>
+                <div class="toggle-btn">
+                    <button class="active" id="btn-lkm" onclick="vaihdaToggle('lkm')">Lukumäärä</button>
+                    <button id="btn-eur" onclick="vaihdaToggle('eur')">Euroarvo</button>
+                    <button id="btn-bussi" onclick="vaihdaToggle('bussi')">Busseja</button>
+                </div>
+            </div>
+            <canvas id="chart-loppu"></canvas>
+        </div>
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Indeksijakauma</div>
+            <div class="kortti-alateksti">Diesel vs. sähköbussi-indeksi · suodatettu näkymä</div>
+            <div class="toggle-rivi">
+                <span class="toggle-label">Näytä:</span>
+                <div class="toggle-btn">
+                    <button class="active" id="btn-ind-eur" onclick="vaihdaIndeksiToggle('eur')">Euroarvo</button>
+                    <button id="btn-ind-bussi" onclick="vaihdaIndeksiToggle('bussi')">Busseja</button>
+                </div>
+            </div>
+            <canvas id="chart-indeksi"></canvas>
+        </div>
+    </div>
+
+    <!-- Sähköosuus -->
+    <div class="kortti">
+        <div class="kortti-otsikko">Käyttövoimajakauma</div>
+        <div class="kortti-alateksti">Diesel vs. sähkö · suodatettu näkymä</div>
+        <canvas id="chart-kayttov" style="max-height:180px;"></canvas>
+    </div>
+
+    <!-- Taulukko -->
+    <div class="kortti">
+        <div class="kortti-otsikko">Sopimukset – <span id="taulukko-maara"></span></div>
+        <div class="kortti-alateksti">Klikkaa sarakeotsikkoa lajitellaksesi · järjestetty oletuksena päättymisvuoden mukaan</div>
+        <div class="taulukko-wrap">
+            <table id="sopimus-taulukko">
+                <thead>
+                    <tr>
+                        <th onclick="lajittele('id')">Kohde</th>
+                        <th onclick="lajittele('kierros')">Kierros</th>
+                        <th onclick="lajittele('operaattori')">Operaattori</th>
+                        <th onclick="lajittele('alku_vuosi')">Alku</th>
+                        <th onclick="lajittele('loppu_vuosi')">Loppu</th>
+                        <th onclick="lajittele('optiovuosia_jaljella')">Optiot jäljellä</th>
+                        <th onclick="lajittele('alue')">Liikennöintialue</th>
+                        <th>Linjat</th>
+                        <th onclick="lajittele('arvo_eur')">€/v</th>
+                        <th onclick="lajittele('indeksi')">Indeksi</th>
+                        <th onclick="lajittele('busseja')">Busseja</th>
+                        <th onclick="lajittele('sahko')">Sähkö</th>
+                        <th onclick="lajittele('mkm')">Mkm/v</th>
+                        <th onclick="lajittele('runkolinja')">Runkolinja</th>
+                    </tr>
+                </thead>
+                <tbody id="taulukko-body"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<script>
+const D = SOPIMUKSET;
+const OPER_VARIT = D.oper_varit;
+
+let toggle = 'lkm';
+let indToggle = 'eur';
+let lajSarake = 'loppu_vuosi';
+let lajNouseva = true;
+let chartLoppu, chartIndeksi, chartKayttov;
+
+// Täytetään dropdownit
+const selOper = document.getElementById('f-oper');
+D.operaattorit.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; selOper.appendChild(opt); });
+const selAlue = document.getElementById('f-alue');
+D.alueet.forEach(a => { const opt = document.createElement('option'); opt.value = a; opt.textContent = a; selAlue.appendChild(opt); });
+const selLoppu = document.getElementById('f-loppu');
+D.vuodet_loppu.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; selLoppu.appendChild(opt); });
+const selAlku = document.getElementById('f-alku');
+D.vuodet_alku.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; selAlku.appendChild(opt); });
+
+function getFiltered() {
+    const fOper = document.getElementById('f-oper').value;
+    const fAlue = document.getElementById('f-alue').value;
+    const fIndeksi = document.getElementById('f-indeksi').value;
+    const fRunko = document.getElementById('f-runko').value;
+    const fLoppu = document.getElementById('f-loppu').value;
+    const fAlku = document.getElementById('f-alku').value;
+    return D.sopimukset.filter(s =>
+        (!fOper || s.operaattori === fOper) &&
+        (!fAlue || s.alueet.includes(fAlue)) &&
+        (!fIndeksi || s.indeksi === fIndeksi) &&
+        (!fRunko || s.runkolinja === fRunko) &&
+        (!fLoppu || s.loppu_vuosi == fLoppu) &&
+        (!fAlku || s.alku_vuosi == fAlku)
+    );
+}
+
+function nollaaFilters() {
+    ['f-oper','f-alue','f-indeksi','f-runko','f-loppu','f-alku'].forEach(id => document.getElementById(id).value = '');
+    paivita();
+}
+
+function vaihdaToggle(t) {
+    toggle = t;
+    ['lkm','eur','bussi'].forEach(x => document.getElementById('btn-'+x).classList.toggle('active', x === t));
+    paivitaChartLoppu(getFiltered());
+}
+
+function vaihdaIndeksiToggle(t) {
+    indToggle = t;
+    ['eur','bussi'].forEach(x => document.getElementById('btn-ind-'+x).classList.toggle('active', x === t));
+    paivitaChartIndeksi(getFiltered());
+}
+
+function lajittele(sarake) {
+    if (lajSarake === sarake) lajNouseva = !lajNouseva;
+    else { lajSarake = sarake; lajNouseva = true; }
+    paivita();
+}
+
+function eurFmt(v) { return (v/1e6).toFixed(1) + ' M€'; }
+
+// Hero kortit (koko data)
+function paivitaHero(filtered) {
+    const yht_bussi = filtered.reduce((s,x) => s + x.busseja, 0);
+    const yht_sahko = filtered.reduce((s,x) => s + x.sahko, 0);
+    const yht_eur = filtered.reduce((s,x) => s + x.arvo_eur, 0);
+    const sahko_pct = yht_bussi > 0 ? Math.round(yht_sahko/yht_bussi*100) : 0;
+    document.getElementById('hero-grid').innerHTML = `
+        <div class="hero-kortti"><div class="hero-label">Sopimuksia</div><div class="hero-arvo">${filtered.length}</div><div class="hero-sub">suodatettu näkymä</div></div>
+        <div class="hero-kortti"><div class="hero-label">Busseja</div><div class="hero-arvo">${yht_bussi}</div><div class="hero-sub">suodatettu näkymä</div></div>
+        <div class="hero-kortti"><div class="hero-label">Sähköbusseja</div><div class="hero-arvo vihrea">${sahko_pct} %</div><div class="hero-sub">${yht_sahko} kpl</div></div>
+        <div class="hero-kortti"><div class="hero-label">Sopimusarvo yhteensä</div><div class="hero-arvo">${(yht_eur/1e6).toFixed(0)} M€</div><div class="hero-sub">kilpailutushetken hintatasossa/v</div></div>`;
+}
+
+function paivitaChartLoppu(filtered) {
+    if (chartLoppu) chartLoppu.destroy();
+    const vuodet = [...new Set(filtered.map(s => s.loppu_vuosi).filter(Boolean))].sort();
+    const operaattorit = [...new Set(filtered.map(s => s.operaattori))].sort();
+    const yLabel = toggle === 'lkm' ? 'kpl' : toggle === 'eur' ? 'M€/v' : 'bussia';
+
+    chartLoppu = new Chart(document.getElementById('chart-loppu'), {
+        type: 'bar',
+        data: {
+            labels: vuodet,
+            datasets: operaattorit.map(op => ({
+                label: op,
+                data: vuodet.map(v => {
+                    const ryh = filtered.filter(s => s.loppu_vuosi === v && s.operaattori === op);
+                    if (toggle === 'lkm') return ryh.length;
+                    if (toggle === 'eur') return +(ryh.reduce((s,x) => s+x.arvo_eur,0)/1e6).toFixed(2);
+                    return ryh.reduce((s,x) => s+x.busseja, 0);
+                }),
+                backgroundColor: OPER_VARIT[op] || '#94a3b8',
+                borderRadius: 3,
+            }))
+        },
+        options: {
+            responsive: true, plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, boxWidth: 12 } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} ${yLabel}` } }
+            },
+            scales: {
+                x: { stacked: true, ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } },
+                y: { stacked: true, ticks: { color: '#6b8caa', font: { size: 10 }, callback: v => v + ' ' + yLabel }, grid: { color: 'rgba(0,113,188,0.08)' } }
+            }
+        }
+    });
+}
+
+function paivitaChartIndeksi(filtered) {
+    if (chartIndeksi) chartIndeksi.destroy();
+    const diesel = filtered.filter(s => s.indeksi === 'diesel');
+    const sahko = filtered.filter(s => s.indeksi === 'sähkö');
+    const getDiesel = () => indToggle === 'eur' ? +(diesel.reduce((s,x)=>s+x.arvo_eur,0)/1e6).toFixed(1) : diesel.reduce((s,x)=>s+x.busseja,0);
+    const getSahko = () => indToggle === 'eur' ? +(sahko.reduce((s,x)=>s+x.arvo_eur,0)/1e6).toFixed(1) : sahko.reduce((s,x)=>s+x.busseja,0);
+    const yLabel = indToggle === 'eur' ? 'M€/v' : 'bussia';
+
+    chartIndeksi = new Chart(document.getElementById('chart-indeksi'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Dieselindeksi', 'Sähköbussi-indeksi'],
+            datasets: [{ data: [getDiesel(), getSahko()], backgroundColor: ['#94a3b8','#16a34a'], borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+                tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} ${yLabel}` } }
+            }
+        }
+    });
+}
+
+function paivitaChartKayttov(filtered) {
+    if (chartKayttov) chartKayttov.destroy();
+    const yht_diesel = filtered.reduce((s,x) => s+x.diesel, 0);
+    const yht_sahko = filtered.reduce((s,x) => s+x.sahko, 0);
+    chartKayttov = new Chart(document.getElementById('chart-kayttov'), {
+        type: 'bar',
+        data: {
+            labels: ['Suodatettu näkymä'],
+            datasets: [
+                { label: 'Diesel', data: [yht_diesel], backgroundColor: '#94a3b8', borderRadius: 4 },
+                { label: 'Sähkö', data: [yht_sahko], backgroundColor: '#16a34a', borderRadius: 4 },
+            ]
+        },
+        options: {
+            indexAxis: 'y', responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12, boxWidth: 12 } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x} bussia` } }
+            },
+            scales: {
+                x: { stacked: true, ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { color: 'rgba(0,113,188,0.08)' } },
+                y: { stacked: true, ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+function paivitaTaulukko(filtered) {
+    const lajitelty = [...filtered].sort((a, b) => {
+        let av = a[lajSarake], bv = b[lajSarake];
+        if (av === null || av === undefined) av = '';
+        if (bv === null || bv === undefined) bv = '';
+        return lajNouseva ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+    document.getElementById('taulukko-maara').textContent = `${lajitelty.length} sopimusta`;
+    const tbody = document.getElementById('taulukko-body');
+    tbody.innerHTML = lajitelty.map(s => {
+        const vari = OPER_VARIT[s.operaattori] || '#94a3b8';
+        const ind_badge = s.indeksi === 'sähkö' ? 'badge-sahko' : 'badge-diesel';
+        const runko_badge = s.runkolinja === 'kyllä' ? '<span class="badge badge-runko">kyllä</span>' :
+                            s.runkolinja === 'osittain' ? '<span class="badge badge-osittain">osittain</span>' : 'ei';
+        return `<tr>
+            <td style="font-family:'DM Mono',monospace;font-weight:600">${s.id}</td>
+            <td>${s.kierros}</td>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${vari};margin-right:6px;"></span>${s.operaattori}</td>
+            <td>${s.alku}</td>
+            <td style="font-weight:600">${s.loppu}</td>
+            <td style="text-align:center">${s.optiovuosia_jaljella > 0 ? s.optiovuosia_jaljella : '–'}</td>
+            <td>${s.alue}</td>
+            <td style="color:#6b8caa;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis">${s.linjat}</td>
+            <td style="font-family:'DM Mono',monospace;text-align:right">${(s.arvo_eur/1e6).toFixed(2)} M€</td>
+            <td><span class="badge ${ind_badge}">${s.indeksi}</span></td>
+            <td style="text-align:center">${s.busseja}</td>
+            <td style="text-align:center;color:#16a34a;font-weight:600">${s.sahko}</td>
+            <td style="text-align:right;font-family:'DM Mono',monospace">${s.mkm.toFixed(2)}</td>
+            <td>${runko_badge}</td>
+        </tr>`;
+    }).join('');
+}
+
+function paivita() {
+    const filtered = getFiltered();
+    const yht = filtered.length;
+    const yht_eur = filtered.reduce((s,x) => s+x.arvo_eur, 0);
+    const yht_bussi = filtered.reduce((s,x) => s+x.busseja, 0);
+    document.getElementById('tulos-laskuri').innerHTML =
+        `<strong>${yht}</strong> sopimusta · <strong>${(yht_eur/1e6).toFixed(1)} M€/v</strong> · <strong>${yht_bussi}</strong> bussia`;
+    paivitaHero(filtered);
+    paivitaChartLoppu(filtered);
+    paivitaChartIndeksi(filtered);
+    paivitaChartKayttov(filtered);
+    paivitaTaulukko(filtered);
+}
+
+paivita();
+</script>
+</body>
+</html>
