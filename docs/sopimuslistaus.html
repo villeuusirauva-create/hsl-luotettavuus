@@ -222,7 +222,7 @@ D.vuodet_loppu.forEach(v => { const opt = document.createElement('option'); opt.
 const selAlku = document.getElementById('f-alku');
 D.vuodet_alku.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; selAlku.appendChild(opt); });
 
-function getFiltered() {
+function getFiltered(sisallyTulevat = false) {
     const fOper = document.getElementById('f-oper').value;
     const fAlue = document.getElementById('f-alue').value;
     const fIndeksi = document.getElementById('f-indeksi').value;
@@ -230,6 +230,7 @@ function getFiltered() {
     const fLoppu = document.getElementById('f-loppu').value;
     const fAlku = document.getElementById('f-alku').value;
     return D.sopimukset.filter(s =>
+        (sisallyTulevat || s.alku_vuosi <= 2026) &&
         (!fOper || s.operaattori === fOper) &&
         (!fAlue || s.alueet.includes(fAlue)) &&
         (!fIndeksi || s.indeksi === fIndeksi) &&
@@ -407,7 +408,7 @@ function paivita() {
     paivitaChartLoppu(filtered);
     paivitaChartIndeksi(filtered);
     paivitaChartKayttov(filtered);
-    paivitaTaulukko(filtered);
+    paivitaTaulukko(getFiltered(true));
 }
 
 paivita();
