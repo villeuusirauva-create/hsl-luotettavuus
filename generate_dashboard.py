@@ -1542,6 +1542,7 @@ def main():
     print(f"  ✓ Säävaikutusanalyysi laskettu")
     linjat_kooste = laske_linjat_kooste()
     print(f"  ✓ Linjakohtainen luotettavuus laskettu")
+    linjat_kooste_json = json.dumps(linjat_kooste, ensure_ascii=False)
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
     html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika, saavaikutus, linjat_kooste)
