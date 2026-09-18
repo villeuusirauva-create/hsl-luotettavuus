@@ -100,7 +100,7 @@
             <div class="kortti-otsikko">snt / paikka-km</div>
             <div class="kortti-alateksti">
                 Hinta per matkustajapaikan kilometri<br>
-                <span style="color:#94a3b8">2010–2016 haaleana: laskentatapa muuttunut 2016 jälkeen</span>
+                <span style="color:#94a3b8">2017 alkaen (laskentatapa muuttunut)</span>
             </div>
             <canvas id="chart2"></canvas>
         </div>
@@ -110,7 +110,7 @@
             <div class="kortti-otsikko">eur / matkustaja-km</div>
             <div class="kortti-alateksti">
                 Hinta per matkustajan kulkema kilometri<br>
-                <span style="color:#94a3b8">2010–2017 haaleana: laskentatapa muuttunut 2017 jälkeen</span>
+                <span style="color:#94a3b8">2018 alkaen (laskentatapa muuttunut)</span>
             </div>
             <canvas id="chart3"></canvas>
         </div>
@@ -272,22 +272,24 @@ new Chart(document.getElementById('chart1'), {
     options: luoOptions('€/linja-km'),
 });
 
-// 2. snt/paikka-km – haaleana 2010-2016 (indeksit 0-6)
+// 2. snt/paikka-km – 2017 alkaen
 new Chart(document.getElementById('chart2'), {
     type: 'line',
     data: {
-        labels: VUODET,
-        datasets: luoDatasetit('paikka', 5, ['raw_paikka','die_paikka','sah_paikka','yh_paikka'])
+        labels: VUODET.slice(7),
+        datasets: luoDatasetit('paikka', null, ['raw_paikka','die_paikka','sah_paikka','yh_paikka'])
+            .map(ds => ({ ...ds, data: ds.data.slice(7), segment: undefined }))
     },
     options: luoOptions('snt/paikka-km'),
 });
 
-// 3. eur/matkustaja-km – haaleana 2010-2017 (indeksit 0-7)
+// 3. eur/matkustaja-km – 2018 alkaen
 new Chart(document.getElementById('chart3'), {
     type: 'line',
     data: {
-        labels: VUODET,
-        datasets: luoDatasetit('matk', 6, ['raw_matk','die_matk','sah_matk','yh_matk'])
+        labels: VUODET.slice(8),
+        datasets: luoDatasetit('matk', null, ['raw_matk','die_matk','sah_matk','yh_matk'])
+            .map(ds => ({ ...ds, data: ds.data.slice(8), segment: undefined }))
     },
     options: luoOptions('€/matk-km'),
 });
