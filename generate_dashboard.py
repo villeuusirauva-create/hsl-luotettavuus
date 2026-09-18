@@ -406,8 +406,8 @@ def laske_saavaikutus(trendi_df):
 
 def laske_linjat_kooste(tuloskansio="tulokset"):
     """Laskee linjakohtaisen luotettavuuden eri ajanjaksoille linjat_*.csv-tiedostoista."""
-    import glob, os
-    from datetime import date
+    import glob, os, re
+    from datetime import date, datetime, timedelta
 
     SUODATETUT = {"158","159","112N","531","533","146N","147N","164","165N","542","544","713","719","839"}
     MIN_LAHDOT = 200
