@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Linjakohtainen luotettavuus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="linjat_data.js"></script>
+    <style>
+        :root {
+            --hsl-blue: #0071bc; --hsl-light: #e8f4fd; --hsl-dark: #1e3a5f;
+            --bg: #f0f6fc; --card: #ffffff; --border: #c8dff0;
+            --text: #1e3a5f; --muted: #6b8caa; --green: #16a34a;
+            --orange: #ff6600; --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        header { background: var(--hsl-dark); color: white; border-bottom: 4px solid var(--hsl-blue); }
+        .header-inner { max-width: 1400px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+        .header-title { display: flex; align-items: center; gap: 16px; }
+        h1 { font-size: 22px; font-weight: 700; }
+        .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+        main { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+        @media (max-width: 900px) { main { padding: 16px; } }
+        .nav-linkki { display: inline-flex; align-items: center; gap: 8px; color: var(--hsl-blue); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
+        .nav-linkki:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .hero-kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px 20px; box-shadow: 0 2px 6px rgba(0,113,188,0.06); }
+        .hero-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+        .hero-arvo { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--hsl-dark); }
+        .hero-arvo.vihrea { color: var(--green); }
+        .hero-arvo.punainen { color: #dc2626; }
+        .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        /* Suodattimet */
+        .suodatin-paneeli { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px; }
+        .suodatin-otsikko { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px; }
+        .suodatin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; align-items: end; }
+        .suodatin-group label { font-size: 11px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        select, input[type="text"] { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--text); background: white; }
+        select:focus, input:focus { outline: none; border-color: var(--hsl-blue); }
+        .nollaa-btn { padding: 7px 16px; background: var(--hsl-dark); color: white; border: none; border-radius: 7px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; }
+        .nollaa-btn:hover { background: var(--hsl-blue); }
+        .tulos-laskuri { font-size: 13px; color: var(--muted); margin-top: 10px; }
+        .tulos-laskuri strong { color: var(--text); }
+
+        /* Jaksonvalitsin */
+        .jakso-rivi { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+        .jakso-nappi { padding: 6px 16px; border-radius: 20px; border: 2px solid var(--border); background: white; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Figtree', sans-serif; }
+        .jakso-nappi.active { background: var(--hsl-dark); color: white; border-color: var(--hsl-dark); }
+
+        /* Kortti */
+        .kortti { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; box-shadow: 0 2px 8px rgba(0,113,188,0.06); margin-bottom: 20px; }
+        .kortti-otsikko { font-size: 14px; font-weight: 700; color: var(--hsl-dark); margin-bottom: 4px; }
+        .kortti-alateksti { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+        /* Taulukko */
+        .taulukko-wrap { overflow-x: auto; max-height: 640px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
+        th { background: var(--hsl-dark); color: white; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; position: sticky; top: 0; cursor: pointer; white-space: nowrap; user-select: none; }
+        th:hover { background: var(--hsl-blue); }
+        th.sorted-asc::after { content: ' ↑'; }
+        th.sorted-desc::after { content: ' ↓'; }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: var(--hsl-light); }
+
+        /* Linja-badge */
+        .linja-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 3px 8px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: white; }
+        .linja-runko { background: var(--orange); }
+        .linja-normaali { background: var(--hsl-blue); }
+
+        /* Luotettavuus-palkki */
+        .luot-solu { display: flex; align-items: center; gap: 8px; }
+        .luot-bar-bg { flex: 1; height: 10px; background: #e8f4fd; border-radius: 3px; overflow: hidden; min-width: 80px; }
+        .luot-bar-fill { height: 100%; border-radius: 3px; }
+        .luot-num { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; width: 52px; text-align: right; }
+
+        .info-teksti { background: var(--hsl-light); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+        .info-teksti strong { color: var(--text); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="header-title">
+            <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+            <img src="images/Bussi.svg" alt="Bussi" style="height:40px;">
+            <div>
+                <h1>Linjakohtainen luotettavuus</h1>
+                <div class="header-sub" id="header-sub">HFP-pohjainen analyysi · 2026</div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="index.html" class="nav-linkki">← Takaisin etusivulle</a>
+
+    <!-- Hero -->
+    <div class="hero-grid" id="hero-grid"></div>
+
+    <!-- Jaksonvalitsin -->
+    <div class="kortti">
+        <div class="kortti-otsikko">Aikavälin valinta</div>
+        <div class="kortti-alateksti">Valitse tarkastelutaso ja aikaväli</div>
+
+        <div class="jakso-rivi">
+            <button class="jakso-nappi active" onclick="vaihdaTaso('kaudet', this)">Liikennöintikausi</button>
+            <button class="jakso-nappi" onclick="vaihdaTaso('vuodenajat', this)">Vuodenaika</button>
+            <button class="jakso-nappi" onclick="vaihdaTaso('kuukaudet', this)">Kuukausi</button>
+        </div>
+
+        <div class="suodatin-group" style="max-width:400px;">
+            <label>Aikaväli</label>
+            <select id="jakso-select" onchange="paivita()"></select>
+        </div>
+    </div>
+
+    <!-- Suodattimet -->
+    <div class="suodatin-paneeli">
+        <div class="suodatin-otsikko">Suodata</div>
+        <div class="suodatin-grid">
+            <div class="suodatin-group">
+                <label>Hae linjaa</label>
+                <input type="text" id="f-haku" placeholder="esim. 37" oninput="paivita()">
+            </div>
+            <div class="suodatin-group">
+                <label>Operaattori</label>
+                <select id="f-oper" onchange="paivita()"><option value="">Kaikki</option></select>
+            </div>
+            <div class="suodatin-group">
+                <label>Linjatyyppi</label>
+                <select id="f-tyyppi" onchange="paivita()">
+                    <option value="">Kaikki</option>
+                    <option value="runko">Runkolinjat</option>
+                    <option value="normaali">Muut linjat</option>
+                </select>
+            </div>
+            <div class="suodatin-group">
+                <label>Luotettavuus enintään</label>
+                <select id="f-luot" onchange="paivita()">
+                    <option value="">Kaikki</option>
+                    <option value="99">alle 99 %</option>
+                    <option value="98">alle 98 %</option>
+                    <option value="97">alle 97 %</option>
+                    <option value="95">alle 95 %</option>
+                </select>
+            </div>
+            <div class="suodatin-group">
+                <button class="nollaa-btn" onclick="nollaaFilters()">Nollaa</button>
+            </div>
+        </div>
+        <div class="tulos-laskuri" id="tulos-laskuri"></div>
+    </div>
+
+    <!-- Taulukko -->
+    <div class="kortti">
+        <div class="kortti-otsikko">Linjat järjestyksessä</div>
+        <div class="kortti-alateksti">Oletuksena heikoimmat ensin · klikkaa sarakeotsikkoa lajitellaksesi</div>
+        <div class="taulukko-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="lajittele('linja')">Linja</th>
+                        <th onclick="lajittele('operaattori')">Operaattori</th>
+                        <th onclick="lajittele('luotettavuus')">Luotettavuus</th>
+                        <th onclick="lajittele('suunnitellut')">Suunnitellut</th>
+                        <th onclick="lajittele('ajettu')">Ajettu</th>
+                        <th onclick="lajittele('ajamatta')">Ajamatta</th>
+                    </tr>
+                </thead>
+                <tbody id="taulukko-body"></tbody>
+            </table>
+        </div>
+        <div class="info-teksti">
+            <strong>Huomio:</strong> Data perustuu HSL:n HFP-järjestelmään (ajoneuvojen paikannusdata).
+            Linja lasketaan ajetuksi jos HFP-merkintä löytyy. Laiteviat voivat aiheuttaa
+            vääriä "ajamatta"-merkintöjä. Mukana vain linjat joilla vähintään 200 suunniteltua
+            lähtöä tarkastelujaksolla. <strong style="color:var(--orange)">■ Oranssi</strong> = runkolinja ·
+            <strong style="color:var(--hsl-blue)">■ Sininen</strong> = muu linja.
+            Data alkaa 1.3.2026.
+        </div>
+    </div>
+</main>
+<script>
+const D = LINJAT_KOOSTE;
+
+const RUNKOLINJAT = new Set(["20","30","40","200","300","400","500","510","520","530","560","570","600"]);
+
+const OPER_VARIT = {
+    "Nobina Finland":   "#00a650",
+    "Koiviston Auto":  "#ff6600",
+    "Pohjolan Liikenne": "#7b2d8b",
+    "Tammelundin Liikenne": "#0071bc",
+};
+
+let taso = 'kaudet';
+let lajSarake = 'luotettavuus';
+let lajNouseva = true;
+
+// ── JAKSONVALITSIN ────────────────────────────────────────────
+function vaihdaTaso(uusiTaso, nappi) {
+    taso = uusiTaso;
+    document.querySelectorAll('.jakso-nappi').forEach(n => n.classList.remove('active'));
+    nappi.classList.add('active');
+    paivitaJaksoSelect();
+    paivita();
+}
+
+function paivitaJaksoSelect() {
+    const sel = document.getElementById('jakso-select');
+    sel.innerHTML = '';
+    if (taso === 'kaudet') {
+        Object.keys(D.kaudet).forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.textContent = k;
+            sel.appendChild(opt);
+        });
+    } else if (taso === 'vuodenajat') {
+        Object.keys(D.vuodenajat).forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.textContent = k;
+            sel.appendChild(opt);
+        });
+    } else {
+        Object.keys(D.kuukaudet).sort().reverse().forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.textContent = D.kuukaudet[k].nimi;
+            sel.appendChild(opt);
+        });
+    }
+}
+
+function haeLinjat() {
+    const jakso = document.getElementById('jakso-select').value;
+    if (!jakso) return [];
+    if (taso === 'kaudet') return D.kaudet[jakso] || [];
+    if (taso === 'vuodenajat') return D.vuodenajat[jakso] || [];
+    return D.kuukaudet[jakso]?.linjat || [];
+}
+
+// ── SUODATTIMET ───────────────────────────────────────────────
+function getFiltered() {
+    const haku = document.getElementById('f-haku').value.toLowerCase();
+    const fOper = document.getElementById('f-oper').value;
+    const fTyyppi = document.getElementById('f-tyyppi').value;
+    const fLuot = document.getElementById('f-luot').value;
+    return haeLinjat().filter(r =>
+        (!haku || r.linja.toLowerCase().includes(haku)) &&
+        (!fOper || r.operaattori === fOper) &&
+        (!fTyyppi || (fTyyppi === 'runko' ? RUNKOLINJAT.has(r.linja) : !RUNKOLINJAT.has(r.linja))) &&
+        (!fLuot || r.luotettavuus < parseFloat(fLuot))
+    );
+}
+
+function nollaaFilters() {
+    document.getElementById('f-haku').value = '';
+    document.getElementById('f-oper').value = '';
+    document.getElementById('f-tyyppi').value = '';
+    document.getElementById('f-luot').value = '';
+    paivita();
+}
+
+// ── LAJITTELU ─────────────────────────────────────────────────
+function lajittele(sarake) {
+    if (lajSarake === sarake) lajNouseva = !lajNouseva;
+    else { lajSarake = sarake; lajNouseva = sarake !== 'luotettavuus'; }
+    document.querySelectorAll('th').forEach(th => {
+        th.classList.remove('sorted-asc','sorted-desc');
+        if (th.textContent.trim().toLowerCase().startsWith(sarake.toLowerCase().substring(0,4))) {
+            th.classList.add(lajNouseva ? 'sorted-asc' : 'sorted-desc');
+        }
+    });
+    paivita();
+}
+
+// ── LUOTETTAVUUS VÄRI ─────────────────────────────────────────
+function luotVari(pct) {
+    if (pct >= 99) return '#16a34a';
+    if (pct >= 98) return '#0071bc';
+    if (pct >= 96) return '#f59e0b';
+    return '#dc2626';
+}
+
+// ── HERO ──────────────────────────────────────────────────────
+function paivitaHero(filtered) {
+    const n = filtered.length;
+    if (n === 0) { document.getElementById('hero-grid').innerHTML = ''; return; }
+    const ka = filtered.reduce((s,r) => s+r.luotettavuus, 0) / n;
+    const heikoin = filtered[filtered.length-1];
+    const paras = filtered[0].luotettavuus < filtered[filtered.length-1].luotettavuus
+        ? filtered[filtered.length-1] : filtered[0];
+    const heikkoja = filtered.filter(r => r.luotettavuus < 98).length;
+
+    // lajiteltu filtered: heikoimmat ensin (luotettavuus asc)
+    const sorted_asc = [...filtered].sort((a,b) => a.luotettavuus - b.luotettavuus);
+    const sorted_desc = [...filtered].sort((a,b) => b.luotettavuus - a.luotettavuus);
+
+    document.getElementById('hero-grid').innerHTML = `
+        <div class="hero-kortti">
+            <div class="hero-label">Linjoja yhteensä</div>
+            <div class="hero-arvo">${n}</div>
+            <div class="hero-sub">suodatettu näkymä</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Keskimääräinen luotettavuus</div>
+            <div class="hero-arvo" style="color:${luotVari(ka)}">${ka.toFixed(2)} %</div>
+            <div class="hero-sub">painottamaton keskiarvo</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Heikoin linja</div>
+            <div class="hero-arvo punainen">${sorted_asc[0]?.luotettavuus.toFixed(1)} %</div>
+            <div class="hero-sub">Linja ${sorted_asc[0]?.linja} · ${sorted_asc[0]?.operaattori}</div>
+        </div>
+        <div class="hero-kortti">
+            <div class="hero-label">Alle 98 % linjoja</div>
+            <div class="hero-arvo ${heikkoja > 0 ? 'punainen' : 'vihrea'}">${heikkoja}</div>
+            <div class="hero-sub">kpl suodatetuista linjoista</div>
+        </div>`;
+}
+
+// ── TAULUKKO ──────────────────────────────────────────────────
+function paivitaTaulukko(filtered) {
+    const lajitelty = [...filtered].sort((a,b) => {
+        const av = a[lajSarake] ?? (lajSarake === 'ajamatta' ? a.suunnitellut - a.ajettu : '');
+        const bv = b[lajSarake] ?? (lajSarake === 'ajamatta' ? b.suunnitellut - b.ajettu : '');
+        return lajNouseva ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+
+    document.getElementById('tulos-laskuri').innerHTML =
+        `<strong>${lajitelty.length}</strong> linjaa näkyvissä`;
+
+    const tbody = document.getElementById('taulukko-body');
+    tbody.innerHTML = lajitelty.map(r => {
+        const onRunko = RUNKOLINJAT.has(r.linja);
+        const operVari = OPER_VARIT[r.operaattori] || '#334155';
+        const vari = luotVari(r.luotettavuus);
+        const ajamatta = r.suunnitellut - r.ajettu;
+        return `<tr>
+            <td><span class="linja-badge ${onRunko ? 'linja-runko' : 'linja-normaali'}">${r.linja}</span></td>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${operVari};margin-right:6px;vertical-align:middle;"></span>${r.operaattori}</td>
+            <td>
+                <div class="luot-solu">
+                    <div class="luot-bar-bg">
+                        <div class="luot-bar-fill" style="width:${Math.max(0,r.luotettavuus-90)*10}%;background:${vari}"></div>
+                    </div>
+                    <div class="luot-num" style="color:${vari}">${r.luotettavuus.toFixed(2)} %</div>
+                </div>
+            </td>
+            <td style="text-align:right;font-family:'DM Mono',monospace">${r.suunnitellut.toLocaleString('fi-FI')}</td>
+            <td style="text-align:right;font-family:'DM Mono',monospace">${r.ajettu.toLocaleString('fi-FI')}</td>
+            <td style="text-align:right;font-family:'DM Mono',monospace;color:${ajamatta>0?'#dc2626':'#16a34a'}">${ajamatta}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ── OPERAATTORIT DROPDOWNIIN ──────────────────────────────────
+function paivitaOperDropdown(linjat) {
+    const operSel = document.getElementById('f-oper');
+    const nykyinen = operSel.value;
+    const operaattorit = [...new Set(linjat.map(r => r.operaattori))].sort();
+    operSel.innerHTML = '<option value="">Kaikki</option>';
+    operaattorit.forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op; opt.textContent = op;
+        if (op === nykyinen) opt.selected = true;
+        operSel.appendChild(opt);
+    });
+}
+
+// ── PÄÄPAIVITYS ───────────────────────────────────────────────
+function paivita() {
+    const kaikki = haeLinjat();
+    paivitaOperDropdown(kaikki);
+    const filtered = getFiltered();
+    paivitaHero(filtered);
+    paivitaTaulukko(filtered);
+
+    const jakso = document.getElementById('jakso-select').value;
+    document.getElementById('header-sub').textContent = `HFP-pohjainen analyysi · ${jakso}`;
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+paivitaJaksoSelect();
+paivita();
+</script>
+</body>
+</html>
