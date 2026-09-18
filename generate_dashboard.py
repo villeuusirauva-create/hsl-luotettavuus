@@ -404,6 +404,109 @@ def laske_saavaikutus(trendi_df):
         "paivia": len(paiva_data),
     }
 
+def laske_linjat_kooste(tuloskansio="tulokset"):
+    """Laskee linjakohtaisen luotettavuuden eri ajanjaksoille linjat_*.csv-tiedostoista."""
+    import glob, os
+    from datetime import date
+
+    SUODATETUT = {"158","159","112N","531","533","146N","147N","164","165N","542","544","713","719","839"}
+    MIN_LAHDOT = 200
+
+    # Liikennöintikaudet
+    KAUDET = {
+        "Talvi 2025–2026 (1.3.–14.6.2026)": (date(2026,3,1), date(2026,6,14)),
+        "Kesä 2026 (15.6.–9.8.2026)":        (date(2026,6,15), date(2026,8,9)),
+        "Talvi 2026–2027 (10.8.2026→)":       (date(2026,8,10), date(2027,6,30)),
+    }
+
+    # Vuodenajat
+    VUODENAJAT = {
+        "Kevät 2026 (1.3.–14.6.)":   (date(2026,3,1),  date(2026,6,14)),
+        "Kesä 2026 (15.6.–9.8.)":    (date(2026,6,15), date(2026,8,9)),
+        "Syksy 2026 (10.8.→)":       (date(2026,8,10), date(2027,3,31)),
+    }
+
+    # Kuukaudet 1.3.2026 alkaen
+    KUUKAUDET = {}
+    from datetime import timedelta
+    d = date(2026,3,1)
+    tana = date.today()
+    while d <= tana:
+        avain = d.strftime("%Y-%m")
+        nimi = d.strftime("%-m/%Y")
+        if avain not in KUUKAUDET:
+            # Kuukauden viimeinen päivä
+            if d.month == 12:
+                loppu = date(d.year+1, 1, 1) - timedelta(days=1)
+            else:
+                loppu = date(d.year, d.month+1, 1) - timedelta(days=1)
+            KUUKAUDET[avain] = {"nimi": nimi, "alku": d, "loppu": min(loppu, tana)}
+        d += timedelta(days=1)
+
+    # Ladataan kaikki linjat_*.csv tiedostot
+    tiedostot = sorted(glob.glob(os.path.join(tuloskansio, "linjat_*.csv")))
+    if not tiedostot:
+        return {}
+
+    paiva_data = {}  # {date: DataFrame}
+    for polku in tiedostot:
+        nimi = os.path.basename(polku)
+        m = re.match(r'linjat_(\d{4}-\d{2}-\d{2})\.csv', nimi)
+        if not m:
+            continue
+        p = datetime.strptime(m.group(1), "%Y-%m-%d").date()
+        if p < date(2026,3,1):
+            continue
+        try:
+            df = pd.read_csv(polku)
+            df = df[~df["linja"].astype(str).isin(SUODATETUT)]
+            paiva_data[p] = df
+        except Exception:
+            continue
+
+    def laske_jakso(alku, loppu):
+        """Yhdistää päivät ajanjaksolta ja laskee linjakohtaiset tulokset."""
+        kehykset = [df for p, df in paiva_data.items() if alku <= p <= loppu]
+        if not kehykset:
+            return []
+        yhdistetty = pd.concat(kehykset, ignore_index=True)
+        kooste = yhdistetty.groupby(["linja","operaattori"]).agg(
+            suunnitellut=("suunnitellut","sum"),
+            ajettu=("ajettu","sum")
+        ).reset_index()
+        kooste = kooste[kooste["suunnitellut"] >= MIN_LAHDOT]
+        kooste["luotettavuus"] = (kooste["ajettu"] / kooste["suunnitellut"] * 100).round(2)
+        kooste = kooste.sort_values("luotettavuus")
+        return [
+            {
+                "linja": str(r["linja"]),
+                "operaattori": str(r["operaattori"]),
+                "suunnitellut": int(r["suunnitellut"]),
+                "ajettu": int(r["ajettu"]),
+                "luotettavuus": float(r["luotettavuus"]),
+            }
+            for _, r in kooste.iterrows()
+        ]
+
+    tulos = {
+        "kaudet": {},
+        "vuodenajat": {},
+        "kuukaudet": {},
+    }
+
+    for nimi, (alku, loppu) in KAUDET.items():
+        tulos["kaudet"][nimi] = laske_jakso(alku, min(loppu, date.today()))
+
+    for nimi, (alku, loppu) in VUODENAJAT.items():
+        tulos["vuodenajat"][nimi] = laske_jakso(alku, min(loppu, date.today()))
+
+    for avain, meta in KUUKAUDET.items():
+        jakso = laske_jakso(meta["alku"], meta["loppu"])
+        if jakso:
+            tulos["kuukaudet"][avain] = {"nimi": meta["nimi"], "linjat": jakso}
+
+    return tulos
+
 def laske_kuukausihistoria(trendi_df):
     """Laskee operaattorikohtaisen kuukausihistorian kaikille operaattoreille."""
     if trendi_df.empty:
@@ -462,7 +565,7 @@ def laske_kuukausihistoria(trendi_df):
     return historia, jarjestetty
 
 
-def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}, vuodenaika={}, saavaikutus={}):
+def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viikonpaivat_oper={}, vuodenaika={}, saavaikutus={}, linjat_kooste={}):
     if trendi_df.empty:
         return "<p>Ei dataa saatavilla.</p>"
 
@@ -480,6 +583,8 @@ def generoi_html(trendi_df, reittinimet={}, viikonpaivat={}, kellonajat={}, viik
     viikonpaiva_arvot  = json.dumps(list(viikonpaivat.values()))
     vuodenaika_json = json.dumps(vuodenaika, ensure_ascii=False)
     saavaikutus_json = json.dumps(saavaikutus, ensure_ascii=False)
+
+    linjat_kooste_json = json.dumps(linjat_kooste, ensure_ascii=False)
     
     kellonaika_labels  = json.dumps(list(kellonajat.keys()))
     kellonaika_arvot   = json.dumps(list(kellonajat.values()))
@@ -1435,13 +1540,20 @@ def main():
     print(f"  ✓ Vuodenaikaluotettavuus laskettu")
     saavaikutus = laske_saavaikutus(trendi)
     print(f"  ✓ Säävaikutusanalyysi laskettu")
+    linjat_kooste = laske_linjat_kooste()
+    print(f"  ✓ Linjakohtainen luotettavuus laskettu")
     kellonajat = laske_kellonaika()
     print(f"  ✓ Kellonaikakeskiarvot laskettu")
-    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika, saavaikutus)
+    html = generoi_html(trendi, reittinimet, viikonpaivat, kellonajat, viikonpaivat_oper, vuodenaika, saavaikutus, linjat_kooste)
     polku = os.path.join(DOCS_KANSIO, "index.html")
     with open(polku, "w", encoding="utf-8") as f:
         f.write(html)
 
+    linjat_polku = os.path.join(DOCS_KANSIO, "linjat_data.js")
+    with open(linjat_polku, "w", encoding="utf-8") as f:
+        f.write(f"const LINJAT_KOOSTE = {linjat_kooste_json};\n")
+    print(f"✅ Linjakohtainen data: {linjat_polku}")
+    
     print(f"✅ Dashboard generoitu: {polku}")
     print(f"   {len(trendi)} päivää dataa")
 
