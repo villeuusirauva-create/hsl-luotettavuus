@@ -414,22 +414,19 @@ def laske_linjat_kooste(tuloskansio="tulokset"):
 
     # Liikennöintikaudet
     KAUDET = {
-        "Talvi 2025–2026 (1.3.–14.6.2026)": (date(2026,3,1), date(2026,6,14)),
-        "Kesä 2026 (15.6.–9.8.2026)":        (date(2026,6,15), date(2026,8,9)),
-        "Talvi 2026–2027 (10.8.2026→)":       (date(2026,8,10), date(2027,6,30)),
+        "Kesä 2026 (15.6.–9.8.2026)":   (date(2026,6,15), date(2026,8,9)),
+        "Talvi 2026–2027 (10.8.2026→)":  (date(2026,8,10), date(2027,6,30)),
     }
 
-    # Vuodenajat
     VUODENAJAT = {
-        "Kevät 2026 (1.3.–14.6.)":   (date(2026,3,1),  date(2026,6,14)),
-        "Kesä 2026 (15.6.–9.8.)":    (date(2026,6,15), date(2026,8,9)),
-        "Syksy 2026 (10.8.→)":       (date(2026,8,10), date(2027,3,31)),
+        "Kesä 2026 (15.6.–9.8.)":  (date(2026,6,15), date(2026,8,9)),
+        "Syksy 2026 (10.8.→)":     (date(2026,8,10), date(2027,3,31)),
     }
 
-    # Kuukaudet 1.3.2026 alkaen
+    # Kuukaudet 6/2026 alkaen
     KUUKAUDET = {}
     from datetime import timedelta
-    d = date(2026,3,1)
+    d = date(2026,6,1)
     tana = date.today()
     while d <= tana:
         avain = d.strftime("%Y-%m")
