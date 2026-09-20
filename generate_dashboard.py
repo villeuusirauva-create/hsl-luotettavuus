@@ -1564,6 +1564,8 @@ def main():
         f.write(f"const LINJAT_KOOSTE = {linjat_kooste_json};\n")
     print(f"✅ Linjakohtainen data: {linjat_polku}")
 
+    alkupaiva_data = trendi["paiva"].min().strftime("%-d.%-m.%Y") if not trendi.empty else ""
+    alkupaiva_kello = "19.6.2026"
     analyysit_data = {
         "alkupaiva_data": alkupaiva_data,
         "alkupaiva_kello": alkupaiva_kello,
