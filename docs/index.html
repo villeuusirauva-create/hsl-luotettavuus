@@ -237,7 +237,7 @@
                 <div class="header-sub">Päivittäinen suoritusdatan seuranta</div>
             </div>
         </div>
-        <div class="paivitys">Päivitetty 20.09.2026 13:59</div>
+        <div class="paivitys">Päivitetty 20.09.2026 14:08</div>
     </div>
 </header>
 
@@ -265,7 +265,7 @@
             <a href="linjat.html" style="display:flex;align-items:center;gap:8px;background:#1e3a5f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
                 <img src="images/Bussi.svg" alt="Linjat" style="width:24px;height:24px;"> Linjakohtainen luotettavuus
             </a>
-            <a href="#" style="display:flex;align-items:center;gap:8px;background:#6b8caa;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;opacity:0.6;cursor:default;">
+            <a href="luotettavuusanalyysit.html" style="display:flex;align-items:center;gap:8px;background:#1e3a5f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
                 <img src="images/Bussi.svg" alt="Analyysit" style="width:24px;height:24px;"> Luotettavuusanalyysit
             </a>
             <a href="tilastot.html" style="display:flex;align-items:center;gap:8px;background:#1e3a5f;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">
@@ -541,60 +541,12 @@
         </div>
     </div>
 
-    <!-- Viikonpäiväanalyysi -->
-    <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Luotettavuus viikonpäivittäin <span>12 kk keskiarvo</span> <i style="font-size:11px;font-weight:400;">alkaen 1.1.2026</i></div>
-        <canvas id="viikonpaivaChart"></canvas>
-    </div>
-
-    <!-- Kellonaika-analyysi -->
-    <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Luotettavuus kellonajan mukaan <span>kumulatiivinen keskiarvo</span> <i style="font-size:11px;font-weight:400;">alkaen 19.6.2026</i></div>
-        <canvas id="kellonaikaChart"></canvas>
-    </div>
-
-    <!-- Vuodenaikaluotettavuus -->
-    <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Luotettavuus vuodenajoittain <span>2026</span> <i style="font-size:11px;font-weight:400;">kertyy kauden edetessä</i></div>
-        <canvas id="vuodenaika-chart"></canvas>
-    </div> 
-
     <!-- Metodiikka -->
     <div class="metodiikka">
         <strong>Mittausmetodista:</strong> Luotettavuus perustuu HFP-dataan (High-Frequency Positioning).
         Vuoro katsotaan ajetuksi jos ajoneuvolta on saapunut HFP-signaali kyseisen vuoron aikana.
         Jos HFP-data puuttuu (esim. laiterikko), vuoro merkitään ajamattomaksi vaikka se olisi ajettu –
         tämä voi aiheuttaa pientä systemaattista aliarviointia todelliseen luotettavuuteen nähden.
-        Pienillä linjoilla (alle 10 vuoroa/kk) yksittäiset poikkeamat vaikuttavat prosenttiin merkittävästi.
-    </div>
-
-    <!-- Säävaikutusanalyysi -->
-    <div class="kortti" style="margin-bottom:24px;">
-        <div class="kortti-otsikko">Säävaikutus luotettavuuteen <span>talvi 2026</span> <i style="font-size:11px;font-weight:400;">1.1.–14.3.2026 · 72 päivää</i></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-            <div>
-                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Luotettavuus sääluokittain</div>
-                <canvas id="saa-pylvas-chart" style="max-height:220px;"></canvas>
-            </div>
-            <div>
-                <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Operaattorivertailu: normaali vs. erittäin kylmä</div>
-                <canvas id="saa-oper-chart" style="max-height:220px;"></canvas>
-            </div>
-        </div>
-        <div style="font-size:11px;color:#6b8caa;margin-bottom:8px;">Lämpötila vs. luotettavuus (jokainen piste = yksi päivä)</div>
-        <canvas id="saa-scatter-chart" style="max-height:300px;margin-bottom:16px;"></canvas>
-        <div style="background:#f0f6fc;border-radius:8px;padding:12px 16px;font-size:11px;color:#6b8caa;line-height:1.7;">
-            <strong style="color:#1e3a5f;">Analyysimenetelmä:</strong>
-            Säädata: Ilmatieteen laitos, Helsinki Kaisaniemi -mittausasema.
-            Luotettavuusdata: HSL:n HFP-data (toteutuneet lähdöt) verrattuna GTFS-aikatauluun –
-            sama päivittäinen data joka näkyy etusivun trendikuvaajassa.
-            Sääluokat: <strong style="color:#1e3a5f;">Normaali</strong> = alin lämpötila yli -10°C, ei lumisadetta ·
-            <strong style="color:#1e3a5f;">Lumisade</strong> = sademäärä ≥3 mm ja keskilämpötila ≤+2°C ·
-            <strong style="color:#1e3a5f;">Kylmä</strong> = alin lämpötila -10°C – -15°C ·
-            <strong style="color:#1e3a5f;">Erittäin kylmä</strong> = alin lämpötila alle -15°C.
-            Analyysi kattaa talvikauden 1.1.–14.3.2026 (72 päivää).
-            Lumisade- ja yhdistelmäluokkien otokset ovat pieniä – tulokset suuntaa antavia.
-        </div>
     </div>
     
 </main>
