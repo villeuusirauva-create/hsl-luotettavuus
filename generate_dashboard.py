@@ -1076,20 +1076,7 @@ const operVarit = {{
     "Tammelundin Liikenne": "#0071bc"
 }};
 const ctxVko = document.getElementById('viikonpaivaChart').getContext('2d');
-new Chart(ctxVko, {{
-    type: 'line',
-    data: {{
-        labels: {viikonpaiva_labels},
-        datasets: Object.entries(viikonpaivaOperData).map(([oper, data]) => ({{
-            label: oper,
-            data: Object.values(data),
-            borderColor: operVarit[oper] || '#999',
-            backgroundColor: 'transparent',
-            borderWidth: 2.5,
-            pointRadius: 3,
-            tension: 0.3,
-        }}))
-    }},
+
     options: {{
         responsive: true,
         plugins: {{
@@ -1124,17 +1111,7 @@ new Chart(ctxVko, {{
 
 // Kellonaika-analyysi
 const ctxKlo = document.getElementById('kellonaikaChart').getContext('2d');
-new Chart(ctxKlo, {{
-    type: 'bar',
-    data: {{
-        labels: {kellonaika_labels},
-        datasets: [{{
-            label: 'Luotettavuus %',
-            data: {kellonaika_arvot},
-            backgroundColor: '#00985f',
-            borderRadius: 6,
-        }}]
-    }},
+
     options: {{
         responsive: true,
         plugins: {{
@@ -1176,110 +1153,10 @@ const vuodenaika_varit = {{
     "Tammelundin Liikenne": "#0071bc",
 }};
 
-if (Object.keys(vuodenaika).length > 0) {{
-    const kaudet = Object.keys(vuodenaika);
-    const operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"];
-
-    const ctxVa = document.getElementById('vuodenaika-chart').getContext('2d');
-    new Chart(ctxVa, {{
-        type: 'bar',
-        data: {{
-            labels: kaudet.map(k => `${{k}} (${{vuodenaika[k].alku}}–${{vuodenaika[k].loppu}})`),
-            datasets: [
-                {{
-                    label: 'Koko HSL',
-                    data: kaudet.map(k => vuodenaika[k].koko_hsl || null),
-                    backgroundColor: '#93c5fd',
-                    borderRadius: 4,
-                }},
-                ...operaattorit
-                    .filter(op => kaudet.some(k => vuodenaika[k].operaattorit[op] !== undefined))
-                    .map(op => ({{
-                        label: op,
-                        data: kaudet.map(k => vuodenaika[k].operaattorit[op] || null),
-                        backgroundColor: vuodenaika_varit[op],
-                        borderRadius: 4,
-                    }}))
-            ]
-        }},
-        options: {{
-            responsive: true,
-            plugins: {{
-                legend: {{ display: true, position: 'bottom', labels: {{ font: {{ size: 11 }}, padding: 12, boxWidth: 16 }} }},
-                tooltip: {{
-                    callbacks: {{
-                        label: ctx => ctx.parsed.y !== null ? `${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(2)}} %` : null,
-                        afterBody: (items) => {{
-                            const k = kaudet[items[0].dataIndex];
-                            return [`Päiviä datassa: ${{vuodenaika[k].paivat}}`];
-                        }}
-                    }}
-                }}
-            }},
-            scales: {{
-                y: {{
-                    min: 97,
-                    max: 100,
-                    ticks: {{
-                        callback: v => v + ' %',
-                        color: '#6b8caa',
-                        font: {{ size: 11 }}
-                    }},
-                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
-                }},
-                x: {{
-                    ticks: {{ color: '#6b8caa', font: {{ size: 10 }} }},
-                    grid: {{ display: false }}
-                }}
-            }}
-        }}
-    }});
-}}
 
 // Säävaikutusanalyysi
 const saavaikutus = {saavaikutus_json};
 
-if (saavaikutus.pylvas && Object.keys(saavaikutus.pylvas).length > 0) {{
-    const saaLuokat = ["Normaali","Lumisade","Kylmä","Erittäin kylmä"];
-    const saaVarit = {{
-        "Normaali":       "#0071bc",
-        "Lumisade":       "#00a650",
-        "Kylmä":          "#f59e0b",
-        "Erittäin kylmä": "#dc2626",
-    }};
-
-    // Kuvaaja 1: Pylväs sääluokittain
-    const pylvasLabels = saaLuokat.filter(l => saavaikutus.pylvas[l]);
-    const ctxP = document.getElementById('saa-pylvas-chart').getContext('2d');
-    new Chart(ctxP, {{
-        type: 'bar',
-        data: {{
-            labels: pylvasLabels.map(l => `${{l}}\n(n=${{saavaikutus.pylvas[l].n}})`),
-            datasets: [{{
-                label: 'Luotettavuus %',
-                data: pylvasLabels.map(l => saavaikutus.pylvas[l].ka),
-                backgroundColor: pylvasLabels.map(l => saaVarit[l]),
-                borderRadius: 4,
-            }}]
-        }},
-        options: {{
-            responsive: true,
-            plugins: {{
-                legend: {{ display: false }},
-                tooltip: {{ callbacks: {{
-                    label: ctx => `Ka: ${{ctx.parsed.y.toFixed(2)}} % (min: ${{saavaikutus.pylvas[pylvasLabels[ctx.dataIndex]].min}} %)`
-                }}}}
-            }},
-            scales: {{
-                y: {{
-                    min: 95, max: 100,
-                    ticks: {{ callback: v => v + ' %', color: '#6b8caa', font: {{ size: 10 }} }},
-                    grid: {{ color: 'rgba(0,113,188,0.08)' }}
-                }},
-                x: {{ ticks: {{ color: '#6b8caa', font: {{ size: 9 }} }}, grid: {{ display: false }} }}
-            }}
-        }}
-    }});
 
     // Kuvaaja 2: Operaattorivertailu
     const operaattorit = ["Nobina Finland","Koiviston Auto","Pohjolan Liikenne","Tammelundin Liikenne"];
