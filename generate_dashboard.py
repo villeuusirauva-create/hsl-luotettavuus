@@ -1563,6 +1563,21 @@ def main():
     with open(linjat_polku, "w", encoding="utf-8") as f:
         f.write(f"const LINJAT_KOOSTE = {linjat_kooste_json};\n")
     print(f"✅ Linjakohtainen data: {linjat_polku}")
+
+    analyysit_data = {
+        "alkupaiva_data": alkupaiva_data,
+        "alkupaiva_kello": alkupaiva_kello,
+        "viikonpaiva_labels": list(viikonpaivat.keys()),
+        "viikonpaiva_oper": viikonpaivat_oper,
+        "kellonaika_labels": list(kellonajat.keys()),
+        "kellonaika_arvot": list(kellonajat.values()),
+        "vuodenaika": vuodenaika,
+        "saavaikutus": saavaikutus,
+    }
+    analyysit_polku = os.path.join(DOCS_KANSIO, "analyysit_data.js")
+    with open(analyysit_polku, "w", encoding="utf-8") as f:
+        f.write(f"const ANALYYSIT = {json.dumps(analyysit_data, ensure_ascii=False)};\n")
+    print(f"✅ Analyysitdata: {analyysit_polku}")
     
     print(f"✅ Dashboard generoitu: {polku}")
     print(f"   {len(trendi)} päivää dataa")
