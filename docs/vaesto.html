@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Väestösuhteutetut mittarit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="vaesto_data.js"></script>
+    <style>
+        :root { --hsl-blue:#0071bc;--hsl-light:#e8f4fd;--hsl-dark:#1e3a5f;--bg:#f0f6fc;--card:#fff;--border:#c8dff0;--text:#1e3a5f;--muted:#6b8caa;--radius:12px; }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+        header{background:var(--hsl-dark);color:white;border-bottom:4px solid var(--hsl-blue);}
+        .header-inner{max-width:1200px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;gap:16px;}
+        h1{font-size:22px;font-weight:700;}
+        .header-sub{font-size:13px;opacity:0.7;margin-top:2px;}
+        main{max-width:1200px;margin:0 auto;padding:28px 32px;}
+        @media(max-width:900px){main{padding:16px;}.grid-2{grid-template-columns:1fr!important;}}
+        .nav-linkki{display:inline-flex;align-items:center;gap:8px;color:var(--hsl-blue);text-decoration:none;font-size:14px;font-weight:500;margin-bottom:24px;}
+        .nav-linkki:hover{text-decoration:underline;}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+        .kortti{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:24px;box-shadow:0 2px 8px rgba(0,113,188,0.06);margin-bottom:24px;}
+        .kortti-otsikko{font-size:14px;font-weight:700;color:var(--hsl-dark);margin-bottom:4px;}
+        .kortti-alateksti{font-size:12px;color:var(--muted);margin-bottom:16px;}
+        canvas{max-height:260px;}
+        .info-teksti{background:var(--hsl-light);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7;}
+        .info-teksti strong{color:var(--text);}
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+        <div>
+            <h1>Väestösuhteutetut mittarit</h1>
+            <div class="header-sub">Koko HSL-alue · 2010–2025</div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <div class="grid-2">
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Nousua / asukas</div>
+            <div class="kortti-alateksti">Joukkoliikenteen käyttö suhteutettuna väestöön</div>
+            <canvas id="chart-nousua"></canvas>
+        </div>
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Matkustaja-km / asukas</div>
+            <div class="kortti-alateksti">Joukkoliikenteen suorite suhteutettuna väestöön</div>
+            <canvas id="chart-mkm"></canvas>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Operointikustannukset € / asukas</div>
+            <div class="kortti-alateksti">Joukkoliikenteen kustannukset suhteutettuna väestöön</div>
+            <canvas id="chart-kust"></canvas>
+        </div>
+        <div class="kortti" style="margin-bottom:0">
+            <div class="kortti-otsikko">Lipputulot € / asukas</div>
+            <div class="kortti-alateksti">Matkustajien maksuosuus suhteutettuna väestöön</div>
+            <canvas id="chart-tulot"></canvas>
+        </div>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Tulkinta:</strong> Väestösuhteutus ottaa huomioon HSL-alueen väestönkasvun ja alueen
+        laajenemisen. Laskeva trendi tarkoittaa että joukkoliikenteen käyttö tai rahoitus ei ole
+        kasvanut väestön tahdissa. <strong>Vuodet 2020–2021</strong> heijastavat COVID-19-pandemian
+        vaikutusta matkustajamääriin.
+    </div>
+</main>
+<script>
+const D = VAESTO;
+
+function luoKuvaaja(canvasId, data, label, vari, yLabel) {
+    new Chart(document.getElementById(canvasId), {
+        type: 'line',
+        data: {
+            labels: D.vuodet,
+            datasets: [{
+                label: label,
+                data: data,
+                borderColor: vari,
+                backgroundColor: vari + '18',
+                borderWidth: 2.5,
+                pointRadius: 3,
+                tension: 0.3,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.y?.toFixed(1)} ${yLabel}` } }
+            },
+            scales: {
+                y: {
+                    ticks: { callback: v => v + ' ' + yLabel, color: '#6b8caa', font: { size: 10 } },
+                    grid: { color: 'rgba(0,113,188,0.08)' }
+                },
+                x: { ticks: { color: '#6b8caa', font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+luoKuvaaja('chart-nousua', D.nousua_as,        'Nousua/asukas',    '#0071bc', '');
+luoKuvaaja('chart-mkm',    D.matkustaja_km_as,  'Matkustaja-km/as', '#00985f', 'km');
+luoKuvaaja('chart-kust',   D.kustannukset_as,   'Kustannukset €/as','#dc2626', '€');
+luoKuvaaja('chart-tulot',  D.tulot_as,          'Tulot €/as',       '#f59e0b', '€');
+</script>
+</body>
+</html>

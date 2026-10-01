@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL – Lippujen hintojen kehitys</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="liput_data.js"></script>
+    <style>
+        :root { --hsl-blue:#0071bc;--hsl-light:#e8f4fd;--hsl-dark:#1e3a5f;--bg:#f0f6fc;--card:#fff;--border:#c8dff0;--text:#1e3a5f;--muted:#6b8caa;--radius:12px; }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+        header{background:var(--hsl-dark);color:white;border-bottom:4px solid var(--hsl-blue);}
+        .header-inner{max-width:1200px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;gap:16px;}
+        h1{font-size:22px;font-weight:700;}
+        .header-sub{font-size:13px;opacity:0.7;margin-top:2px;}
+        main{max-width:1200px;margin:0 auto;padding:28px 32px;}
+        @media(max-width:900px){main{padding:16px;}}
+        .nav-linkki{display:inline-flex;align-items:center;gap:8px;color:var(--hsl-blue);text-decoration:none;font-size:14px;font-weight:500;margin-bottom:24px;}
+        .nav-linkki:hover{text-decoration:underline;}
+        .kortti{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:24px;box-shadow:0 2px 8px rgba(0,113,188,0.06);margin-bottom:24px;}
+        .kortti-otsikko{font-size:14px;font-weight:700;color:var(--hsl-dark);margin-bottom:4px;}
+        .kortti-alateksti{font-size:12px;color:var(--muted);margin-bottom:16px;}
+        canvas{max-height:300px;}
+        .info-teksti{background:var(--hsl-light);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7;}
+        .info-teksti strong{color:var(--text);}
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <img src="images/HSL.svg" alt="HSL" style="height:40px;">
+        <div>
+            <h1>Lippujen hintojen kehitys</h1>
+            <div class="header-sub">2019=100 · kertalippu ja kausilippu vyöhykkeittäin</div>
+        </div>
+    </div>
+</header>
+<main>
+    <a href="tilastot.html" class="nav-linkki">← Takaisin tilastoihin</a>
+
+    <div class="kortti">
+        <div class="kortti-otsikko">Kertalippu – aikuinen</div>
+        <div class="kortti-alateksti">2019=100 · vyöhykkeet AB, ABC, ABCD · indeksit katkoviivalla</div>
+        <canvas id="chart-kerta"></canvas>
+    </div>
+
+    <div class="kortti">
+        <div class="kortti-otsikko">Kausilippu – aikuinen 30 vrk</div>
+        <div class="kortti-alateksti">2019=100 · vyöhykkeet AB, ABC, ABCD · indeksit katkoviivalla</div>
+        <canvas id="chart-kausi"></canvas>
+    </div>
+
+    <div class="info-teksti">
+        <strong>Tulkinta:</strong> Arvot alle kuluttajahintaindeksin tarkoittavat, että lippujen hinnat ovat
+        nousseet yleistä hintatasoa hitaammin. Arvot alle ansiotasoindeksin tarkoittavat, että
+        joukkoliikenne on tullut edullisemmaksi suhteessa palkkoihin.
+        <strong>ABCD-vyöhykkeen</strong> muutos 2023 johtuu vyöhykeuudistuksesta.
+    </div>
+</main>
+<script>
+const D = LIPUT;
+
+function luoOptions() {
+    return {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 14 } },
+            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(1)}` } }
+        },
+        scales: {
+            y: { ticks: { callback: v => v, color: '#6b8caa', font: { size: 10 } }, grid: { color: 'rgba(0,113,188,0.08)' } },
+            x: { ticks: { color: '#6b8caa', font: { size: 11 } }, grid: { display: false } }
+        }
+    };
+}
+
+// Kertalippu
+new Chart(document.getElementById('chart-kerta'), {
+    type: 'line',
+    data: {
+        labels: D.vuodet,
+        datasets: [
+            { label: 'AB', data: D.kerta_ab, borderColor: '#0071bc', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'ABC', data: D.kerta_abc, borderColor: '#00985f', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'ABCD', data: D.kerta_abcd, borderColor: '#8c4799', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'Kuluttajahintaindeksi', data: D.khi, borderColor: '#f59e0b', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 2, tension: 0.3, borderDash: [5,4] },
+            { label: 'Ansiotasoindeksi', data: D.ati, borderColor: '#dc2626', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 2, tension: 0.3, borderDash: [5,4] },
+        ]
+    },
+    options: luoOptions()
+});
+
+// Kausilippu
+new Chart(document.getElementById('chart-kausi'), {
+    type: 'line',
+    data: {
+        labels: D.vuodet,
+        datasets: [
+            { label: 'AB', data: D.kausi_ab, borderColor: '#0071bc', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'ABC', data: D.kausi_abc, borderColor: '#00985f', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'ABCD', data: D.kausi_abcd, borderColor: '#8c4799', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'Kuluttajahintaindeksi', data: D.khi, borderColor: '#f59e0b', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 2, tension: 0.3, borderDash: [5,4] },
+            { label: 'Ansiotasoindeksi', data: D.ati, borderColor: '#dc2626', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 2, tension: 0.3, borderDash: [5,4] },
+        ]
+    },
+    options: luoOptions()
+});
+</script>
+</body>
+</html>
