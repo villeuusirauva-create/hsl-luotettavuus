@@ -4,7 +4,7 @@
 96,Koiviston Auto,157,128,81.53
 90,Koiviston Auto,158,129,81.65
 717N,Koiviston Auto,11,9,81.82
-85,Nobina Finland,129,108,83.72
+85,Nobina Finland,129,109,84.5
 78N,Nobina Finland,21,18,85.71
 77N,Nobina Finland,9,8,88.89
 625,Korsisaari,38,34,89.47
@@ -13,10 +13,9 @@
 84,Nobina Finland,176,160,90.91
 518,Koiviston Auto,12,11,91.67
 903K,Pohjolan Liikenne,12,11,91.67
-92,Koiviston Auto,152,140,92.11
 510,Nobina Finland,221,204,92.31
 87,Nobina Finland,159,147,92.45
-121A,Pohjolan Liikenne,44,41,93.18
+92,Koiviston Auto,152,141,92.76
 88,Nobina Finland,155,145,93.55
 572,Nobina Finland,63,59,93.65
 121,Pohjolan Liikenne,33,31,93.94
@@ -24,6 +23,7 @@
 86,Nobina Finland,139,131,94.24
 97,Koiviston Auto,72,68,94.44
 80,Nobina Finland,156,148,94.87
+121A,Pohjolan Liikenne,44,42,95.45
 82,Nobina Finland,145,140,96.55
 67,Pohjolan Liikenne,151,146,96.69
 97V,Koiviston Auto,92,89,96.74
@@ -38,24 +38,24 @@
 171,Pohjolan Liikenne,56,55,98.21
 553,Koiviston Auto,116,114,98.28
 83,Nobina Finland,65,64,98.46
-400,Koiviston Auto,202,199,98.51
 94A,Koiviston Auto,136,134,98.53
 65,Pohjolan Liikenne,152,150,98.68
 79,Nobina Finland,192,190,98.96
 631,Koiviston Auto,100,99,99.0
+400,Koiviston Auto,202,200,99.01
 22,Nobina Finland,102,101,99.02
-59,Pohjolan Liikenne,216,214,99.07
 42,Nobina Finland,109,108,99.08
 721,Koiviston Auto,114,113,99.12
 554,Koiviston Auto,122,121,99.18
 70,Koiviston Auto,126,125,99.21
 611,Pohjolan Liikenne,128,127,99.22
-63,Koiviston Auto,146,145,99.32
 55,Pohjolan Liikenne,147,146,99.32
+63,Koiviston Auto,146,145,99.32
 30,Nobina Finland,184,183,99.46
 530,Pohjolan Liikenne,204,203,99.51
 300,Nobina Finland,208,207,99.52
 520,Pohjolan Liikenne,218,217,99.54
+59,Pohjolan Liikenne,216,215,99.54
 71,Nobina Finland,234,233,99.57
 971B,Pohjolan Liikenne,6,6,100.0
 972,Pohjolan Liikenne,20,20,100.0
